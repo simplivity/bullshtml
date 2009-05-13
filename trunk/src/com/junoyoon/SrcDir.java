@@ -1,3 +1,19 @@
+/**
+ Copyright 2008 JunHo Yoon
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
 package com.junoyoon;
 
 import java.util.ArrayList;
@@ -31,8 +47,8 @@ public class SrcDir extends Src {
 		//output.append(b)
 		String dir = String.format(dirTemplate, genCurrentHtml());
 		
-		StringBuffer subDirBuffer = new StringBuffer();
-		StringBuffer subSrcBuffer = new StringBuffer();
+		StringBuilder subDirBuffer = new StringBuilder();
+		StringBuilder subSrcBuffer = new StringBuilder();
 		
 		for (Src subDir : child) {
 			if (subDir instanceof SrcDir) {
@@ -50,14 +66,14 @@ public class SrcDir extends Src {
 		if (subSrcBuffer.length() != 0) {
 			subSrc = String.format(SrcDir.subFileTemplate, subSrcBuffer);
 		}
-		StringBuffer output = new StringBuffer(String.format(template, name, dir, subDir, subSrc));
+		StringBuilder output = new StringBuilder(String.format(template, name, dir, subDir, subSrc));
 		return output.toString();	
 	}
 	
 	@Override
 	protected String genCurrentHtml() {
-		return String.format("<tr><td><a href='%s.html'>%s</a></td><td class='value'>%d</td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>", 
-				path, name, fileCount, getFunctionCoverage(),  getFunctionCoverage(), coveredFunctionCount, functionCount,  getBranchCoverage(),  getBranchCoverage(), coveredBranchCount, branchCount);
+		return String.format("<tr><td><a href='%s.html'>%s</a></td><td class='value'>%d</td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>", 
+				path, name, fileCount, getFunctionCoverage(),  getFunctionCoverageStyle(), coveredFunctionCount, functionCount,  getBranchCoverage(),  getBranchCoverageStyle(), coveredBranchCount, branchCount);
 
 	}
 

@@ -1,3 +1,19 @@
+/**
+ Copyright 2008 JunHo Yoon
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
 package com.junoyoon;
 
 import java.io.BufferedReader;
@@ -5,6 +21,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -48,7 +65,7 @@ public class BullsHtml {
 			String testcovDir = document.getDocumentElement().getAttribute("dir");
 			
 			// Get Files
-			Process process = Runtime.getRuntime().exec("covsrc --csv --no-banner");
+			Process process = Runtime.getRuntime().exec("covsrc --csv --no-banner --decision");
 			InputStreamReader reader = new InputStreamReader(process.getInputStream());
 			BufferedReader bufferedReader = new BufferedReader(reader);
 			CSVReader csvReader = new CSVReader(bufferedReader);
@@ -135,23 +152,45 @@ public class BullsHtml {
 	 */
 	public void generateMainHtml(String path) {
 		String template = BullsUtil.loadResourceContent("html/frame_summary.html");
+		String nPath = path + File.separator + "frame_summary.html";
+
 		ArrayList<String> dirList = new ArrayList<String>(srcMap.keySet());
 		Collections.sort(dirList);
-		StringBuffer buffer = new StringBuffer();
+
+		Collections.sort(srcFileList, new Comparator<SrcFile>() {
+			public int compare(SrcFile o1, SrcFile o2) {
+				//System.out.println(o2.name + o2.risk + o1.name + o1.risk + (o1.risk -o2.risk ));
+				return (o2.risk - o1.risk) ;
+			}
+		});
+		StringBuilder buffer = new StringBuilder();
+		int i =0;
+		for (SrcFile src : srcFileList) {
+			if (i++ >= 10) break;
+			String content = String
+					.format(
+							"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
+							src.path, src.name, src.getFunctionCoverage(), src.getFunctionCoverageStyle(),
+							src.coveredFunctionCount, src.functionCount, src.getBranchCoverage(), src
+									.getBranchCoverageStyle(), src.coveredBranchCount, src.branchCount);
+			buffer.append(content).append("\n");
+		}
+		
+		
+		StringBuilder buffer2 = new StringBuilder();
 
 		for (String key : dirList) {
 			SrcDir src = srcMap.get(key);
 			String content = String
 					.format(
-							"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-							src.path, key, src.getFunctionCoverage(), src.getFunctionCoverage(),
+							"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
+							src.path, key, src.getFunctionCoverage(), src.getFunctionCoverageStyle(),
 							src.coveredFunctionCount, src.functionCount, src.getBranchCoverage(), src
-									.getBranchCoverage(), src.coveredBranchCount, src.branchCount);
-			buffer.append(content).append("\n");
+									.getBranchCoverageStyle(), src.coveredBranchCount, src.branchCount);
+			buffer2.append(content).append("\n");
 
 		}
-		String nPath = path + File.separator + "frame_summary.html";
-		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
+		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString(), buffer2.toString()));
 	}
 
 	/**
@@ -162,7 +201,7 @@ public class BullsHtml {
 		String template = BullsUtil.loadResourceContent("html/frame_dirs.html");
 		ArrayList<String> dirList = new ArrayList<String>(srcMap.keySet());
 		Collections.sort(dirList);
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (String src : dirList) {
 			buffer.append(String.format(
 					"<tr><td nowrap='nowrap'><a target='summary' href='%s.html'>%s</a> <i>%s%%</i></td></tr>",
@@ -179,7 +218,7 @@ public class BullsHtml {
 	 */
 	public void generateFileListHtml(String path) {
 		String template = BullsUtil.loadResourceContent("html/frame_files.html");
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		for (SrcFile src : srcFileList) {
 			buffer.append(String.format(
