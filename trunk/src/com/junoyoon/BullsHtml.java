@@ -16,7 +16,10 @@ import org.xml.sax.InputSource;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-
+/**
+ * Main class
+ * @author juno yoon (junoyoon@nhn.com)
+ */
 public class BullsHtml {
 	/** System default encoding*/
 	public static String enc = new java.io.OutputStreamWriter(System.out).getEncoding();
@@ -29,7 +32,10 @@ public class BullsHtml {
 
 	/**
 	 * Contrcut Src and Dir List.
-	 * After calling the method, 
+	 * After calling the method, the static variable 
+	 * {@link BullsHtml.srcMap}, {@link BullsHtml.baseList}, 
+	 * {@link BullsHtml.srcFileList}
+	 * are constructed.
 	 */
 	public void process() {
 		try {
@@ -58,10 +64,14 @@ public class BullsHtml {
 				srcFileList.add(new SrcFile(lines));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			BullsHtml.printErrorAndExit(e.getMessage());	
 		}
 	}
 
+	/** 
+	 * Copy static resources
+	 * @param outputFolder the target folder 
+	 */
 	public void copyResources(String outputFolder) {
 		BullsUtil.copyResource(outputFolder + "/js/popup.js", "js/popup.js");
 		BullsUtil.copyResource(outputFolder + "/js/sortabletable.js", "js/sortabletable.js");
@@ -79,20 +89,33 @@ public class BullsHtml {
 		BullsUtil.copyResource(outputFolder + "/help.html", "html/help.html");
 	}
 
-	
+	/**
+	 * Show usage
+	 */
 	private static void usage() {
-		// TODO Auto-generated method stub
-		
+		String file = "com/junoyoon/usage_win32.txt";
+		if (!System.getProperty("os.name").contains("Windows")) {
+			file = "com/junoyoon/usage_linux.txt";
+		}
+		String output = BullsUtil.loadResourceContent(file);
+		System.out.println(output);
+		System.exit(0);
 	}
 
+	/**
+	 * Print Error Message and Exit
+	 * @param message message to print
+	 */
 	public static void printErrorAndExit(String message) {
 		System.err.println(message);
 		System.exit(-1);
 	}
-	public static void registerBase(SrcDir src) {
-		baseList.add(src);
-	}
+	
 
+	/**
+	 * generate html
+	 * @param path output dir
+	 */
 	public void generateHtml(String path) {
 		String folderName;
 		for (SrcDir srcDir : baseList) {
@@ -105,7 +128,11 @@ public class BullsHtml {
 		generateFileListHtml(path);
 		generateMainHtml(path);
 	}
-
+	
+	/**
+	 * generate main html page
+	 * @param path   output dir
+	 */
 	public void generateMainHtml(String path) {
 		String template = BullsUtil.loadResourceContent("html/frame_summary.html");
 		ArrayList<String> dirList = new ArrayList<String>(srcMap.keySet());
@@ -127,6 +154,10 @@ public class BullsHtml {
 		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
 	}
 
+	/**
+	 * generate upper left dir html page
+	 * @param path  output dir
+	 */
 	public void generateDirListHtml(String path) {
 		String template = BullsUtil.loadResourceContent("html/frame_dirs.html");
 		ArrayList<String> dirList = new ArrayList<String>(srcMap.keySet());
@@ -142,6 +173,10 @@ public class BullsHtml {
 		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
 	}
 
+	/**
+	 * generate down left src html page
+	 * @param path  output dir
+	 */
 	public void generateFileListHtml(String path) {
 		String template = BullsUtil.loadResourceContent("html/frame_files.html");
 		StringBuffer buffer = new StringBuffer();
@@ -156,6 +191,10 @@ public class BullsHtml {
 		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
 	}
 
+	/**
+	 * generate each dir/file html page
+	 * @param path  output dir
+	 */
 	public void generateChildHtml(String path, SrcDir dir, String baseName) {
 		for (Src src : dir.child) {
 			String normalizedPath = baseName + "_" + src.name;
