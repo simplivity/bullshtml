@@ -1,3 +1,19 @@
+/**
+ Copyright 2008 JunHo Yoon
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
 package com.junoyoon;
 
 import java.io.File;
@@ -14,6 +30,11 @@ public class SrcFile extends Src {
 
 	private String fileName;
 	public String path;
+	public int risk;
+	private static String fileNotFoundTemplate;
+	static {
+		fileNotFoundTemplate = BullsUtil.loadResourceContent("html/SrcFileNotFound.html");
+	}
 	public SrcFile(String[] lines) throws IOException {
 		fileName = new File(lines[0]).getCanonicalFile().toString();		
 		path = BullsUtil.normalizePath(fileName);
@@ -21,6 +42,7 @@ public class SrcFile extends Src {
 		super.functionCount = Integer.parseInt(lines[2]);
 		super.coveredBranchCount = Integer.parseInt(lines[4]);
 		super.branchCount = Integer.parseInt(lines[5]);
+		risk = branchCount - coveredBranchCount;
 		List<String> paths = new ArrayList<String>(Arrays.asList(fileName.split("\\"+ File.separator)));
 		if (fileName.startsWith("/")) {
 			paths.add("/");
@@ -31,7 +53,7 @@ public class SrcFile extends Src {
 	}
 	
 	/** 
-	 * 
+	 * Regster parent;
 	 * @param paths
 	 * @param file
 	 */
@@ -43,7 +65,11 @@ public class SrcFile extends Src {
 			if (i++ == 0) {
 				pathComp = path;
 			} else {
-				pathComp = pathComp + File.separator + path;
+				if (pathComp.equals("/")) {
+					pathComp = pathComp + path;
+				} else {
+					pathComp = pathComp + File.separator + path;
+				}
 			}
 			SrcDir src = (SrcDir)BullsHtml.srcMap.get(pathComp);
 			if (src == null) {
@@ -55,7 +81,6 @@ public class SrcFile extends Src {
 				} else {
 					curSrcDir.child.add(src);
 				}
-
 			}
 			curSrcDir = src;
 		}
@@ -77,13 +102,18 @@ public class SrcFile extends Src {
 	}
 	@Override
 	protected String genCurrentHtml() {
-		return String.format("<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>", 
-				path, name, getFunctionCoverage(),  getFunctionCoverage(), coveredFunctionCount, functionCount,  getBranchCoverage(),  getBranchCoverage(), coveredBranchCount, branchCount);
+
+		return String.format("<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>", 
+				path, name, getFunctionCoverage(),  getFunctionCoverageStyle(), coveredFunctionCount, functionCount,  getBranchCoverage(),  getBranchCoverageStyle(), coveredBranchCount, branchCount);
 
 	}
 	@Override
 	protected String getHtml(String path) {		
-		return	BullsUtil.getCmdOutput("covbr --html --no-banner \"" + fileName + "\"");
+		String out = BullsUtil.getCmdOutput("covbr --html --no-banner \"" + fileName + "\"");
+		if (out == null) {
+			out = String.format(fileNotFoundTemplate, name, name);
+		}
+		return out;
 	}
 	
 }

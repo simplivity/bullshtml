@@ -1,3 +1,19 @@
+/**
+ Copyright 2008 JunHo Yoon
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
 package com.junoyoon;
 
 import java.io.BufferedInputStream;
@@ -12,11 +28,13 @@ import java.io.InputStreamReader;
 
 /**
  * Utility class
+ * 
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class BullsUtil {
 	/**
 	 * Make path to file form.
+	 * 
 	 * @param path
 	 * @return normalized path
 	 */
@@ -25,9 +43,12 @@ public class BullsUtil {
 	}
 
 	/**
-	 * Write file 
-	 * @param path the path
-	 * @param content content
+	 * Write file
+	 * 
+	 * @param path
+	 *            the path
+	 * @param content
+	 *            content
 	 */
 	public static void writeToFile(String path, String content) {
 		FileWriter fileWriter;
@@ -36,12 +57,13 @@ public class BullsUtil {
 			fileWriter.write(content);
 			fileWriter.close();
 		} catch (IOException e) {
-			BullsHtml.printErrorAndExit(e.getMessage());	
+			BullsHtml.printErrorAndExit(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Copy resource from jar to destination
+	 * 
 	 * @param toDir
 	 * @param fileName
 	 */
@@ -66,18 +88,19 @@ public class BullsUtil {
 			inputStream.close();
 
 		} catch (Exception e) {
-			BullsHtml.printErrorAndExit(e.getMessage());	
+			BullsHtml.printErrorAndExit(e.getMessage());
 
 		}
 	}
-	
+
 	/**
-	 * Run command and 
+	 * Run command and
+	 * 
 	 * @param cmd
 	 * @return
 	 */
 	public static String getCmdOutput(String cmd) {
-		StringBuffer result = new StringBuffer(1024);
+		StringBuilder result = new StringBuilder(1024);
 		try {
 			Process proc = Runtime.getRuntime().exec(cmd);
 			InputStreamReader inputStream = new InputStreamReader(proc.getInputStream());
@@ -89,23 +112,28 @@ public class BullsUtil {
 					buffer = buffer.replace("charset=us-ascii", "charset=euc-kr");
 				result.append(buffer).append("\n");
 			}
-			br.close();
 
+			br.close();
+			if (i < 11) {
+				return null;
+			}
 		} catch (IOException e) {
-			e.printStackTrace();
-			BullsHtml.printErrorAndExit("covbr command in bullseye coverage is not available. please check the path.");	
+			return null;
+
+			// BullsHtml.printErrorAndExit("covbr command in bullseye coverage is not available. please check the path.");
 		}
 		return result.toString();
 
 	}
-	
+
 	/**
-	 * Load Resource 
+	 * Load Resource
+	 * 
 	 * @param resourceLocation
 	 * @return
 	 */
 	public static String loadResourceContent(String resourceLocation) {
-		StringBuffer result = new StringBuffer(1024);
+		StringBuilder result = new StringBuilder(1024);
 		try {
 			InputStream is = BullsUtil.class.getClassLoader().getResourceAsStream(resourceLocation);
 			InputStreamReader inputStream = new InputStreamReader(is);
@@ -116,7 +144,7 @@ public class BullsUtil {
 			}
 			br.close();
 		} catch (Exception e) {
-			BullsHtml.printErrorAndExit(e.getMessage());			
+			BullsHtml.printErrorAndExit(e.getMessage());
 		}
 		return result.toString();
 	}
