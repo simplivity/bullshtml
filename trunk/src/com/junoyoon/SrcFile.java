@@ -35,31 +35,35 @@ public class SrcFile extends Src {
 	static {
 		fileNotFoundTemplate = BullsUtil.loadResourceContent("html/SrcFileNotFound.html");
 	}
+
 	public SrcFile(String[] lines) throws IOException {
-		fileName = new File(lines[0]).getCanonicalFile().toString();		
+
+		fileName = new File(lines[0]).getCanonicalFile().toString();
 		path = BullsUtil.normalizePath(fileName);
 		super.coveredFunctionCount = Integer.parseInt(lines[1]);
 		super.functionCount = Integer.parseInt(lines[2]);
 		super.coveredBranchCount = Integer.parseInt(lines[4]);
 		super.branchCount = Integer.parseInt(lines[5]);
 		risk = branchCount - coveredBranchCount;
-		List<String> paths = new ArrayList<String>(Arrays.asList(fileName.split("\\"+ File.separator)));
+		List<String> paths = new ArrayList<String>(Arrays.asList(fileName.split("\\" + File.separator)));
 		if (fileName.startsWith("/")) {
 			paths.add("/");
 		}
-		name = paths.remove(paths.size()-1);
-		
+		name = paths.remove(paths.size() - 1);
+
 		registerParent(paths, this);
+
 	}
-	
+
 	/** 
 	 * Regster parent;
 	 * @param paths
 	 * @param file
 	 */
 	public void registerParent(List<String> paths, SrcFile file) {
+
 		String pathComp = new String();
-		SrcDir curSrcDir = null; 
+		SrcDir curSrcDir = null;
 		int i = 0;
 		for (String path : paths) {
 			if (i++ == 0) {
@@ -71,12 +75,12 @@ public class SrcFile extends Src {
 					pathComp = pathComp + File.separator + path;
 				}
 			}
-			SrcDir src = (SrcDir)BullsHtml.srcMap.get(pathComp);
+			SrcDir src = (SrcDir) BullsHtml.srcMap.get(pathComp);
 			if (src == null) {
 				src = new SrcDir(path, BullsUtil.normalizePath(pathComp));
 				BullsHtml.srcMap.put(pathComp, src);
 				src.parentDir = curSrcDir;
-				if (curSrcDir == null){
+				if (curSrcDir == null) {
 					BullsHtml.baseList.add(src);
 				} else {
 					curSrcDir.child.add(src);
@@ -87,11 +91,13 @@ public class SrcFile extends Src {
 		file.parentDir = curSrcDir;
 		curSrcDir.child.add(file);
 		incrementParent();
+
 	}
-	
+
 	public void incrementParent() {
+
 		SrcDir currentParent = parentDir;
-		while(currentParent != null) {
+		while (currentParent != null) {
 			currentParent.coveredBranchCount += coveredBranchCount;
 			currentParent.branchCount += branchCount;
 			currentParent.functionCount += functionCount;
@@ -99,21 +105,30 @@ public class SrcFile extends Src {
 			currentParent.fileCount++;
 			currentParent = currentParent.parentDir;
 		}
+
 	}
+
 	@Override
 	protected String genCurrentHtml() {
 
-		return String.format("<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>", 
-				path, name, getFunctionCoverage(),  getFunctionCoverageStyle(), coveredFunctionCount, functionCount,  getBranchCoverage(),  getBranchCoverageStyle(), coveredBranchCount, branchCount);
+		return String
+				.format(
+						"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
+						path, name, getFunctionCoverage(), getFunctionCoverageStyle(), coveredFunctionCount,
+						functionCount, getBranchCoverage(), getBranchCoverageStyle(), coveredBranchCount, branchCount);
 
 	}
+
 	@Override
-	protected String getHtml(String path) {		
+	protected String getHtml(String path) {
+
 		String out = BullsUtil.getCmdOutput("covbr --html --no-banner \"" + fileName + "\"");
 		if (out == null) {
 			out = String.format(fileNotFoundTemplate, name, name);
 		}
+
 		return out;
+
 	}
-	
+
 }
