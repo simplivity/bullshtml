@@ -14,15 +14,20 @@ public class SrcFile extends Src {
 		fileName = new File(lines[0]).getCanonicalFile().toString();		
 		path = BullsUtil.normalizePath(fileName);
 		super.coveredFunctionCount = Integer.parseInt(lines[1]);
-		
 		super.functionCount = Integer.parseInt(lines[2]);
 		super.coveredBranchCount = Integer.parseInt(lines[4]);
 		super.branchCount = Integer.parseInt(lines[5]);
 		List<String> paths = new ArrayList<String>(Arrays.asList(fileName.split("\\"+ File.separator)));
 		name = paths.remove(paths.size()-1);
+		
 		registerParent(paths, this);
 	}
 	
+	/** 
+	 * 
+	 * @param paths
+	 * @param file
+	 */
 	public void registerParent(List<String> paths, SrcFile file) {
 		String pathComp = new String();
 		SrcDir curSrcDir = null; 
