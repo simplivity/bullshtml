@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 
 /**
  * Utility class
- * @author juno yoon (junoyoon@nhn.com)
+ * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class BullsUtil {
 	/**
@@ -57,7 +57,6 @@ public class BullsUtil {
 			FileOutputStream fs = new FileOutputStream(toDir);
 			BufferedOutputStream outputStream = new BufferedOutputStream(fs);
 
-			// 버퍼를 통한 스트림 쓰기
 			int bytesRead = 0;
 			byte[] buffer = new byte[1024];
 			while ((bytesRead = inputStream.read(buffer, 0, 1024)) != -1) {
@@ -99,14 +98,18 @@ public class BullsUtil {
 		return result.toString();
 
 	}
-
+	
+	/**
+	 * Load Resource 
+	 * @param resourceLocation
+	 * @return
+	 */
 	public static String loadResourceContent(String resourceLocation) {
 		StringBuffer result = new StringBuffer(1024);
 		try {
 			InputStream is = BullsUtil.class.getClassLoader().getResourceAsStream(resourceLocation);
 			InputStreamReader inputStream = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(inputStream);
-			// 버퍼를 통한 스트림 쓰기
 			String buffer;
 			while ((buffer = br.readLine()) != null) {
 				result.append(buffer).append("\n");
