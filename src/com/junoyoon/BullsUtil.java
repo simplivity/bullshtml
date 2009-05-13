@@ -39,7 +39,9 @@ public class BullsUtil {
 	 * @return normalized path
 	 */
 	public static String normalizePath(String path) {
+
 		return path.replace(" ", "_").replace(":", "_").replace("\\", "_").replace("/", "_");
+
 	}
 
 	/**
@@ -51,6 +53,7 @@ public class BullsUtil {
 	 *            content
 	 */
 	public static void writeToFile(String path, String content) {
+
 		FileWriter fileWriter;
 		try {
 			fileWriter = new FileWriter(path);
@@ -59,6 +62,7 @@ public class BullsUtil {
 		} catch (IOException e) {
 			BullsHtml.printErrorAndExit(e.getMessage());
 		}
+
 	}
 
 	/**
@@ -68,6 +72,7 @@ public class BullsUtil {
 	 * @param fileName
 	 */
 	public static void copyResource(String toDir, String fileName) {
+
 		File file = new File(toDir);
 		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdir();
@@ -91,6 +96,7 @@ public class BullsUtil {
 			BullsHtml.printErrorAndExit(e.getMessage());
 
 		}
+
 	}
 
 	/**
@@ -100,6 +106,7 @@ public class BullsUtil {
 	 * @return
 	 */
 	public static String getCmdOutput(String cmd) {
+
 		StringBuilder result = new StringBuilder(1024);
 		try {
 			Process proc = Runtime.getRuntime().exec(cmd);
@@ -115,13 +122,16 @@ public class BullsUtil {
 
 			br.close();
 			if (i < 11) {
+
 				return null;
 			}
 		} catch (IOException e) {
+
 			return null;
 
 			// BullsHtml.printErrorAndExit("covbr command in bullseye coverage is not available. please check the path.");
 		}
+
 		return result.toString();
 
 	}
@@ -133,6 +143,7 @@ public class BullsUtil {
 	 * @return
 	 */
 	public static String loadResourceContent(String resourceLocation) {
+
 		StringBuilder result = new StringBuilder(1024);
 		try {
 			InputStream is = BullsUtil.class.getClassLoader().getResourceAsStream(resourceLocation);
@@ -146,6 +157,8 @@ public class BullsUtil {
 		} catch (Exception e) {
 			BullsHtml.printErrorAndExit(e.getMessage());
 		}
+
 		return result.toString();
+
 	}
 }

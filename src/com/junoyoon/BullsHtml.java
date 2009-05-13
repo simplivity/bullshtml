@@ -55,6 +55,7 @@ public class BullsHtml {
 	 * are constructed.
 	 */
 	public void process() {
+
 		try {
 			Pattern rootPathPattern = Pattern.compile("^([a-z]\\:|\\/)");
 			// Get test.cov Dir
@@ -63,7 +64,7 @@ public class BullsHtml {
 			covXmlInputStream.setEncoding(enc);
 			Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(covXmlInputStream);
 			String testcovDir = document.getDocumentElement().getAttribute("dir");
-			
+
 			// Get Files
 			Process process = Runtime.getRuntime().exec("covsrc --csv --no-banner --decision");
 			InputStreamReader reader = new InputStreamReader(process.getInputStream());
@@ -72,7 +73,8 @@ public class BullsHtml {
 			csvReader.readNext(); // Pass Header
 			String[] lines = null;
 			while ((lines = csvReader.readNext()) != null) {
-				if (lines[0].equals("Total")) continue;
+				if (lines[0].equals("Total"))
+					continue;
 				String fileName = lines[0];
 				// If the each file is relative path, make it absolute path using testcovdir
 				if (!rootPathPattern.matcher(fileName).find()) {
@@ -81,8 +83,9 @@ public class BullsHtml {
 				srcFileList.add(new SrcFile(lines));
 			}
 		} catch (Exception e) {
-			BullsHtml.printErrorAndExit(e.getMessage());	
+			BullsHtml.printErrorAndExit(e.getMessage());
 		}
+
 	}
 
 	/** 
@@ -90,6 +93,7 @@ public class BullsHtml {
 	 * @param outputFolder the target folder 
 	 */
 	public void copyResources(String outputFolder) {
+
 		BullsUtil.copyResource(outputFolder + "/js/popup.js", "js/popup.js");
 		BullsUtil.copyResource(outputFolder + "/js/sortabletable.js", "js/sortabletable.js");
 		BullsUtil.copyResource(outputFolder + "/js/customsorttypes.js", "js/customsorttypes.js");
@@ -104,12 +108,14 @@ public class BullsHtml {
 		BullsUtil.copyResource(outputFolder + "/images/upsimple.png", "images/upsimple.png");
 		BullsUtil.copyResource(outputFolder + "/index.html", "html/index.html");
 		BullsUtil.copyResource(outputFolder + "/help.html", "html/help.html");
+
 	}
 
 	/**
 	 * Show usage
 	 */
 	private static void usage() {
+
 		String file = "com/junoyoon/usage_win32.txt";
 		if (!System.getProperty("os.name").contains("Windows")) {
 			file = "com/junoyoon/usage_linux.txt";
@@ -117,6 +123,7 @@ public class BullsHtml {
 		String output = BullsUtil.loadResourceContent(file);
 		System.out.println(output);
 		System.exit(0);
+
 	}
 
 	/**
@@ -124,16 +131,18 @@ public class BullsHtml {
 	 * @param message message to print
 	 */
 	public static void printErrorAndExit(String message) {
+
 		System.err.println(message);
 		System.exit(-1);
+
 	}
-	
 
 	/**
 	 * generate html
 	 * @param path output dir
 	 */
 	public void generateHtml(String path) {
+
 		String folderName;
 		for (SrcDir srcDir : baseList) {
 			folderName = srcDir.name;
@@ -144,13 +153,15 @@ public class BullsHtml {
 		generateDirListHtml(path);
 		generateFileListHtml(path);
 		generateMainHtml(path);
+
 	}
-	
+
 	/**
 	 * generate main html page
 	 * @param path   output dir
 	 */
 	public void generateMainHtml(String path) {
+
 		String template = BullsUtil.loadResourceContent("html/frame_summary.html");
 		String nPath = path + File.separator + "frame_summary.html";
 
@@ -160,13 +171,14 @@ public class BullsHtml {
 		Collections.sort(srcFileList, new Comparator<SrcFile>() {
 			public int compare(SrcFile o1, SrcFile o2) {
 				//System.out.println(o2.name + o2.risk + o1.name + o1.risk + (o1.risk -o2.risk ));
-				return (o2.risk - o1.risk) ;
+				return (o2.risk - o1.risk);
 			}
 		});
 		StringBuilder buffer = new StringBuilder();
-		int i =0;
+		int i = 0;
 		for (SrcFile src : srcFileList) {
-			if (i++ >= 10) break;
+			if (i++ >= 10)
+				break;
 			String content = String
 					.format(
 							"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
@@ -175,8 +187,7 @@ public class BullsHtml {
 									.getBranchCoverageStyle(), src.coveredBranchCount, src.branchCount);
 			buffer.append(content).append("\n");
 		}
-		
-		
+
 		StringBuilder buffer2 = new StringBuilder();
 
 		for (String key : dirList) {
@@ -191,6 +202,7 @@ public class BullsHtml {
 
 		}
 		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString(), buffer2.toString()));
+
 	}
 
 	/**
@@ -198,6 +210,7 @@ public class BullsHtml {
 	 * @param path  output dir
 	 */
 	public void generateDirListHtml(String path) {
+
 		String template = BullsUtil.loadResourceContent("html/frame_dirs.html");
 		ArrayList<String> dirList = new ArrayList<String>(srcMap.keySet());
 		Collections.sort(dirList);
@@ -210,6 +223,7 @@ public class BullsHtml {
 
 		String nPath = path + File.separator + "frame_dirs.html";
 		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
+
 	}
 
 	/**
@@ -217,6 +231,7 @@ public class BullsHtml {
 	 * @param path  output dir
 	 */
 	public void generateFileListHtml(String path) {
+
 		String template = BullsUtil.loadResourceContent("html/frame_files.html");
 		StringBuilder buffer = new StringBuilder();
 
@@ -228,6 +243,7 @@ public class BullsHtml {
 
 		String nPath = path + File.separator + "frame_files.html";
 		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
+
 	}
 
 	/**
@@ -235,6 +251,7 @@ public class BullsHtml {
 	 * @param path  output dir
 	 */
 	public void generateChildHtml(String path, SrcDir dir, String baseName) {
+
 		for (Src src : dir.child) {
 			String normalizedPath = baseName + "_" + src.name;
 			if (src instanceof SrcDir) {
@@ -244,13 +261,15 @@ public class BullsHtml {
 				src.generateHtml(path, normalizedPath);
 			}
 		}
+
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String outputPath ="";
+
+		String outputPath = ".";
 		if (args.length == 1 && args[0].equals("-h")) {
 			usage();
 		}
@@ -261,7 +280,7 @@ public class BullsHtml {
 				if (!o.mkdir()) {
 					printErrorAndExit(outputPath + " directory can be not created.");
 				}
-			} else if (!o.isDirectory()){
+			} else if (!o.isDirectory()) {
 				printErrorAndExit(outputPath + " is not directory.");
 			} else if (!o.canWrite()) {
 				printErrorAndExit(outputPath + " is not writable.");
@@ -271,7 +290,7 @@ public class BullsHtml {
 		bullshtml.process();
 		bullshtml.copyResources(outputPath);
 		bullshtml.generateHtml(outputPath);
-	}
 
+	}
 
 }
