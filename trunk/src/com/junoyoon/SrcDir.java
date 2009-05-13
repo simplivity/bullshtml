@@ -2,6 +2,10 @@ package com.junoyoon;
 
 import java.util.ArrayList;
 
+/**
+ * Directory coverage information
+ * @author JunHo Yoon (junoyoon@gmail.com)
+ */
 public class SrcDir extends Src {
 	private static String template;
 	private static String dirTemplate;
@@ -22,7 +26,7 @@ public class SrcDir extends Src {
 	public int fileCount;
 	public ArrayList<Src> child = new ArrayList<Src>();
 	@Override
-	public String getHtml(String path) {
+	protected String getHtml(String path) {
 		
 		//output.append(b)
 		String dir = String.format(dirTemplate, genCurrentHtml());
@@ -51,7 +55,7 @@ public class SrcDir extends Src {
 	}
 	
 	@Override
-	public String genCurrentHtml() {
+	protected String genCurrentHtml() {
 		return String.format("<tr><td><a href='%s.html'>%s</a></td><td class='value'>%d</td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>", 
 				path, name, fileCount, getFunctionCoverage(),  getFunctionCoverage(), coveredFunctionCount, functionCount,  getBranchCoverage(),  getBranchCoverage(), coveredBranchCount, branchCount);
 

@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * File coverage information
+ * @author JunHo Yoon (junoyoon@gmail.com)
+ */
 public class SrcFile extends Src {
 
 	private String fileName;
@@ -72,13 +76,13 @@ public class SrcFile extends Src {
 		}
 	}
 	@Override
-	public String genCurrentHtml() {
+	protected String genCurrentHtml() {
 		return String.format("<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>", 
 				path, name, getFunctionCoverage(),  getFunctionCoverage(), coveredFunctionCount, functionCount,  getBranchCoverage(),  getBranchCoverage(), coveredBranchCount, branchCount);
 
 	}
 	@Override
-	public String getHtml(String path) {		
+	protected String getHtml(String path) {		
 		return	BullsUtil.getCmdOutput("covbr --html --no-banner \"" + fileName + "\"");
 	}
 	

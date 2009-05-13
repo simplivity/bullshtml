@@ -18,7 +18,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * Main class
- * @author juno yoon (junoyoon@nhn.com)
+ * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class BullsHtml {
 	/** System default encoding*/
