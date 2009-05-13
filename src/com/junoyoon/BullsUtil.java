@@ -4,18 +4,31 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ * Utility class
+ * @author juno yoon (junoyoon@nhn.com)
+ */
 public class BullsUtil {
+	/**
+	 * Make path to file form.
+	 * @param path
+	 * @return normalized path
+	 */
 	public static String normalizePath(String path) {
 		return path.replace(" ", "_").replace(":", "_").replace("\\", "_").replace("/", "_");
 	}
 
+	/**
+	 * Write file 
+	 * @param path the path
+	 * @param content content
+	 */
 	public static void writeToFile(String path, String content) {
 		FileWriter fileWriter;
 		try {
@@ -23,10 +36,15 @@ public class BullsUtil {
 			fileWriter.write(content);
 			fileWriter.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			BullsHtml.printErrorAndExit(e.getMessage());	
 		}
 	}
-
+	
+	/**
+	 * Copy resource from jar to destination
+	 * @param toDir
+	 * @param fileName
+	 */
 	public static void copyResource(String toDir, String fileName) {
 		File file = new File(toDir);
 		if (!file.getParentFile().exists()) {
@@ -48,15 +66,17 @@ public class BullsUtil {
 			outputStream.close();
 			inputStream.close();
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			BullsHtml.printErrorAndExit(e.getMessage());	
+
 		}
 	}
-
+	
+	/**
+	 * Run command and 
+	 * @param cmd
+	 * @return
+	 */
 	public static String getCmdOutput(String cmd) {
 		StringBuffer result = new StringBuffer(1024);
 		try {
@@ -66,7 +86,7 @@ public class BullsUtil {
 			String buffer;
 			int i = 0;
 			while ((buffer = br.readLine()) != null) {
-				if (++i < 10)
+				if (++i < 6)
 					buffer = buffer.replace("charset=us-ascii", "charset=euc-kr");
 				result.append(buffer).append("\n");
 			}
@@ -74,6 +94,7 @@ public class BullsUtil {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			BullsHtml.printErrorAndExit("covbr command in bullseye coverage is not available. please check the path.");	
 		}
 		return result.toString();
 
@@ -91,10 +112,8 @@ public class BullsUtil {
 				result.append(buffer).append("\n");
 			}
 			br.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			BullsHtml.printErrorAndExit(e.getMessage());			
 		}
 		return result.toString();
 	}

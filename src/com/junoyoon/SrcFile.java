@@ -18,6 +18,9 @@ public class SrcFile extends Src {
 		super.coveredBranchCount = Integer.parseInt(lines[4]);
 		super.branchCount = Integer.parseInt(lines[5]);
 		List<String> paths = new ArrayList<String>(Arrays.asList(fileName.split("\\"+ File.separator)));
+		if (fileName.startsWith("/")) {
+			paths.add("/");
+		}
 		name = paths.remove(paths.size()-1);
 		
 		registerParent(paths, this);
@@ -36,7 +39,7 @@ public class SrcFile extends Src {
 			if (i++ == 0) {
 				pathComp = path;
 			} else {
-				pathComp = pathComp + "/" + path;
+				pathComp = pathComp + File.separator + path;
 			}
 			SrcDir src = (SrcDir)BullsHtml.srcMap.get(pathComp);
 			if (src == null) {
@@ -44,7 +47,7 @@ public class SrcFile extends Src {
 				BullsHtml.srcMap.put(pathComp, src);
 				src.parentDir = curSrcDir;
 				if (curSrcDir == null){
-					BullsHtml.registerBase(src);
+					BullsHtml.baseList.add(src);
 				} else {
 					curSrcDir.child.add(src);
 				}
@@ -68,7 +71,7 @@ public class SrcFile extends Src {
 			currentParent = currentParent.parentDir;
 		}
 	}
-	
+	@Override
 	public String genCurrentHtml() {
 		return String.format("<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width:%spx'><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>", 
 				path, name, getFunctionCoverage(),  getFunctionCoverage(), coveredFunctionCount, functionCount,  getBranchCoverage(),  getBranchCoverage(), coveredBranchCount, branchCount);
