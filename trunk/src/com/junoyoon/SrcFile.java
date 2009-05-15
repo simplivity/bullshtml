@@ -84,12 +84,14 @@ public class SrcFile extends Src {
 				if (curSrcDir == null) {
 					BullsHtml.baseList.add(src);
 				} else {
+					System.out.println("chid:"+src);
 					curSrcDir.child.add(src);
 				}
 			}
 			curSrcDir = src;
 		}
 		file.parentDir = curSrcDir;
+		System.out.println("file:"+file);
 		curSrcDir.child.add(file);
 		incrementParent();
 
