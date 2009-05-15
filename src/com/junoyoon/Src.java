@@ -63,6 +63,7 @@ public abstract class Src {
 	 * @return
 	 */
 	public String generateHtml(String target, String path) {
+		System.out.println(path);
 		String nPath = target + File.separator + BullsUtil.normalizePath(path) + ".html";
 		BullsUtil.writeToFile(nPath, getHtml(path));
 		return nPath;
