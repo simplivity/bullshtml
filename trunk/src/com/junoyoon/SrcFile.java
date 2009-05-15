@@ -50,7 +50,8 @@ public class SrcFile extends Src {
 			paths.add("/");
 		}
 		name = paths.remove(paths.size() - 1);
-
+		System.out.println(fileName + ":" +  name);
+		
 		registerParent(paths, this);
 
 	}
