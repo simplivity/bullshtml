@@ -46,12 +46,12 @@ public class SrcFile extends Src {
 		super.branchCount = Integer.parseInt(lines[5]);
 		risk = branchCount - coveredBranchCount;
 		List<String> paths = new ArrayList<String>(Arrays.asList(fileName.split("\\" + File.separator)));
-		if (fileName.startsWith("/")) {
-			paths.add(0, "/");
+ 
+                if (paths.get(0).equals("")) {
+			paths.set(0, File.separator);
 		}
+
 		name = paths.remove(paths.size() - 1);
-		System.out.println(fileName + ":" +  name);
-		
 		registerParent(paths, this);
 
 	}
@@ -84,14 +84,13 @@ public class SrcFile extends Src {
 				if (curSrcDir == null) {
 					BullsHtml.baseList.add(src);
 				} else {
-					System.out.println("chid:"+src);
 					curSrcDir.child.add(src);
 				}
 			}
 			curSrcDir = src;
 		}
 		file.parentDir = curSrcDir;
-		System.out.println("file:"+file);
+
 		curSrcDir.child.add(file);
 		incrementParent();
 
@@ -122,12 +121,11 @@ public class SrcFile extends Src {
 
 	@Override
 	protected String getHtml(String path) {
-
 		String out = BullsUtil.getCmdOutput("covbr --html --no-banner \"" + fileName + "\"");
 		if (out == null) {
 			out = String.format(fileNotFoundTemplate, name, name);
 		}
-
+		System.out.println(out);
 		return out;
 
 	}
