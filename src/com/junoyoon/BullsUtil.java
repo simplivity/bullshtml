@@ -25,6 +25,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 /**
  * Utility class
@@ -105,11 +106,13 @@ public class BullsUtil {
 	 * @param cmd
 	 * @return
 	 */
-	public static String getCmdOutput(String cmd) {
-
+	public static String getCmdOutput(List<String> cmd) {
+		ProcessBuilder builder = new ProcessBuilder();
+		builder.command().addAll(cmd);
+		builder.redirectErrorStream(true);
 		StringBuilder result = new StringBuilder(1024);
 		try {
-			Process proc = Runtime.getRuntime().exec(cmd);
+			Process proc = builder.start();
 			InputStreamReader inputStream = new InputStreamReader(proc.getInputStream());
 			BufferedReader br = new BufferedReader(inputStream);
 			String buffer;
