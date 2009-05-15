@@ -112,7 +112,7 @@ public class SrcFile extends Src {
 	protected String genCurrentHtml() {
 
 		return String
-				.format(
+				.format( 
 						"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
 						path, name, getFunctionCoverage(), getFunctionCoverageStyle(), coveredFunctionCount,
 						functionCount, getBranchCoverage(), getBranchCoverageStyle(), coveredBranchCount, branchCount);
