@@ -122,14 +122,12 @@ public class BullsUtil {
 
 			br.close();
 			if (i < 11) {
-
+			        System.out.println("Error");	
 				return null;
 			}
-		} catch (IOException e) {
-
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			return null;
-
-			// BullsHtml.printErrorAndExit("covbr command in bullseye coverage is not available. please check the path.");
 		}
 
 		return result.toString();
