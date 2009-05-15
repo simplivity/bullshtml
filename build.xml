@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- WARNING: Eclipse auto-generated file.
-              Any modifications will be overwritten.
-              To include a user specific buildfile here, simply create one in the same
-              directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="bullshtml">
     <property environment="env"/>
-     <property name="target" value="1.5"/>
+    <property name="target" value="1.5"/>
     <property name="source" value="1.5"/>
-    <path id="bullshtml.classpath">
+	<property name="package.dir" value="target"/>
+	<property name="antlib.dir" value="antlib"/>
+	<path id="bullshtml.classpath">
         <pathelement location="bin"/>
      </path>
     <target name="init">
@@ -23,7 +20,7 @@
     <target name="clean">
         <delete dir="bin"/>
     </target>
-    <target depends="clean" name="cleanall"/>
+
     <target depends="build-project" name="build"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
@@ -32,15 +29,28 @@
             <classpath refid="bullshtml.classpath"/>
         </javac>
     </target>
-	<target depends="build" name="package">
-		<jar destfile="bullshtml.jar" manifest="src/manifest.txt" basedir="bin"/>
+	<target depends="build" name="makejar">
+		<jar destfile="${package.dir}/bullshtml.jar" manifest="src/manifest.txt" basedir="bin"/>
 	</target>
-    <target name="BullsHtml">
+	
+    <target name="testrun">
         <java classname="com.junoyoon.BullsHtml" failonerror="true" fork="yes">
             <arg line="test2"/>
             <classpath refid="bullshtml.classpath"/>
         </java>
-    </target>
+    </target>	
 	
+	<target name="makeexe" depends="makejar" >
+		<taskdef name="generateexe" classname="net.charabia.jsmoothgen.ant.JSmoothGen" classpath="${antlib.dir}/jsmoothgen-ant.jar"/>
+		<property environment="env"/>
+		<tstamp/>
+		<property name="jsmooth.dir" value="${antlib.dir}"/>
+		<generateexe project="${package.dir}/bullshtml" skeletonroot="${jsmooth.dir}/skeletons"/>
+	</target>
+	
+	<target name="packagewindow" depends="makeexe" >
+	</target>
+	<target name="packagelinux" depends="makejar" >
+	</target>
 
 </project>
