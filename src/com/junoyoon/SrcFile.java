@@ -121,7 +121,12 @@ public class SrcFile extends Src {
 
 	@Override
 	protected String getHtml(String path) {
-String out = BullsUtil.getCmdOutput("covbr --html --no-banner \"" + fileName + "\"");
+		List<String> command = new ArrayList<String>();
+		command.add("covbr");
+		command.add("--html");
+		command.add("--no-banner");
+		command.add(fileName);
+		String out = BullsUtil.getCmdOutput(command);
 		if (out == null) {
 			out = String.format(fileNotFoundTemplate, name, name);
 		}
