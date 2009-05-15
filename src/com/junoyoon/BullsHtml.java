@@ -57,14 +57,15 @@ public class BullsHtml {
 	public void process() {
 
 		try {
-			Pattern rootPathPattern = Pattern.compile("^([a-z]\\:|\\/)");
+			Pattern rootPathPattern = Pattern.compile("^[a-z]\\:");
 			// Get test.cov Dir
-			Process covxmlprocess = Runtime.getRuntime().exec("covxml --no-banner");
+/*			Process covxmlprocess = Runtime.getRuntime().exec("covxml --no-banner");
 			InputSource covXmlInputStream = new InputSource(covxmlprocess.getInputStream());
 			covXmlInputStream.setEncoding(enc);
 			Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(covXmlInputStream);
 			String testcovDir = document.getDocumentElement().getAttribute("dir");
-
+*/
+			String basedir = System.getProperty("user.dir");
 			// Get Files
 			Process process = Runtime.getRuntime().exec("covsrc --csv --no-banner --decision");
 			InputStreamReader reader = new InputStreamReader(process.getInputStream());
@@ -78,7 +79,7 @@ public class BullsHtml {
 				String fileName = lines[0];
 				// If the each file is relative path, make it absolute path using testcovdir
 				if (!rootPathPattern.matcher(fileName).find()) {
-					lines[0] = testcovDir + fileName;
+					lines[0] = basedir + File.separator + fileName;
 				}
 				srcFileList.add(new SrcFile(lines));
 			}
