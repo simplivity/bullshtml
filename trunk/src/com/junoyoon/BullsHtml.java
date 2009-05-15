@@ -58,15 +58,10 @@ public class BullsHtml {
 
 		try {
 			Pattern rootPathPattern = Pattern.compile("^[a-z]\\:");
-			// Get test.cov Dir
-/*			Process covxmlprocess = Runtime.getRuntime().exec("covxml --no-banner");
-			InputSource covXmlInputStream = new InputSource(covxmlprocess.getInputStream());
-			covXmlInputStream.setEncoding(enc);
-			Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(covXmlInputStream);
-			String testcovDir = document.getDocumentElement().getAttribute("dir");
-*/
+
 			String basedir = System.getProperty("user.dir");
 			// Get Files
+			
 			Process process = Runtime.getRuntime().exec("covsrc --csv --no-banner --decision");
 			InputStreamReader reader = new InputStreamReader(process.getInputStream());
 			BufferedReader bufferedReader = new BufferedReader(reader);
