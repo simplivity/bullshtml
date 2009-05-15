@@ -47,7 +47,7 @@ public class SrcFile extends Src {
 		risk = branchCount - coveredBranchCount;
 		List<String> paths = new ArrayList<String>(Arrays.asList(fileName.split("\\" + File.separator)));
 		if (fileName.startsWith("/")) {
-			paths.add("/");
+			paths.add(0, "/");
 		}
 		name = paths.remove(paths.size() - 1);
 		System.out.println(fileName + ":" +  name);
