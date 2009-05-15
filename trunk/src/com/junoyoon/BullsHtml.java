@@ -249,7 +249,8 @@ public class BullsHtml {
 	public void generateChildHtml(String path, SrcDir dir, String baseName) {
 
 		for (Src src : dir.child) {
-			String normalizedPath = baseName + "_" + src.name;
+			
+			String normalizedPath = baseName.equals("/") ? "_" + src.name : baseName + "_" + src.name;
 			if (src instanceof SrcDir) {
 				src.generateHtml(path, normalizedPath);
 				generateChildHtml(path, (SrcDir) src, normalizedPath);
