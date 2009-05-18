@@ -1,12 +1,4 @@
-bullshtml is apache license 2.0. 
-Internally, it uses the jsmooth to export the jar file to win32 exe.
-Unfortunately jsmooth itself is GPL and the skeleton for exe generation is LGPL.
-That's why I don't distribute those in bullshtml code.
 
-To make the win32 exe, you should download jsmooth binaray,
-copy the lib/jsmoothgen-ant.jar file and skeletons direcotry in antlib directory.
-and ant task using "ant packagewindow"
+To make the win32 exe, run pacakgewindow ant task using "ant packagewindow"
 
-To make the linux, it is not necessary to copy jsmooth binaries, just run following
-packagelinux ant task using "ant packagelinux".
-
+To make the linux, just run following packagelinux ant task using "ant packagelinux". 
