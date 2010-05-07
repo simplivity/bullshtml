@@ -46,14 +46,11 @@ public class SrcFile extends Src {
 		super.branchCount = Integer.parseInt(lines[5]);
 		risk = branchCount - coveredBranchCount;
 		List<String> paths = new ArrayList<String>(Arrays.asList(fileName.split("\\" + File.separator)));
-
 		if ("".equals(paths.get(0))) {
 			paths.set(0, File.separator);
 		}
-
 		name = paths.remove(paths.size() - 1);
 		registerParent(paths, this);
-
 	}
 
 	/**

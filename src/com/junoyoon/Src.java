@@ -62,9 +62,9 @@ public abstract class Src {
 	 * @param path
 	 * @return
 	 */
-	public String generateHtml(String target, String path) {
-		String nPath = target + File.separator + BullsUtil.normalizePath(path) + ".html";
-		BullsUtil.writeToFile(nPath, getHtml(path));
+	public String generateHtml(String targetPath, String normalizedPath) {
+		String nPath = targetPath + File.separator + BullsUtil.normalizePath(normalizedPath) + ".html";
+		BullsUtil.writeToFile(nPath, getHtml(normalizedPath));
 		return nPath;
 	}
 	

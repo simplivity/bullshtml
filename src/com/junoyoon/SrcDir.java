@@ -35,10 +35,8 @@ public class SrcDir extends Src {
 	}
 
 	public SrcDir(String name, String path) {
-
 		this.name = name;
 		this.path = path;
-
 	}
 
 	public String path;
@@ -47,7 +45,6 @@ public class SrcDir extends Src {
 
 	@Override
 	protected String getHtml(String path) {
-
 		//output.append(b)
 		String dir = String.format(dirTemplate, genCurrentHtml());
 
@@ -78,7 +75,6 @@ public class SrcDir extends Src {
 
 	@Override
 	protected String genCurrentHtml() {
-
 		return String
 				.format(
 						"<tr><td><a href='%s.html'>%s</a></td><td class='value'>%d</td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
