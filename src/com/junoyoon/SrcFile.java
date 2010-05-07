@@ -24,6 +24,7 @@ import java.util.List;
 
 /**
  * File coverage information
+ * 
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class SrcFile extends Src {
@@ -37,7 +38,6 @@ public class SrcFile extends Src {
 	}
 
 	public SrcFile(String[] lines) throws IOException {
-
 		fileName = new File(lines[0]).getCanonicalFile().toString();
 		path = BullsUtil.normalizePath(fileName);
 		super.coveredFunctionCount = Integer.parseInt(lines[1]);
@@ -46,8 +46,8 @@ public class SrcFile extends Src {
 		super.branchCount = Integer.parseInt(lines[5]);
 		risk = branchCount - coveredBranchCount;
 		List<String> paths = new ArrayList<String>(Arrays.asList(fileName.split("\\" + File.separator)));
- 
-                if (paths.get(0).equals("")) {
+
+		if ("".equals(paths.get(0))) {
 			paths.set(0, File.separator);
 		}
 
@@ -56,13 +56,13 @@ public class SrcFile extends Src {
 
 	}
 
-	/** 
+	/**
 	 * Regster parent;
+	 * 
 	 * @param paths
 	 * @param file
 	 */
 	public void registerParent(List<String> paths, SrcFile file) {
-
 		String pathComp = new String();
 		SrcDir curSrcDir = null;
 		int i = 0;
@@ -97,7 +97,6 @@ public class SrcFile extends Src {
 	}
 
 	public void incrementParent() {
-
 		SrcDir currentParent = parentDir;
 		while (currentParent != null) {
 			currentParent.coveredBranchCount += coveredBranchCount;
@@ -107,13 +106,12 @@ public class SrcFile extends Src {
 			currentParent.fileCount++;
 			currentParent = currentParent.parentDir;
 		}
-
 	}
 
 	@Override
 	protected String genCurrentHtml() {
 		return String
-				.format( 
+				.format(
 						"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
 						path, name, getFunctionCoverage(), getFunctionCoverageStyle(), coveredFunctionCount,
 						functionCount, getBranchCoverage(), getBranchCoverageStyle(), coveredBranchCount, branchCount);
@@ -131,7 +129,6 @@ public class SrcFile extends Src {
 			out = String.format(fileNotFoundTemplate, name, name);
 		}
 		return out;
-
 	}
 
 }

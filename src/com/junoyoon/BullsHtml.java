@@ -18,6 +18,7 @@ package com.junoyoon;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,10 +31,11 @@ import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * Main class
+ * 
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class BullsHtml {
-	/** System default encoding*/
+	/** System default encoding */
 	public static String enc = new java.io.OutputStreamWriter(System.out).getEncoding();
 	/** Map b/w path and src */
 	public static Map<String, SrcDir> srcMap = new HashMap<String, SrcDir>();
@@ -43,20 +45,15 @@ public class BullsHtml {
 	public static ArrayList<SrcFile> srcFileList = new ArrayList<SrcFile>();
 
 	/**
-	 * Contrcut Src and Dir List.
-	 * After calling the method, the static variable 
-	 * {@link BullsHtml.srcMap}, {@link BullsHtml.baseList}, 
-	 * {@link BullsHtml.srcFileList}
-	 * are constructed.
+	 * Contrcut Src and Dir List. After calling the method, the static variable
+	 * {@link BullsHtml.srcMap}, {@link BullsHtml.baseList},
+	 * {@link BullsHtml.srcFileList} are constructed.
 	 */
 	public void process() {
-
 		try {
 			Pattern rootPathPattern = Pattern.compile("^[a-z]\\:");
-
 			String basedir = System.getProperty("user.dir");
 			// Get Files
-			
 			Process process = Runtime.getRuntime().exec("covsrc --csv --no-banner --decision");
 			InputStreamReader reader = new InputStreamReader(process.getInputStream());
 			BufferedReader bufferedReader = new BufferedReader(reader);
@@ -67,7 +64,8 @@ public class BullsHtml {
 				if (lines[0].equals("Total"))
 					continue;
 				String fileName = lines[0];
-				// If the each file is relative path, make it absolute path using testcovdir
+				// If the each file is relative path, make it absolute path
+				// using testcovdir
 				if (!rootPathPattern.matcher(fileName).find()) {
 					lines[0] = basedir + File.separator + fileName;
 				}
@@ -79,12 +77,14 @@ public class BullsHtml {
 
 	}
 
-	/** 
+	/**
 	 * Copy static resources
-	 * @param outputFolder the target folder 
+	 * 
+	 * @param outputFolder
+	 *            the target folder
+	 * @throws IOException
 	 */
-	public void copyResources(String outputFolder) {
-
+	public void copyResources(String outputFolder) throws IOException {
 		BullsUtil.copyResource(outputFolder + "/js/popup.js", "js/popup.js");
 		BullsUtil.copyResource(outputFolder + "/js/sortabletable.js", "js/sortabletable.js");
 		BullsUtil.copyResource(outputFolder + "/js/customsorttypes.js", "js/customsorttypes.js");
@@ -99,60 +99,67 @@ public class BullsHtml {
 		BullsUtil.copyResource(outputFolder + "/images/upsimple.png", "images/upsimple.png");
 		BullsUtil.copyResource(outputFolder + "/index.html", "html/index.html");
 		BullsUtil.copyResource(outputFolder + "/help.html", "html/help.html");
-
 	}
 
 	/**
 	 * Show usage
 	 */
 	private static void usage() {
-
 		String file = "com/junoyoon/usage_win32.txt";
 		if (!System.getProperty("os.name").contains("Windows")) {
 			file = "com/junoyoon/usage_linux.txt";
 		}
 		String output = BullsUtil.loadResourceContent(file);
-		System.out.println(output);
+		printMessage(output);
 		System.exit(0);
-
 	}
 
 	/**
 	 * Print Error Message and Exit
-	 * @param message message to print
+	 * 
+	 * @param message
+	 *            message to print
+	 */
+	public static void printMessage(String message) {
+		System.out.println(message);
+	}
+
+	/**
+	 * Print Error Message and Exit
+	 * 
+	 * @param message
+	 *            message to print
 	 */
 	public static void printErrorAndExit(String message) {
-
 		System.err.println(message);
 		System.exit(-1);
-
 	}
 
 	/**
 	 * generate html
-	 * @param path output dir
+	 * 
+	 * @param path
+	 *            output dir
 	 */
 	public void generateHtml(String path) {
-
 		String folderName;
 		for (SrcDir srcDir : baseList) {
 			folderName = srcDir.name;
 			srcDir.generateHtml(path, folderName);
 			generateChildHtml(path, srcDir, folderName);
 		}
-
 		generateDirListHtml(path);
 		generateFileListHtml(path);
 		generateMainHtml(path);
-
 	}
 
 	/**
 	 * generate main html page
-	 * @param path   output dir
+	 * 
+	 * @param path
+	 *            output dir
 	 */
 	public void generateMainHtml(String path) {
-
 		String template = BullsUtil.loadResourceContent("html/frame_summary.html");
 		String nPath = path + File.separator + "frame_summary.html";
 
@@ -161,7 +168,8 @@ public class BullsHtml {
 
 		Collections.sort(srcFileList, new Comparator<SrcFile>() {
 			public int compare(SrcFile o1, SrcFile o2) {
-				//System.out.println(o2.name + o2.risk + o1.name + o1.risk + (o1.risk -o2.risk ));
+				// System.out.println(o2.name + o2.risk + o1.name + o1.risk +
+				// (o1.risk -o2.risk ));
 				return (o2.risk - o1.risk);
 			}
 		});
@@ -193,15 +201,15 @@ public class BullsHtml {
 
 		}
 		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString(), buffer2.toString()));
-
 	}
 
 	/**
 	 * generate upper left dir html page
-	 * @param path  output dir
+	 * 
+	 * @param path
+	 *            output dir
 	 */
 	public void generateDirListHtml(String path) {
-
 		String template = BullsUtil.loadResourceContent("html/frame_dirs.html");
 		ArrayList<String> dirList = new ArrayList<String>(srcMap.keySet());
 		Collections.sort(dirList);
@@ -211,18 +219,17 @@ public class BullsHtml {
 					"<tr><td nowrap='nowrap'><a target='summary' href='%s.html'>%s</a> <i>%s%%</i></td></tr>",
 					BullsUtil.normalizePath(src), src, srcMap.get(src).getFunctionCoverage()));
 		}
-
 		String nPath = path + File.separator + "frame_dirs.html";
 		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
-
 	}
 
 	/**
 	 * generate down left src html page
-	 * @param path  output dir
+	 * 
+	 * @param path
+	 *            output dir
 	 */
 	public void generateFileListHtml(String path) {
-
 		String template = BullsUtil.loadResourceContent("html/frame_files.html");
 		StringBuilder buffer = new StringBuilder();
 
@@ -234,17 +241,16 @@ public class BullsHtml {
 
 		String nPath = path + File.separator + "frame_files.html";
 		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
-
 	}
 
 	/**
 	 * generate each dir/file html page
-	 * @param path  output dir
+	 * 
+	 * @param path
+	 *            output dir
 	 */
 	public void generateChildHtml(String path, SrcDir dir, String baseName) {
-
 		for (Src src : dir.child) {
-			
 			String normalizedPath = baseName.equals("/") ? "_" + src.name : baseName + "_" + src.name;
 			if (src instanceof SrcDir) {
 				src.generateHtml(path, normalizedPath);
@@ -253,14 +259,12 @@ public class BullsHtml {
 				src.generateHtml(path, normalizedPath);
 			}
 		}
-
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
 		String outputPath = ".";
 		if (args.length == 1 && args[0].equals("-h")) {
 			usage();
@@ -277,12 +281,18 @@ public class BullsHtml {
 			} else if (!o.canWrite()) {
 				printErrorAndExit(outputPath + " is not writable.");
 			}
-		}
-		BullsHtml bullshtml = new BullsHtml();
-		bullshtml.process();
-		bullshtml.copyResources(outputPath);
-		bullshtml.generateHtml(outputPath);
+			BullsHtml bullshtml = new BullsHtml();
+			bullshtml.process();
+			try {
+				bullshtml.copyResources(outputPath);
+			} catch (IOException e) {
+				printErrorAndExit("The output " + outputPath + " is not writable." + e.toString());
+			}
+			bullshtml.generateHtml(outputPath);
 
+		} else {
+			printErrorAndExit("please provide the html output directory");
+		}
 	}
 
 }
