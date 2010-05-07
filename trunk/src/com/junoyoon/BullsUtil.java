@@ -40,9 +40,7 @@ public class BullsUtil {
 	 * @return normalized path
 	 */
 	public static String normalizePath(String path) {
-
 		return path.replace(" ", "_").replace(":", "_").replace("\\", "_").replace("/", "_");
-
 	}
 
 	/**
@@ -54,7 +52,6 @@ public class BullsUtil {
 	 *            content
 	 */
 	public static void writeToFile(String path, String content) {
-
 		FileWriter fileWriter;
 		try {
 			fileWriter = new FileWriter(path);
@@ -63,7 +60,6 @@ public class BullsUtil {
 		} catch (IOException e) {
 			BullsHtml.printErrorAndExit(e.getMessage());
 		}
-
 	}
 
 	/**
@@ -71,14 +67,13 @@ public class BullsUtil {
 	 * 
 	 * @param toDir
 	 * @param fileName
+	 * @throws IOException
 	 */
-	public static void copyResource(String toDir, String fileName) {
-
-		File file = new File(toDir);
+	public static void copyResource(String toDir, String fileName) throws IOException {
+		File file = new File(toDir).getCanonicalFile();
 		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdir();
 		}
-
 		try {
 			InputStream is = BullsUtil.class.getClassLoader().getResourceAsStream(fileName);
 			BufferedInputStream inputStream = new BufferedInputStream(is);
@@ -92,10 +87,8 @@ public class BullsUtil {
 			}
 			outputStream.close();
 			inputStream.close();
-
 		} catch (Exception e) {
 			BullsHtml.printErrorAndExit(e.getMessage());
-
 		}
 
 	}
@@ -122,19 +115,15 @@ public class BullsUtil {
 					buffer = buffer.replace("charset=us-ascii", "charset=euc-kr");
 				result.append(buffer).append("\n");
 			}
-
 			br.close();
 			if (i < 11) {
-			        System.out.println("Error");	
 				return null;
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return null;
 		}
-
 		return result.toString();
-
 	}
 
 	/**
@@ -144,7 +133,6 @@ public class BullsUtil {
 	 * @return
 	 */
 	public static String loadResourceContent(String resourceLocation) {
-
 		StringBuilder result = new StringBuilder(1024);
 		try {
 			InputStream is = BullsUtil.class.getClassLoader().getResourceAsStream(resourceLocation);
@@ -158,8 +146,6 @@ public class BullsUtil {
 		} catch (Exception e) {
 			BullsHtml.printErrorAndExit(e.getMessage());
 		}
-
 		return result.toString();
-
 	}
 }
