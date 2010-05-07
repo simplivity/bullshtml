@@ -74,7 +74,6 @@ public class BullsHtml {
 		} catch (Exception e) {
 			BullsHtml.printErrorAndExit(e.getMessage());
 		}
-
 	}
 
 	/**
@@ -246,17 +245,17 @@ public class BullsHtml {
 	/**
 	 * generate each dir/file html page
 	 * 
-	 * @param path
-	 *            output dir
+	 * @param outputPath
+	 * @param dir
+	 * @param baseNormalizedName
 	 */
-	public void generateChildHtml(String path, SrcDir dir, String baseName) {
+	public void generateChildHtml(String outputPath, SrcDir dir, String baseNormalizedName) {
 		for (Src src : dir.child) {
-			String normalizedPath = baseName.equals("/") ? "_" + src.name : baseName + "_" + src.name;
+			String normalizedPath = baseNormalizedName.equals("/") ? "_" + src.name : baseNormalizedName + "_"
+					+ src.name;
+			src.generateHtml(outputPath, normalizedPath);
 			if (src instanceof SrcDir) {
-				src.generateHtml(path, normalizedPath);
-				generateChildHtml(path, (SrcDir) src, normalizedPath);
-			} else {
-				src.generateHtml(path, normalizedPath);
+				generateChildHtml(outputPath, (SrcDir) src, normalizedPath);
 			}
 		}
 	}
@@ -269,30 +268,27 @@ public class BullsHtml {
 		if (args.length == 1 && args[0].equals("-h")) {
 			usage();
 		}
-		if (args.length == 1) {
-			outputPath = args[0];
-			File o = new File(outputPath);
-			if (!o.exists()) {
-				if (!o.mkdir()) {
-					printErrorAndExit(outputPath + " directory can be not created.");
-				}
-			} else if (!o.isDirectory()) {
-				printErrorAndExit(outputPath + " is not directory.");
-			} else if (!o.canWrite()) {
-				printErrorAndExit(outputPath + " is not writable.");
-			}
-			BullsHtml bullshtml = new BullsHtml();
-			bullshtml.process();
-			try {
-				bullshtml.copyResources(outputPath);
-			} catch (IOException e) {
-				printErrorAndExit("The output " + outputPath + " is not writable." + e.toString());
-			}
-			bullshtml.generateHtml(outputPath);
-
-		} else {
+		if (args.length != 1) {
 			printErrorAndExit("please provide the html output directory");
 		}
+		outputPath = args[0];
+		File o = new File(outputPath);
+		if (!o.exists()) {
+			if (!o.mkdir()) {
+				printErrorAndExit(outputPath + " directory can be not created.");
+			}
+		} else if (!o.isDirectory()) {
+			printErrorAndExit(outputPath + " is not directory.");
+		} else if (!o.canWrite()) {
+			printErrorAndExit(outputPath + " is not writable.");
+		}
+		BullsHtml bullshtml = new BullsHtml();
+		bullshtml.process();
+		try {
+			bullshtml.copyResources(outputPath);
+		} catch (IOException e) {
+			printErrorAndExit("The output " + outputPath + " is not writable." + e.toString());
+		}
+		bullshtml.generateHtml(outputPath);
 	}
-
 }
