@@ -14,17 +14,17 @@
  limitations under the License.
  */
 
-
 package com.junoyoon;
 
 import java.io.File;
 
 /**
  * Base class for src file and directory
+ * 
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public abstract class Src {
-	
+
 	public String name;
 	public int functionCount;
 	public int coveredFunctionCount;
@@ -32,50 +32,61 @@ public abstract class Src {
 	public int coveredBranchCount;
 	public SrcDir parentDir;
 	public static String format = new String("%.1f");
+
 	public String getFunctionCoverage() {
-		if (functionCount == 0) {	
+		if (functionCount == 0) {
 			return "N/A";
 		}
-		return String.format(format,((float)coveredFunctionCount / functionCount) *100);
+		return String.format(format, ((float) coveredFunctionCount / functionCount) * 100);
 	}
-	
+
 	public String getBranchCoverage() {
 		if (branchCount == 0) {
 			return "N/A";
 		}
-		return String.format(format,(((float)coveredBranchCount / branchCount) *100));
+		return String.format(format, (((float) coveredBranchCount / branchCount) * 100));
 	}
-	
+
 	public String getBranchCoverageStyle() {
 		String bc = getBranchCoverage();
-		return bc.equals("N/A") ? "class='na' style='width:100px'" : "class='greenbar' style='width:"+bc+"px'";
+		return bc.equals("N/A") ? "class='na' style='width:100px'" : "class='greenbar' style='width:" + bc + "px'";
 	}
-	
+
 	public String getFunctionCoverageStyle() {
 		String fc = getFunctionCoverage();
-		return fc.endsWith("N/A") ? "class='na' style='width:100px'" : "class='greenbar' style='width:"+fc+"px'";
+		return fc.endsWith("N/A") ? "class='na' style='width:100px'" : "class='greenbar' style='width:" + fc + "px'";
 	}
+
 	/*
-	/**
-	 * Generate html
+	 * /** Generate html
+	 * 
 	 * @param target
+	 * 
 	 * @param path
+	 * 
 	 * @return
 	 */
 	public String generateHtml(String targetPath, String normalizedPath) {
 		String nPath = targetPath + File.separator + BullsUtil.normalizePath(normalizedPath) + ".html";
-		BullsUtil.writeToFile(nPath, getHtml(normalizedPath));
+		if (isWorthToPrint()) {
+			BullsUtil.writeToFile(nPath, getHtml(normalizedPath));
+		}
 		return nPath;
 	}
-	
+
+	abstract protected boolean isWorthToPrint();
+
 	/**
 	 * Get whole src html.
+	 * 
 	 * @param path
 	 * @return
 	 */
 	abstract protected String getHtml(String path);
+
 	/**
 	 * Get src specific html fragment
+	 * 
 	 * @param path
 	 * @return
 	 */
