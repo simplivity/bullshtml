@@ -74,8 +74,31 @@ public class BullsHtml {
 		} catch (Exception e) {
 			BullsHtml.printErrorAndExit(e.getMessage());
 		}
+		/*
+		SrcDir temp = new SrcDir("", "");
+		temp.child.addAll(baseList);
+		traverseDir(temp);
+		baseList.clear();
+		for (Src t : temp.child) {
+			baseList.add((SrcDir) t);
+		}*/
+	}
+/*
+	public void traverseDir(SrcDir dir) {
+		for (Src src : dir.child) {
+			if (src instanceof SrcDir) {
+				compactDir((SrcDir) src);
+				traverseDir((SrcDir) src);
+			}
+		}
 	}
 
+	public void compactDir(SrcDir dir) {
+		if (dir.child.size() == 1 && dir.child.get(0) instanceof SrcDir) {
+			dir.child = ((SrcDir) dir.child.get(0)).child;
+		}
+	}
+*/
 	/**
 	 * Copy static resources
 	 * 
