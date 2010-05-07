@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 /**
  * Directory coverage information
+ * 
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class SrcDir extends Src {
@@ -45,7 +46,7 @@ public class SrcDir extends Src {
 
 	@Override
 	protected String getHtml(String path) {
-		//output.append(b)
+		// output.append(b)
 		String dir = String.format(dirTemplate, genCurrentHtml());
 
 		StringBuilder subDirBuffer = new StringBuilder();
@@ -83,4 +84,8 @@ public class SrcDir extends Src {
 
 	}
 
+	@Override
+	protected boolean isWorthToPrint() {
+		return !BullsHtml.isSingleElement(this);
+	}
 }

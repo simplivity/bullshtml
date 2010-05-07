@@ -128,4 +128,8 @@ public class SrcFile extends Src {
 		return out;
 	}
 
+	@Override
+	protected boolean isWorthToPrint() {
+		return true;
+	}
 }

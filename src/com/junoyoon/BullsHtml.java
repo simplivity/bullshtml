@@ -75,30 +75,21 @@ public class BullsHtml {
 			BullsHtml.printErrorAndExit(e.getMessage());
 		}
 		/*
-		SrcDir temp = new SrcDir("", "");
-		temp.child.addAll(baseList);
-		traverseDir(temp);
-		baseList.clear();
-		for (Src t : temp.child) {
-			baseList.add((SrcDir) t);
-		}*/
-	}
-/*
-	public void traverseDir(SrcDir dir) {
-		for (Src src : dir.child) {
-			if (src instanceof SrcDir) {
-				compactDir((SrcDir) src);
-				traverseDir((SrcDir) src);
-			}
-		}
+		 * SrcDir temp = new SrcDir("", ""); temp.child.addAll(baseList);
+		 * traverseDir(temp); baseList.clear(); for (Src t : temp.child) {
+		 * baseList.add((SrcDir) t); }
+		 */
 	}
 
-	public void compactDir(SrcDir dir) {
-		if (dir.child.size() == 1 && dir.child.get(0) instanceof SrcDir) {
-			dir.child = ((SrcDir) dir.child.get(0)).child;
-		}
-	}
-*/
+	/*
+	 * public void traverseDir(SrcDir dir) { for (Src src : dir.child) { if (src
+	 * instanceof SrcDir) { compactDir((SrcDir) src); traverseDir((SrcDir) src);
+	 * } } }
+	 * 
+	 * public void compactDir(SrcDir dir) { if (dir.child.size() == 1 &&
+	 * dir.child.get(0) instanceof SrcDir) { dir.child = ((SrcDir)
+	 * dir.child.get(0)).child; } }
+	 */
 	/**
 	 * Copy static resources
 	 * 
@@ -175,6 +166,10 @@ public class BullsHtml {
 		generateMainHtml(path);
 	}
 
+	public static boolean isSingleElement(SrcDir dir) {
+		return (dir.child.size() == 1 && dir.child.get(0) instanceof SrcDir);
+	}
+
 	/**
 	 * generate main html page
 	 * 
@@ -213,6 +208,8 @@ public class BullsHtml {
 
 		for (String key : dirList) {
 			SrcDir src = srcMap.get(key);
+			if (isSingleElement(src))
+				continue;
 			String content = String
 					.format(
 							"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
@@ -237,6 +234,9 @@ public class BullsHtml {
 		Collections.sort(dirList);
 		StringBuilder buffer = new StringBuilder();
 		for (String src : dirList) {
+			if (isSingleElement(srcMap.get(src))) {
+				continue;
+			}
 			buffer.append(String.format(
 					"<tr><td nowrap='nowrap'><a target='summary' href='%s.html'>%s</a> <i>%s%%</i></td></tr>",
 					BullsUtil.normalizePath(src), src, srcMap.get(src).getFunctionCoverage()));
