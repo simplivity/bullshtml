@@ -1,2 +1,3 @@
 #/usr/bin/sh
-java -jar bullshtml.jar $*
+jarpath=`dirname $0`
+java -jar ${jarpath}/bullshtml.jar $*
