@@ -36,7 +36,8 @@ import au.com.bytecode.opencsv.CSVReader;
  */
 public class BullsHtml {
 	/** System default encoding */
-	public static String enc = new java.io.OutputStreamWriter(System.out).getEncoding();
+	public static String enc = new java.io.OutputStreamWriter(System.out)
+			.getEncoding();
 	/** Map b/w path and src */
 	public static Map<String, SrcDir> srcMap = new HashMap<String, SrcDir>();
 	/** top most dir list */
@@ -54,8 +55,10 @@ public class BullsHtml {
 			Pattern rootPathPattern = Pattern.compile("^[a-z]\\:");
 			String basedir = System.getProperty("user.dir");
 			// Get Files
-			Process process = Runtime.getRuntime().exec("covsrc --csv --no-banner --decision");
-			InputStreamReader reader = new InputStreamReader(process.getInputStream());
+			Process process = Runtime.getRuntime().exec(
+					"covsrc --csv --no-banner --decision");
+			InputStreamReader reader = new InputStreamReader(process
+					.getInputStream());
 			BufferedReader bufferedReader = new BufferedReader(reader);
 			CSVReader csvReader = new CSVReader(bufferedReader);
 			csvReader.readNext(); // Pass Header
@@ -66,7 +69,8 @@ public class BullsHtml {
 				String fileName = lines[0];
 				// If the each file is relative path, make it absolute path
 				// using testcovdir
-				if (!rootPathPattern.matcher(fileName).find()) {
+				if (!rootPathPattern.matcher(fileName).find()
+						&& !(new File(fileName).isAbsolute())) {
 					lines[0] = basedir + File.separator + fileName;
 				}
 				srcFileList.add(new SrcFile(lines));
@@ -99,17 +103,26 @@ public class BullsHtml {
 	 */
 	public void copyResources(String outputFolder) throws IOException {
 		BullsUtil.copyResource(outputFolder + "/js/popup.js", "js/popup.js");
-		BullsUtil.copyResource(outputFolder + "/js/sortabletable.js", "js/sortabletable.js");
-		BullsUtil.copyResource(outputFolder + "/js/customsorttypes.js", "js/customsorttypes.js");
-		BullsUtil.copyResource(outputFolder + "/js/stringbuilder.js", "js/stringbuilder.js");
+		BullsUtil.copyResource(outputFolder + "/js/sortabletable.js",
+				"js/sortabletable.js");
+		BullsUtil.copyResource(outputFolder + "/js/customsorttypes.js",
+				"js/customsorttypes.js");
+		BullsUtil.copyResource(outputFolder + "/js/stringbuilder.js",
+				"js/stringbuilder.js");
 		BullsUtil.copyResource(outputFolder + "/css/help.css", "css/help.css");
 		BullsUtil.copyResource(outputFolder + "/css/main.css", "css/main.css");
-		BullsUtil.copyResource(outputFolder + "/css/sortabletable.css", "css/sortabletable.css");
-		BullsUtil.copyResource(outputFolder + "/css/source-viewer.css", "css/source-viewer.css");
-		BullsUtil.copyResource(outputFolder + "/css/tooltip.css", "css/tooltip.css");
-		BullsUtil.copyResource(outputFolder + "/images/blank.png", "images/blank.png");
-		BullsUtil.copyResource(outputFolder + "/images/downsimple.png", "images/downsimple.png");
-		BullsUtil.copyResource(outputFolder + "/images/upsimple.png", "images/upsimple.png");
+		BullsUtil.copyResource(outputFolder + "/css/sortabletable.css",
+				"css/sortabletable.css");
+		BullsUtil.copyResource(outputFolder + "/css/source-viewer.css",
+				"css/source-viewer.css");
+		BullsUtil.copyResource(outputFolder + "/css/tooltip.css",
+				"css/tooltip.css");
+		BullsUtil.copyResource(outputFolder + "/images/blank.png",
+				"images/blank.png");
+		BullsUtil.copyResource(outputFolder + "/images/downsimple.png",
+				"images/downsimple.png");
+		BullsUtil.copyResource(outputFolder + "/images/upsimple.png",
+				"images/upsimple.png");
 		BullsUtil.copyResource(outputFolder + "/index.html", "html/index.html");
 		BullsUtil.copyResource(outputFolder + "/help.html", "html/help.html");
 	}
@@ -177,7 +190,8 @@ public class BullsHtml {
 	 *            output dir
 	 */
 	public void generateMainHtml(String path) {
-		String template = BullsUtil.loadResourceContent("html/frame_summary.html");
+		String template = BullsUtil
+				.loadResourceContent("html/frame_summary.html");
 		String nPath = path + File.separator + "frame_summary.html";
 
 		ArrayList<String> dirList = new ArrayList<String>(srcMap.keySet());
@@ -198,9 +212,12 @@ public class BullsHtml {
 			String content = String
 					.format(
 							"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-							src.path, src.name, src.getFunctionCoverage(), src.getFunctionCoverageStyle(),
-							src.coveredFunctionCount, src.functionCount, src.getBranchCoverage(), src
-									.getBranchCoverageStyle(), src.coveredBranchCount, src.branchCount);
+							src.path, src.name, src.getFunctionCoverage(), src
+									.getFunctionCoverageStyle(),
+							src.coveredFunctionCount, src.functionCount, src
+									.getBranchCoverage(), src
+									.getBranchCoverageStyle(),
+							src.coveredBranchCount, src.branchCount);
 			buffer.append(content).append("\n");
 		}
 
@@ -213,13 +230,17 @@ public class BullsHtml {
 			String content = String
 					.format(
 							"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-							src.path, key, src.getFunctionCoverage(), src.getFunctionCoverageStyle(),
-							src.coveredFunctionCount, src.functionCount, src.getBranchCoverage(), src
-									.getBranchCoverageStyle(), src.coveredBranchCount, src.branchCount);
+							src.path, key, src.getFunctionCoverage(), src
+									.getFunctionCoverageStyle(),
+							src.coveredFunctionCount, src.functionCount, src
+									.getBranchCoverage(), src
+									.getBranchCoverageStyle(),
+							src.coveredBranchCount, src.branchCount);
 			buffer2.append(content).append("\n");
 
 		}
-		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString(), buffer2.toString()));
+		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString(),
+				buffer2.toString()));
 	}
 
 	/**
@@ -237,12 +258,16 @@ public class BullsHtml {
 			if (isSingleElement(srcMap.get(src))) {
 				continue;
 			}
-			buffer.append(String.format(
-					"<tr><td nowrap='nowrap'><a target='summary' href='%s.html'>%s</a> <i>%s%%</i></td></tr>",
-					BullsUtil.normalizePath(src), src, srcMap.get(src).getFunctionCoverage()));
+			buffer
+					.append(String
+							.format(
+									"<tr><td nowrap='nowrap'><a target='summary' href='%s.html'>%s</a> <i>%s%%</i></td></tr>",
+									BullsUtil.normalizePath(src), src, srcMap
+											.get(src).getFunctionCoverage()));
 		}
 		String nPath = path + File.separator + "frame_dirs.html";
-		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
+		BullsUtil
+				.writeToFile(nPath, String.format(template, buffer.toString()));
 	}
 
 	/**
@@ -252,17 +277,22 @@ public class BullsHtml {
 	 *            output dir
 	 */
 	public void generateFileListHtml(String path) {
-		String template = BullsUtil.loadResourceContent("html/frame_files.html");
+		String template = BullsUtil
+				.loadResourceContent("html/frame_files.html");
 		StringBuilder buffer = new StringBuilder();
 
 		for (SrcFile src : srcFileList) {
-			buffer.append(String.format(
-					"<tr><td nowrap='nowrap'><a target='summary' href='%s.html'>%s</a> <i>%s%%</i></td></tr>",
-					src.path, src.name, src.getFunctionCoverage()));
+			buffer
+					.append(String
+							.format(
+									"<tr><td nowrap='nowrap'><a target='summary' href='%s.html'>%s</a> <i>%s%%</i></td></tr>",
+									src.path, src.name, src
+											.getFunctionCoverage()));
 		}
 
 		String nPath = path + File.separator + "frame_files.html";
-		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
+		BullsUtil
+				.writeToFile(nPath, String.format(template, buffer.toString()));
 	}
 
 	/**
@@ -272,10 +302,11 @@ public class BullsHtml {
 	 * @param dir
 	 * @param baseNormalizedName
 	 */
-	public void generateChildHtml(String outputPath, SrcDir dir, String baseNormalizedName) {
+	public void generateChildHtml(String outputPath, SrcDir dir,
+			String baseNormalizedName) {
 		for (Src src : dir.child) {
-			String normalizedPath = baseNormalizedName.equals("/") ? "_" + src.name : baseNormalizedName + "_"
-					+ src.name;
+			String normalizedPath = baseNormalizedName.equals("/") ? "_"
+					+ src.name : baseNormalizedName + "_" + src.name;
 			src.generateHtml(outputPath, normalizedPath);
 			if (src instanceof SrcDir) {
 				generateChildHtml(outputPath, (SrcDir) src, normalizedPath);
@@ -310,7 +341,8 @@ public class BullsHtml {
 		try {
 			bullshtml.copyResources(outputPath);
 		} catch (IOException e) {
-			printErrorAndExit("The output " + outputPath + " is not writable." + e.toString());
+			printErrorAndExit("The output " + outputPath + " is not writable."
+					+ e.toString());
 		}
 		bullshtml.generateHtml(outputPath);
 	}
