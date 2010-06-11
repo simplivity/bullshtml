@@ -179,6 +179,17 @@ public class BullsHtml {
 		generateMainHtml(path);
 	}
 
+	private void generateCloverXml(String outputPath) {
+		CloverXml cloverXml = new CloverXml();
+		for (SrcDir srcDir : baseList) {
+			cloverXml.conditionals += srcDir.branchCount;
+			cloverXml.coveredConditionals += srcDir.coveredBranchCount;
+			cloverXml.methods += srcDir.functionCount;
+			cloverXml.coveredMethods += srcDir.coveredFunctionCount;
+		}	
+		cloverXml.generateHtml(outputPath);
+	}
+	
 	public static boolean isSingleElement(SrcDir dir) {
 		return (dir.child.size() == 1 && dir.child.get(0) instanceof SrcDir);
 	}
@@ -345,5 +356,8 @@ public class BullsHtml {
 					+ e.toString());
 		}
 		bullshtml.generateHtml(outputPath);
+		bullshtml.generateCloverXml(outputPath);
 	}
+
+
 }
