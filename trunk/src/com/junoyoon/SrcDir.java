@@ -16,7 +16,10 @@
 
 package com.junoyoon;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import com.sun.xml.internal.ws.util.StringUtils;
 
 /**
  * Directory coverage information
@@ -31,8 +34,10 @@ public class SrcDir extends Src {
 	static {
 		template = BullsUtil.loadResourceContent("html/SrcDir.html");
 		dirTemplate = BullsUtil.loadResourceContent("html/SrcDir_DirList.html");
-		subDirTemplate = BullsUtil.loadResourceContent("html/SrcDir_SubDirList.html");
-		subFileTemplate = BullsUtil.loadResourceContent("html/SrcDir_SubFileList.html");
+		subDirTemplate = BullsUtil
+				.loadResourceContent("html/SrcDir_SubDirList.html");
+		subFileTemplate = BullsUtil
+				.loadResourceContent("html/SrcDir_SubFileList.html");
 	}
 
 	public SrcDir(String name, String path) {
@@ -54,7 +59,15 @@ public class SrcDir extends Src {
 
 		for (Src subDir : child) {
 			if (subDir instanceof SrcDir) {
-				subDirBuffer.append(subDir.genCurrentHtml());
+				String currentName = subDir.name;
+				SrcDir eachDir = (SrcDir) subDir;
+				while (!eachDir.isWorthToPrint()) {
+					eachDir = (SrcDir) eachDir.child.get(0);
+					currentName = currentName + File.separator
+							+ eachDir.name;
+				}
+				subDirBuffer.append(((SrcDir) eachDir)
+						.genCurrentHtml(currentName));
 			} else {
 				subSrcBuffer.append(subDir.genCurrentHtml());
 			}
@@ -68,9 +81,22 @@ public class SrcDir extends Src {
 		if (subSrcBuffer.length() != 0) {
 			subSrc = String.format(SrcDir.subFileTemplate, subSrcBuffer);
 		}
-		StringBuilder output = new StringBuilder(String.format(template, name, dir, subDir, subSrc));
+		StringBuilder output = new StringBuilder(String.format(template, name,
+				dir, subDir, subSrc));
 
 		return output.toString();
+
+	}
+
+	public String genCurrentHtml(String name) {
+		return String
+				.format(
+						"<tr><td><a href='%s.html'>%s</a></td><td class='value'>%d</td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
+						path, name, fileCount, getFunctionCoverage(),
+						getFunctionCoverageStyle(), coveredFunctionCount,
+						functionCount, getBranchCoverage(),
+						getBranchCoverageStyle(), coveredBranchCount,
+						branchCount);
 
 	}
 
@@ -79,8 +105,11 @@ public class SrcDir extends Src {
 		return String
 				.format(
 						"<tr><td><a href='%s.html'>%s</a></td><td class='value'>%d</td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-						path, name, fileCount, getFunctionCoverage(), getFunctionCoverageStyle(), coveredFunctionCount,
-						functionCount, getBranchCoverage(), getBranchCoverageStyle(), coveredBranchCount, branchCount);
+						path, name, fileCount, getFunctionCoverage(),
+						getFunctionCoverageStyle(), coveredFunctionCount,
+						functionCount, getBranchCoverage(),
+						getBranchCoverageStyle(), coveredBranchCount,
+						branchCount);
 
 	}
 
