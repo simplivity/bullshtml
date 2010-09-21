@@ -18,9 +18,8 @@ package com.junoyoon;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import org.jdom.Element;
 
 /**
  * File coverage information
@@ -28,71 +27,60 @@ import java.util.List;
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class SrcFile extends Src {
-
-	private String fileName;
-	public String path;
 	public int risk;
-	private static String fileNotFoundTemplate;
-	static {
-		fileNotFoundTemplate = BullsUtil
-				.loadResourceContent("html/SrcFileNotFound.html");
-	}
 
-	public SrcFile(String[] lines) throws IOException {
-		fileName = new File(lines[0]).getCanonicalFile().toString();
-		path = BullsUtil.normalizePath(fileName);
-		super.coveredFunctionCount = Integer.parseInt(lines[1]);
-		super.functionCount = Integer.parseInt(lines[2]);
-		super.coveredBranchCount = Integer.parseInt(lines[4]);
-		super.branchCount = Integer.parseInt(lines[5]);
-		risk = branchCount - coveredBranchCount;
-		List<String> paths = new ArrayList<String>(Arrays.asList(fileName
-				.split("\\" + File.separator)));
-		if ("".equals(paths.get(0))) {
-			paths.set(0, File.separator);
+	// private static String fileNotFoundTemplate;
+	// static {
+	// fileNotFoundTemplate =
+	// BullsUtil.loadResourceContent("html/SrcFileNotFound.html");
+	// }
+
+	public SrcFile(File dir, Element element) {
+		String name = element.getAttributeValue("name");
+		try {
+			this.path = new File(dir, name).getCanonicalFile();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		name = paths.remove(paths.size() - 1);
-		registerParent(paths, this);
+		this.normalizedPath = BullsUtil.normalizePath(this.path);
+		super.coveredFunctionCount = Integer.parseInt(element.getAttributeValue("fn_cov"));
+		super.functionCount = Integer.parseInt(element.getAttributeValue("fn_total"));
+		super.coveredBranchCount = Integer.parseInt(element.getAttributeValue("d_cov"));
+		super.branchCount = Integer.parseInt(element.getAttributeValue("d_total"));
+		risk = branchCount - coveredBranchCount;
+		registerParent(dir, this);
 	}
 
 	/**
 	 * Regster parent;
 	 * 
 	 * @param paths
-	 * @param file
+	 * @param srcFile
 	 */
-	public void registerParent(List<String> paths, SrcFile file) {
-		String pathComp = new String();
-		SrcDir curSrcDir = null;
-		int i = 0;
-		for (String path : paths) {
-			if (i++ == 0) {
-				pathComp = path;
+	public void registerParent(File path, Src srcFile) {
+		Src src = srcFile;
+		while (path != null) {
+			SrcDir srcDir = (SrcDir) BullsHtml.srcMap.get(path);
+			// If not, create one.
+			if (srcDir == null) {
+
+				srcDir = new SrcDir(path);
+				BullsHtml.srcMap.put(path, srcDir);
+				srcDir.child.add(src);
+				src.parentDir = srcDir;
+				src = srcDir;
+				if (path.getParentFile() == null) {
+					BullsHtml.baseList.add(srcDir);
+					break;
+				}
+				path = path.getParentFile();
 			} else {
-				if (pathComp.equals("/")) {
-					pathComp = pathComp + path;
-				} else {
-					pathComp = pathComp + File.separator + path;
-				}
+				srcDir.child.add(src);
+				src.parentDir = srcDir;
+				break;
 			}
-			SrcDir src = (SrcDir) BullsHtml.srcMap.get(pathComp);
-			if (src == null) {
-				src = new SrcDir(path, BullsUtil.normalizePath(pathComp));
-				BullsHtml.srcMap.put(pathComp, src);
-				src.parentDir = curSrcDir;
-				if (curSrcDir == null) {
-					BullsHtml.baseList.add(src);
-				} else {
-					curSrcDir.child.add(src);
-				}
-			}
-			curSrcDir = src;
 		}
-		file.parentDir = curSrcDir;
-
-		curSrcDir.child.add(file);
 		incrementParent();
-
 	}
 
 	public void incrementParent() {
@@ -112,25 +100,17 @@ public class SrcFile extends Src {
 		return String
 				.format(
 						"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-						path, name, getFunctionCoverage(),
-						getFunctionCoverageStyle(), coveredFunctionCount,
-						functionCount, getBranchCoverage(),
-						getBranchCoverageStyle(), coveredBranchCount,
-						branchCount);
+						this.normalizedPath, path.getName(), getFunctionCoverage(), getFunctionCoverageStyle(), coveredFunctionCount, functionCount,
+						getBranchCoverage(), getBranchCoverageStyle(), coveredBranchCount, branchCount);
 	}
 
 	@Override
-	protected String getHtml(String path) {
-		List<String> command = new ArrayList<String>();
-		command.add("covbr");
-		command.add("--html");
-		command.add("--no-banner");
-		command.add(fileName);
-		String out = BullsUtil.getCmdOutput(command);
-		if (out == null) {
-			out = String.format(fileNotFoundTemplate, name, name);
+	protected String getHtml() {
+		try {
+			return new SourcePainter().paint(path, Encoding.UTF_8);
+		} catch (IOException e) {
+			return "";
 		}
-		return out;
 	}
 
 	@Override

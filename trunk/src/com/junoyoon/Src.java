@@ -25,7 +25,8 @@ import java.io.File;
  */
 public abstract class Src {
 
-	public String name;
+	public File path;
+	public String normalizedPath;
 	public int functionCount;
 	public int coveredFunctionCount;
 	public int branchCount;
@@ -66,10 +67,10 @@ public abstract class Src {
 	 * 
 	 * @return
 	 */
-	public String generateHtml(String targetPath, String normalizedPath) {
-		String nPath = targetPath + File.separator + BullsUtil.normalizePath(normalizedPath) + ".html";
+	public File generateHtml(File targetPath) {
+		File nPath = new File(targetPath, BullsUtil.normalizePath(path) + ".html");
 		if (isWorthToPrint()) {
-			BullsUtil.writeToFile(nPath, getHtml(normalizedPath));
+			BullsUtil.writeToFile(nPath, getHtml());
 		}
 		return nPath;
 	}
@@ -79,10 +80,9 @@ public abstract class Src {
 	/**
 	 * Get whole src html.
 	 * 
-	 * @param path
 	 * @return
 	 */
-	abstract protected String getHtml(String path);
+	abstract protected String getHtml();
 
 	/**
 	 * Get src specific html fragment
