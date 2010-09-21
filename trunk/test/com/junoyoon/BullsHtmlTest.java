@@ -49,6 +49,8 @@ public class BullsHtmlTest {
 		a.reset();
 		a.setAttribute("b", new ArrayList<Integer>() {{ add(3); add(22);}});
 		System.out.println(a.toString());;
+		
+		BullsUtil.getTemplate(")
 	
 	}
 }
