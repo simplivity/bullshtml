@@ -27,20 +27,29 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import org.antlr.stringtemplate.StringTemplate;
+import org.antlr.stringtemplate.StringTemplateGroup;
+
 /**
  * Utility class
  * 
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class BullsUtil {
+	public static StringTemplateGroup group = new StringTemplateGroup("mygroup");
+
+	public static StringTemplate getTemplate(String templateName) {
+		return group.getInstanceOf("template/" + templateName + ".st");
+	}
+
 	/**
 	 * Make path to file form.
 	 * 
 	 * @param path
 	 * @return normalized path
 	 */
-	public static String normalizePath(String path) {
-		return path.replace(" ", "_").replace(":", "_").replace("\\", "_").replace("/", "_");
+	public static String normalizePath(File path) {
+		return path.getAbsolutePath().replace(" ", "_").replace(":", "_").replace("\\", "_").replace("/", "_");
 	}
 
 	/**
@@ -51,7 +60,7 @@ public class BullsUtil {
 	 * @param content
 	 *            content
 	 */
-	public static void writeToFile(String path, String content) {
+	public static void writeToFile(File path, String content) {
 		FileWriter fileWriter;
 		try {
 			fileWriter = new FileWriter(path);

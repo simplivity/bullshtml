@@ -19,7 +19,7 @@ package com.junoyoon;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.sun.xml.internal.ws.util.StringUtils;
+import org.antlr.stringtemplate.StringTemplate;
 
 /**
  * Directory coverage information
@@ -31,26 +31,27 @@ public class SrcDir extends Src {
 	private static String dirTemplate;
 	private static String subDirTemplate;
 	private static String subFileTemplate;
+	private static String cloverXmlTemplate;
 	static {
 		template = BullsUtil.loadResourceContent("html/SrcDir.html");
 		dirTemplate = BullsUtil.loadResourceContent("html/SrcDir_DirList.html");
-		subDirTemplate = BullsUtil
-				.loadResourceContent("html/SrcDir_SubDirList.html");
-		subFileTemplate = BullsUtil
-				.loadResourceContent("html/SrcDir_SubFileList.html");
+		subDirTemplate = BullsUtil.loadResourceContent("html/SrcDir_SubDirList.html");
+		subFileTemplate = BullsUtil.loadResourceContent("html/SrcDir_SubFileList.html");
+		// cloverXmlTemplate =
+		// BullsUtil.loadResourceContent("html/Clover_XmlList.xml");
 	}
 
-	public SrcDir(String name, String path) {
-		this.name = name;
+	public SrcDir(File path) {
 		this.path = path;
+		this.normalizedPath = BullsUtil.normalizePath(path);
 	}
 
-	public String path;
 	public int fileCount;
 	public ArrayList<Src> child = new ArrayList<Src>();
 
 	@Override
-	protected String getHtml(String path) {
+	protected String getHtml() {
+//		StringTemplate template = new StringTemplate()
 		// output.append(b)
 		String dir = String.format(dirTemplate, genCurrentHtml());
 
@@ -59,19 +60,16 @@ public class SrcDir extends Src {
 
 		for (Src subDir : child) {
 			if (subDir instanceof SrcDir) {
-				String currentName = subDir.name;
-				SrcDir eachDir = (SrcDir) subDir;
+				Src eachDir = subDir;
 				while (!eachDir.isWorthToPrint()) {
-					eachDir = (SrcDir) eachDir.child.get(0);
-					currentName = currentName + File.separator
-							+ eachDir.name;
+					eachDir = ((SrcDir) eachDir).child.get(0);
 				}
-				subDirBuffer.append(((SrcDir) eachDir)
-						.genCurrentHtml(currentName));
+				subDirBuffer.append(eachDir.genCurrentHtml());
 			} else {
 				subSrcBuffer.append(subDir.genCurrentHtml());
 			}
 		}
+
 		String subDir = new String();
 		if (subDirBuffer.length() != 0) {
 			subDir = String.format(SrcDir.subDirTemplate, subDirBuffer);
@@ -81,23 +79,19 @@ public class SrcDir extends Src {
 		if (subSrcBuffer.length() != 0) {
 			subSrc = String.format(SrcDir.subFileTemplate, subSrcBuffer);
 		}
-		StringBuilder output = new StringBuilder(String.format(template, name,
-				dir, subDir, subSrc));
+		StringBuilder output = new StringBuilder(String.format(template, path.getName(), dir, subDir, subSrc));
 
 		return output.toString();
 
 	}
 
-	public String genCurrentHtml(String name) {
-		return String
-				.format(
-						"<tr><td><a href='%s.html'>%s</a></td><td class='value'>%d</td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-						path, name, fileCount, getFunctionCoverage(),
-						getFunctionCoverageStyle(), coveredFunctionCount,
-						functionCount, getBranchCoverage(),
-						getBranchCoverageStyle(), coveredBranchCount,
-						branchCount);
-
+	public void generateChildHtml(File outputPath) {
+		for (Src src : child) {
+			src.generateHtml(outputPath);
+			if (src instanceof SrcDir) {
+				((SrcDir) src).generateChildHtml(outputPath);
+			}
+		}
 	}
 
 	@Override
@@ -105,16 +99,31 @@ public class SrcDir extends Src {
 		return String
 				.format(
 						"<tr><td><a href='%s.html'>%s</a></td><td class='value'>%d</td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-						path, name, fileCount, getFunctionCoverage(),
-						getFunctionCoverageStyle(), coveredFunctionCount,
-						functionCount, getBranchCoverage(),
-						getBranchCoverageStyle(), coveredBranchCount,
-						branchCount);
+						this.normalizedPath, path.getName(), fileCount, getFunctionCoverage(), getFunctionCoverageStyle(), coveredFunctionCount,
+						functionCount, getBranchCoverage(), getBranchCoverageStyle(), coveredBranchCount, branchCount);
 
 	}
 
 	@Override
 	protected boolean isWorthToPrint() {
 		return !BullsHtml.isSingleElement(this);
+	}
+
+	public boolean containFiles() {
+		for (Src each : child) {
+			if (each instanceof SrcFile) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public StringBuffer appendCloverXml(StringBuffer buffer) {
+		for (Src eachDir : child) {
+			if (eachDir instanceof SrcFile) {
+				buffer.append(String.format(cloverXmlTemplate));
+			}
+		}
+		return buffer;
 	}
 }
