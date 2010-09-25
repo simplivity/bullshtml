@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.antlr.stringtemplate.StringTemplate;
 import org.apache.commons.io.IOUtils;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -93,9 +94,9 @@ public class BullsHtml {
 				File newFile = rootPathPattern.matcher(newFolderName).find() ? new File(newFolderName) : new File(baseDir, newFolderName);
 				buildSrcFileList(srcFileList, element, newFile);
 			} else if ("src".equals(name)) {
-				srcFileList.add(new SrcFile(baseDir, element));
+				srcFileList.add(new SrcFile().init(baseDir, element));
 			}
-		}
+		} 
 	}
 
 	/**
@@ -191,6 +192,7 @@ public class BullsHtml {
 		return (dir.child.size() == 1 && dir.child.get(0) instanceof SrcDir);
 	}
 
+	
 	/**
 	 * generate main html page
 	 * 
@@ -198,48 +200,27 @@ public class BullsHtml {
 	 *            output dir
 	 */
 	public void generateMainHtml(File path) {
-		String template = BullsUtil.loadResourceContent("html/frame_summary.html");
+		StringTemplate template = BullsUtil.getTemplate("frame_summary");
 		File nPath = new File(path, "frame_summary.html");
 
-		ArrayList<File> dirList = new ArrayList<File>(srcMap.keySet());
-		Collections.sort(dirList);
-
-		Collections.sort(srcFileList, new Comparator<SrcFile>() {
+		List<SrcFile> localSrcFileList = new ArrayList<SrcFile>(srcFileList);
+		
+		// Sort By Risk
+		Collections.sort(localSrcFileList, new Comparator<SrcFile>() {
 			public int compare(SrcFile o1, SrcFile o2) {
 				// System.out.println(o2.name + o2.risk + o1.name + o1.risk +
 				// (o1.risk -o2.risk ));
 				return (o2.risk - o1.risk);
 			}
 		});
-		StringBuilder buffer = new StringBuilder();
-		int i = 0;
-		for (SrcFile src : srcFileList) {
-			if (i++ >= 10)
-				break;
-			String content = String
-					.format(
-							"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-							src.normalizedPath, src.path.getName(), src.getFunctionCoverage(), src.getFunctionCoverageStyle(),
-							src.coveredFunctionCount, src.functionCount, src.getBranchCoverage(), src.getBranchCoverageStyle(),
-							src.coveredBranchCount, src.branchCount);
-			buffer.append(content).append("\n");
-		}
+		
+		template.setAttribute("srcFileList", localSrcFileList.subList(0, Math.min(10, srcFileList.size())));
 
-		StringBuilder buffer2 = new StringBuilder();
-
-		for (File key : dirList) {
-			SrcDir src = srcMap.get(key);
-			if (isSingleElement(src))
-				continue;
-			String content = String
-					.format(
-							"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-							src.path, key, src.getFunctionCoverage(), src.getFunctionCoverageStyle(), src.coveredFunctionCount, src.functionCount,
-							src.getBranchCoverage(), src.getBranchCoverageStyle(), src.coveredBranchCount, src.branchCount);
-			buffer2.append(content).append("\n");
-
-		}
-		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString(), buffer2.toString()));
+		List<SrcDir> dirFileList = new ArrayList<SrcDir>(srcMap.values());
+		Collections.sort(dirFileList);
+		
+		template.setAttribute("dirList", dirFileList.subList(0, Math.min(10, dirFileList.size())));
+		BullsUtil.writeToFile(nPath, template.toString());
 	}
 
 	/**
@@ -249,19 +230,10 @@ public class BullsHtml {
 	 *            output dir
 	 */
 	public void generateDirListHtml(File path) {
-		String template = BullsUtil.loadResourceContent("html/frame_dirs.html");
-		ArrayList<SrcDir> dirList = new ArrayList<SrcDir>(srcMap.values());
-		// Collections.sort(dirList);
-		StringBuilder buffer = new StringBuilder();
-		for (SrcDir src : dirList) {
-			if (isSingleElement(src)) {
-				continue;
-			}
-			buffer.append(String.format("<tr><td nowrap='nowrap'><a target='summary' href='%s.html'>%s</a> <i>%s%%</i></td></tr>",
-					src.normalizedPath, src.path.getName(), src.getFunctionCoverage()));
-		}
+		StringTemplate template = BullsUtil.getTemplate("frame_dirs");
+		template.setAttribute("srcDirList", srcMap.values());
 		File nPath = new File(path, "frame_dirs.html");
-		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
+		BullsUtil.writeToFile(nPath, template.toString());
 	}
 
 	/**
@@ -271,16 +243,9 @@ public class BullsHtml {
 	 *            output dir
 	 */
 	public void generateFileListHtml(File path) {
-		String template = BullsUtil.loadResourceContent("html/frame_files.html");
-		StringBuilder buffer = new StringBuilder();
-
-		for (SrcFile src : srcFileList) {
-			buffer.append(String.format("<tr><td nowrap='nowrap'><a target='summary' href='%s.html'>%s</a> <i>%s%%</i></td></tr>", src.path, src.path
-					.getName(), src.getFunctionCoverage()));
-		}
-
-		File nPath = new File(path, "frame_files.html");
-		BullsUtil.writeToFile(nPath, String.format(template, buffer.toString()));
+		StringTemplate template = BullsUtil.getTemplate("frame_files");
+		template.setAttribute("srcFileList", srcFileList);
+		BullsUtil.writeToFile(new File(path, "frame_files.html"), template.toString());
 	}
 
 	/**

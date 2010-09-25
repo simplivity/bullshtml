@@ -18,6 +18,8 @@ package com.junoyoon;
 
 import java.io.File;
 
+import org.apache.commons.io.FilenameUtils;
+
 /**
  * Base class for src file and directory
  * 
@@ -39,6 +41,10 @@ public abstract class Src {
 			return "N/A";
 		}
 		return String.format(format, ((float) coveredFunctionCount / functionCount) * 100);
+	}
+
+	public String getName() {
+		return path.getPath();
 	}
 
 	public String getBranchCoverage() {
@@ -84,11 +90,4 @@ public abstract class Src {
 	 */
 	abstract protected String getHtml();
 
-	/**
-	 * Get src specific html fragment
-	 * 
-	 * @param path
-	 * @return
-	 */
-	abstract protected String genCurrentHtml();
 }

@@ -18,6 +18,7 @@ package com.junoyoon;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.antlr.stringtemplate.StringTemplate;
 
@@ -26,20 +27,8 @@ import org.antlr.stringtemplate.StringTemplate;
  * 
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
-public class SrcDir extends Src {
-	private static String template;
-	private static String dirTemplate;
-	private static String subDirTemplate;
-	private static String subFileTemplate;
+public class SrcDir extends Src implements Comparable<SrcDir>{
 	private static String cloverXmlTemplate;
-	static {
-		template = BullsUtil.loadResourceContent("html/SrcDir.html");
-		dirTemplate = BullsUtil.loadResourceContent("html/SrcDir_DirList.html");
-		subDirTemplate = BullsUtil.loadResourceContent("html/SrcDir_SubDirList.html");
-		subFileTemplate = BullsUtil.loadResourceContent("html/SrcDir_SubFileList.html");
-		// cloverXmlTemplate =
-		// BullsUtil.loadResourceContent("html/Clover_XmlList.xml");
-	}
 
 	public SrcDir(File path) {
 		this.path = path;
@@ -49,40 +38,35 @@ public class SrcDir extends Src {
 	public int fileCount;
 	public ArrayList<Src> child = new ArrayList<Src>();
 
-	@Override
-	protected String getHtml() {
-//		StringTemplate template = new StringTemplate()
-		// output.append(b)
-		String dir = String.format(dirTemplate, genCurrentHtml());
-
-		StringBuilder subDirBuffer = new StringBuilder();
-		StringBuilder subSrcBuffer = new StringBuilder();
-
+	public List<Src> getChildSrcDir() {
+		List<Src> srcDirList = new ArrayList<Src>();
 		for (Src subDir : child) {
 			if (subDir instanceof SrcDir) {
 				Src eachDir = subDir;
 				while (!eachDir.isWorthToPrint()) {
 					eachDir = ((SrcDir) eachDir).child.get(0);
 				}
-				subDirBuffer.append(eachDir.genCurrentHtml());
-			} else {
-				subSrcBuffer.append(subDir.genCurrentHtml());
+				srcDirList.add(eachDir);
 			}
 		}
-
-		String subDir = new String();
-		if (subDirBuffer.length() != 0) {
-			subDir = String.format(SrcDir.subDirTemplate, subDirBuffer);
+		return srcDirList;
+	}
+	
+	public List<Src> getChildSrcFile() {
+		List<Src> srcList = new ArrayList<Src>();
+		for (Src sub : child) {
+			if (sub instanceof SrcFile) {
+				srcList.add(sub);
+			}
 		}
+		return srcList;
+	}
 
-		String subSrc = new String();
-		if (subSrcBuffer.length() != 0) {
-			subSrc = String.format(SrcDir.subFileTemplate, subSrcBuffer);
-		}
-		StringBuilder output = new StringBuilder(String.format(template, path.getName(), dir, subDir, subSrc));
-
-		return output.toString();
-
+	@Override
+	protected String getHtml() {
+		StringTemplate template = BullsUtil.getTemplate("SrcDirPage");
+		template.setAttribute("srcDir", this);
+		return template.toString();
 	}
 
 	public void generateChildHtml(File outputPath) {
@@ -94,15 +78,6 @@ public class SrcDir extends Src {
 		}
 	}
 
-	@Override
-	protected String genCurrentHtml() {
-		return String
-				.format(
-						"<tr><td><a href='%s.html'>%s</a></td><td class='value'>%d</td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-						this.normalizedPath, path.getName(), fileCount, getFunctionCoverage(), getFunctionCoverageStyle(), coveredFunctionCount,
-						functionCount, getBranchCoverage(), getBranchCoverageStyle(), coveredBranchCount, branchCount);
-
-	}
 
 	@Override
 	protected boolean isWorthToPrint() {
@@ -125,5 +100,9 @@ public class SrcDir extends Src {
 			}
 		}
 		return buffer;
+	}
+
+	public int compareTo(SrcDir o) {
+			return this.path.compareTo(o.path);
 	}
 }
