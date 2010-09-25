@@ -39,7 +39,7 @@ public class BullsUtil {
 	public static StringTemplateGroup group = new StringTemplateGroup("mygroup");
 
 	public static StringTemplate getTemplate(String templateName) {
-		return group.getInstanceOf("template/" + templateName + ".st");
+		return group.getInstanceOf("template/" + templateName);
 	}
 
 	/**

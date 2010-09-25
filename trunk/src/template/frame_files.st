@@ -1,15 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charest=euckr"/>
-<title>Coverage Report Classes</title>
-<link title="Style" type="text/css" rel="stylesheet" href="css/main.css"/>
-</head>
-<body>
+$template/header()$
 <h5>Files</h5>
 <table width="100%%">
 <tbody>
-%s
+$srcFileList: {
+	<tr>
+		<td nowrap='nowrap'><a target='summary' href='$it.path$.html'>$it.path.name$</a> <i>$it.functionCoverage$%</i></td>
+	</tr>
+}$
 </tbody>
 </table>
 </body>

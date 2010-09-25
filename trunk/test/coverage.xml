@@ -204,8 +204,12 @@
 <fn name="main()" fn_cov="1" fn_total="1" cd_cov="6" cd_total="30" d_cov="3" d_total="26">
 <probe line="53" kind="function" event="full"/>
 <probe line="60" seq="a" kind="decision" event="full"/>
-<probe line="60" column="6" seq="b" kind="condition" event="full"/>
+
+
+<probe line="60" column="6" seq="b" kind="condition" event="full"/>x	
 <probe line="61" kind="condition" event="true"/>
+
+
 <probe line="64" kind="switch-label" event="none"/>
 <probe line="65" kind="switch-label" event="none"/>
 <probe line="68" seq="a" kind="switch-label" event="none"/>
@@ -218,16 +222,26 @@
 <probe line="69" column="16" seq="c" kind="switch-label" event="none"/>
 <probe line="69" column="24" seq="d" kind="switch-label" event="none"/>
 <probe line="69" column="32" seq="e" kind="switch-label" event="none"/>
+
+
 <probe line="71" kind="decision" event="none"/>
+
+
 <probe line="78" kind="switch-label" event="none"/>
 <probe line="82" kind="switch-label" event="none"/>
 <probe line="86" kind="switch-label" event="none"/>
 <probe line="91" kind="switch-label" event="none"/>
+
+
 <probe line="93" kind="decision" event="none"/>
+
+
 <probe line="99" kind="switch-label" event="none"/>
 <probe line="105" kind="switch-label" event="none"/>
 <probe line="109" kind="switch-label" event="full"/>
 <probe line="113" kind="switch-label" event="none"/>
+
+
 </fn>
 </src>
 </folder>

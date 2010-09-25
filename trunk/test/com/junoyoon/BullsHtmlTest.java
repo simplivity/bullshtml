@@ -12,6 +12,9 @@ import org.junit.Test;
 public class BullsHtmlTest {
 	@Test
 	public void testProcessInternal() throws JDOMException, IOException {
+		
+		System.out.println(new File("c:").getCanonicalFile().getPath());;
+		
 		File file = new File("test/coverage.xml");
 		FileReader reader = new FileReader(file);
 		try {
@@ -47,10 +50,18 @@ public class BullsHtmlTest {
 		a.setAttribute("b", new ArrayList<Integer>() {{ add(1); add(2);}});
 		System.out.println(a.toString());;
 		a.reset();
-		a.setAttribute("b", new ArrayList<Integer>() {{ add(3); add(22);}});
+		a.setAttribute("", new ArrayList<Integer>() {{ add(3); add(22);}});
 		System.out.println(a.toString());;
 		
-		BullsUtil.getTemplate(")
+		StringTemplate tem = new StringTemplate("$a.size$");
+		tem.setAttribute("a", new ArrayList<Integer>() {{ add(3); add(22);}});
+		
+		System.out.println(tem.toString());
+		
+	}
 	
+	@Test
+	public void testWow() {
+		StringTemplate a = new StringTemplate("$b.size()");
 	}
 }

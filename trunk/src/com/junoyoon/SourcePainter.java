@@ -77,7 +77,6 @@ public class SourcePainter {
 	 *             파일에 저장할 수 없는 경우 발생하는 예외
 	 */
 	public String paint(File file, Encoding encoding) throws IOException {
-
 		InputStream inputStream = new FileInputStream(file);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -96,9 +95,8 @@ public class SourcePainter {
 		sb.append("</colgroup>").append("\n");
 
 		for (int line = 1; line < splitted.length; line++) {
-			// if (line > Constant.MAXIMUM_SOURCE_LINE) {
-			// break;
-			// }
+			
+			
 			sb.append("<tr class=\"kwnone\">").append("\n");
 			sb.append("<td class=\"line\">" + line + "</td>").append("\n");
 			sb.append("<td class=\"code\">" + splitted[line] + "</td>").append("\n");

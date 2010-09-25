@@ -18,7 +18,10 @@ package com.junoyoon;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.antlr.stringtemplate.StringTemplate;
 import org.jdom.Element;
 
 /**
@@ -28,14 +31,12 @@ import org.jdom.Element;
  */
 public class SrcFile extends Src {
 	public int risk;
+	public List<SrcFunction> functions = new ArrayList<SrcFunction>();
 
-	// private static String fileNotFoundTemplate;
-	// static {
-	// fileNotFoundTemplate =
-	// BullsUtil.loadResourceContent("html/SrcFileNotFound.html");
-	// }
+	public SrcFile() {
+	}
 
-	public SrcFile(File dir, Element element) {
+	public SrcFile init(File dir, Element element) {
 		String name = element.getAttributeValue("name");
 		try {
 			this.path = new File(dir, name).getCanonicalFile();
@@ -49,6 +50,11 @@ public class SrcFile extends Src {
 		super.branchCount = Integer.parseInt(element.getAttributeValue("d_total"));
 		risk = branchCount - coveredBranchCount;
 		registerParent(dir, this);
+		for (Object elementObject : element.getChildren("fn")) {
+			Element fnElement = (Element) elementObject;
+			functions.add(new SrcFunction().init(fnElement));
+		}
+		return this;
 	}
 
 	/**
@@ -95,22 +101,19 @@ public class SrcFile extends Src {
 		}
 	}
 
-	@Override
-	protected String genCurrentHtml() {
-		return String
-				.format(
-						"<tr><td><a href='%s.html'>%s</a></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td><td><table cellpadding='0px' cellspacing='0px' class='percentgraph'><tr class='percentgraph'><td align='right' class='percentgraph' width='40'>%s%%</td><td class='percentgraph'><div class='percentgraph'><div %s><span class='text'>%d/%d</span></div></div></td></tr></table></td></tr>",
-						this.normalizedPath, path.getName(), getFunctionCoverage(), getFunctionCoverageStyle(), coveredFunctionCount, functionCount,
-						getBranchCoverage(), getBranchCoverageStyle(), coveredBranchCount, branchCount);
+	public String getContent() {
+		try {
+			return new SourcePainter().paint(path, Encoding.UTF_8);
+		} catch (IOException e) {
+			return String.format("%s is not available", this.getName());
+		}
 	}
 
 	@Override
 	protected String getHtml() {
-		try {
-			return new SourcePainter().paint(path, Encoding.UTF_8);
-		} catch (IOException e) {
-			return "";
-		}
+		StringTemplate template = BullsUtil.getTemplate("SrcFilePage");
+		template.setAttribute("srcFile", this);
+		return template.toString();
 	}
 
 	@Override

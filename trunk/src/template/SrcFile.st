@@ -1,6 +1,5 @@
 	<tr>
 		<td><a href='$it.normalizedPath$.html'>$it.name$</a></td>
-		<td class='value'>1</td>
 		<td><table cellpadding='0px' cellspacing='0px' class='percentgraph'>
 				<tr class='percentgraph'>
 					<td align='right' class='percentgraph' width='40'>$it.functionCoverage$%</td>
@@ -28,4 +27,4 @@
 				</tr>
 			</table>
 		</td>
-	</tr>					 
+	</tr>					
