@@ -18,8 +18,6 @@ package com.junoyoon;
 
 import java.io.File;
 
-import org.apache.commons.io.FilenameUtils;
-
 /**
  * Base class for src file and directory
  * 
@@ -36,32 +34,40 @@ public abstract class Src {
 	public SrcDir parentDir;
 	public static String format = new String("%.1f");
 
-	public String getFunctionCoverage() {
+	public String getFunctionCoverageString() {
 		if (functionCount == 0) {
 			return "N/A";
 		}
-		return String.format(format, ((float) coveredFunctionCount / functionCount) * 100);
+		return String.format(format, getFunctionCoverage());
+	}
+
+	private float getFunctionCoverage() {
+		return ((float) coveredFunctionCount / functionCount) * 100;
 	}
 
 	public String getName() {
 		return path.getPath();
 	}
 
-	public String getBranchCoverage() {
+	public String getBranchCoverageString() {
 		if (branchCount == 0) {
 			return "N/A";
 		}
-		return String.format(format, (((float) coveredBranchCount / branchCount) * 100));
+		return String.format(format, (getBranchCoverage()));
+	}
+
+	private float getBranchCoverage() {
+		return ((float) coveredBranchCount / branchCount) * 100;
 	}
 
 	public String getBranchCoverageStyle() {
-		String bc = getBranchCoverage();
-		return bc.equals("N/A") ? "class='na' style='width:100px'" : "class='greenbar' style='width:" + bc + "px'";
+		String bc = getBranchCoverageString();
+		return bc.equals("N/A") ? "class='na' style='width:100px'" : "class='greenbar' style='width:" + Math.round(getBranchCoverage()) + "px'";
 	}
 
 	public String getFunctionCoverageStyle() {
-		String fc = getFunctionCoverage();
-		return fc.endsWith("N/A") ? "class='na' style='width:100px'" : "class='greenbar' style='width:" + fc + "px'";
+		String fc = getFunctionCoverageString();
+		return fc.endsWith("N/A") ? "class='na' style='width:100px'" : "class='greenbar' style='width:" + Math.round(getFunctionCoverage()) + "px'";
 	}
 
 	/*
@@ -81,7 +87,7 @@ public abstract class Src {
 		return nPath;
 	}
 
-	abstract protected boolean isWorthToPrint();
+	abstract public boolean isWorthToPrint();
 
 	/**
 	 * Get whole src html.

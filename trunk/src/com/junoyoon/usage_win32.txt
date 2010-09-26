@@ -1,4 +1,4 @@
-BullsHtml 0.2 : BulleyeCoverage Html Report Tool
+BullsHtml 1.0 : BulleyeCoverage Html Report Tool
 
 Usage: BullsHtml.exe html_report_folder
   -h      this help

@@ -3,7 +3,7 @@
 		<td class='value'>1</td>
 		<td><table cellpadding='0px' cellspacing='0px' class='percentgraph'>
 				<tr class='percentgraph'>
-					<td align='right' class='percentgraph' width='40'>$it.functionCoverage$%</td>
+					<td align='right' class='percentgraph' width='40'>$it.functionCoverageString$%</td>
 					<td class='percentgraph'>
 						<div class='percentgraph'>
 							<div $it.functionCoverageStyle$>
@@ -17,7 +17,7 @@
 		<td>
 			<table cellpadding='0px' cellspacing='0px' class='percentgraph'>
 				<tr class='percentgraph'>
-					<td align='right' class='percentgraph' width='40'>$it.branchCoverage$%</td>
+					<td align='right' class='percentgraph' width='40'>$it.branchCoverageString$%</td>
 					<td class='percentgraph'>
 						<div class='percentgraph'>
 							<div $it.branchCoverageStyle$>

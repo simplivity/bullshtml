@@ -32,8 +32,13 @@ import org.jdom.Element;
 public class SrcFile extends Src {
 	public int risk;
 	public List<SrcFunction> functions = new ArrayList<SrcFunction>();
+	public List<SrcDecisionPoint> decisionPoints = new ArrayList<SrcDecisionPoint>();
 
 	public SrcFile() {
+	}
+
+	public int getFunctionCount() {
+		return functions.size();
 	}
 
 	public SrcFile init(File dir, Element element) {
@@ -52,7 +57,11 @@ public class SrcFile extends Src {
 		registerParent(dir, this);
 		for (Object elementObject : element.getChildren("fn")) {
 			Element fnElement = (Element) elementObject;
-			functions.add(new SrcFunction().init(fnElement));
+			SrcFunction srcFunction = new SrcFunction();
+			functions.add(srcFunction.init(fnElement));
+			decisionPoints.add(new SrcDecisionPoint(srcFunction.line, srcFunction.covered ? DecisionCoverType.FUNCTION_CALLED
+					: DecisionCoverType.FUNCTION_UNCALLED, DecisionType.FUNCTION));
+			decisionPoints.addAll(srcFunction.decisionPoints);
 		}
 		return this;
 	}
@@ -103,7 +112,7 @@ public class SrcFile extends Src {
 
 	public String getContent() {
 		try {
-			return new SourcePainter().paint(path, Encoding.UTF_8);
+			return new SourcePainter().paint(path, decisionPoints, BullsHtml.sourceEncoding);
 		} catch (IOException e) {
 			return String.format("%s is not available", this.getName());
 		}
@@ -117,7 +126,7 @@ public class SrcFile extends Src {
 	}
 
 	@Override
-	protected boolean isWorthToPrint() {
+	public boolean isWorthToPrint() {
 		return true;
 	}
 }

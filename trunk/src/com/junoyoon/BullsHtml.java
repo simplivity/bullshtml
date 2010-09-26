@@ -28,6 +28,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.antlr.stringtemplate.StringTemplate;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 import org.apache.commons.io.IOUtils;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -40,6 +45,13 @@ import org.jdom.input.SAXBuilder;
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class BullsHtml {
+
+	private static final Options OPTS = new Options();
+	static {
+		OPTS.addOption("e", "encoding", true, "source code encoding.");
+		OPTS.addOption("h", "help", false, "print help");
+	}
+
 	/** System default encoding */
 	public static String enc = new java.io.OutputStreamWriter(System.out).getEncoding();
 	/** Map b/w path and src */
@@ -48,6 +60,7 @@ public class BullsHtml {
 	public static ArrayList<SrcDir> baseList = new ArrayList<SrcDir>();
 	/** src file list */
 	public static ArrayList<SrcFile> srcFileList = new ArrayList<SrcFile>();
+	public static Encoding sourceEncoding = Encoding.UTF_8;
 
 	/**
 	 * Contrcut Src and Dir List. After calling the method, the static variable
@@ -62,8 +75,7 @@ public class BullsHtml {
 			reader = new InputStreamReader(process.getInputStream());
 			processInternal(reader);
 		} catch (Exception e) {
-			e.printStackTrace();
-			BullsHtml.printErrorAndExit(e.getMessage());
+			BullsHtml.printErrorAndExit(e);
 		} finally {
 			IOUtils.closeQuietly(reader);
 		}
@@ -83,8 +95,7 @@ public class BullsHtml {
 		try {
 			baseDir = baseDir.getCanonicalFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			BullsHtml.printErrorAndExit(e);
 		}
 		for (Object elementObject : eachFolder.getChildren()) {
 			Element element = (Element) elementObject;
@@ -96,7 +107,7 @@ public class BullsHtml {
 			} else if ("src".equals(name)) {
 				srcFileList.add(new SrcFile().init(baseDir, element));
 			}
-		} 
+		}
 	}
 
 	/**
@@ -113,14 +124,22 @@ public class BullsHtml {
 		BullsUtil.copyResource(outputFolder + "/js/stringbuilder.js", "js/stringbuilder.js");
 		BullsUtil.copyResource(outputFolder + "/css/help.css", "css/help.css");
 		BullsUtil.copyResource(outputFolder + "/css/main.css", "css/main.css");
+		BullsUtil.copyResource(outputFolder + "/css/highlight.css", "css/highlight.css");
+		BullsUtil.copyResource(outputFolder + "/css/style.css", "css/style.css");
+
 		BullsUtil.copyResource(outputFolder + "/css/sortabletable.css", "css/sortabletable.css");
 		BullsUtil.copyResource(outputFolder + "/css/source-viewer.css", "css/source-viewer.css");
 		BullsUtil.copyResource(outputFolder + "/css/tooltip.css", "css/tooltip.css");
+		BullsUtil.copyResource(outputFolder + "/images/upper.png", "images/upper.png");
+		BullsUtil.copyResource(outputFolder + "/images/check_icon.png", "images/check_icon.png");
+		BullsUtil.copyResource(outputFolder + "/images/uncheck_icon.png", "images/uncheck_icon.png");
+
 		BullsUtil.copyResource(outputFolder + "/images/blank.png", "images/blank.png");
 		BullsUtil.copyResource(outputFolder + "/images/downsimple.png", "images/downsimple.png");
 		BullsUtil.copyResource(outputFolder + "/images/upsimple.png", "images/upsimple.png");
 		BullsUtil.copyResource(outputFolder + "/index.html", "html/index.html");
 		BullsUtil.copyResource(outputFolder + "/help.html", "html/help.html");
+
 	}
 
 	/**
@@ -158,6 +177,17 @@ public class BullsHtml {
 	}
 
 	/**
+	 * Print Error Message and Exit
+	 * 
+	 * @param message
+	 *            message to print
+	 */
+	public static void printErrorAndExit(Exception e) {
+		e.printStackTrace(System.err);
+		System.exit(-1);
+	}
+
+	/**
 	 * generate html
 	 * 
 	 * @param targetPath
@@ -173,26 +203,26 @@ public class BullsHtml {
 		generateMainHtml(targetPath);
 	}
 
-	private void generateCloverXmlFully(File outputPath) {
-		CloverXml cloverXml = new CloverXml();
-		StringBuffer buffer = new StringBuffer();
-		List<SrcDir> folderList = new ArrayList<SrcDir>(srcMap.values());
-		Collections.sort(folderList, new Comparator<SrcDir>() {
-			public int compare(SrcDir arg0, SrcDir arg1) {
-				return arg0.path.getAbsolutePath().compareTo(arg1.path.getAbsolutePath());
-			}
-		});
-		for (SrcDir src : folderList) {
-			src.appendCloverXml(buffer);
-		}
-		cloverXml.generateXml(outputPath, buffer);
-	}
+	// private void generateCloverXmlFully(File outputPath) {
+	// CloverXml cloverXml = new CloverXml();
+	// StringBuffer buffer = new StringBuffer();
+	// List<SrcDir> folderList = new ArrayList<SrcDir>(srcMap.values());
+	// Collections.sort(folderList, new Comparator<SrcDir>() {
+	// public int compare(SrcDir arg0, SrcDir arg1) {
+	// return
+	// arg0.path.getAbsolutePath().compareTo(arg1.path.getAbsolutePath());
+	// }
+	// });
+	// for (SrcDir src : folderList) {
+	// src.appendCloverXml(buffer);
+	// }
+	// cloverXml.generateXml(outputPath, buffer);
+	// }
 
 	public static boolean isSingleElement(SrcDir dir) {
 		return (dir.child.size() == 1 && dir.child.get(0) instanceof SrcDir);
 	}
 
-	
 	/**
 	 * generate main html page
 	 * 
@@ -204,7 +234,7 @@ public class BullsHtml {
 		File nPath = new File(path, "frame_summary.html");
 
 		List<SrcFile> localSrcFileList = new ArrayList<SrcFile>(srcFileList);
-		
+
 		// Sort By Risk
 		Collections.sort(localSrcFileList, new Comparator<SrcFile>() {
 			public int compare(SrcFile o1, SrcFile o2) {
@@ -213,14 +243,31 @@ public class BullsHtml {
 				return (o2.risk - o1.risk);
 			}
 		});
-		
+
 		template.setAttribute("srcFileList", localSrcFileList.subList(0, Math.min(10, srcFileList.size())));
 
-		List<SrcDir> dirFileList = new ArrayList<SrcDir>(srcMap.values());
-		Collections.sort(dirFileList);
-		
+		List<SrcDir> dirFileList = getSrcDirList();
+
 		template.setAttribute("dirList", dirFileList.subList(0, Math.min(10, dirFileList.size())));
 		BullsUtil.writeToFile(nPath, template.toString());
+	}
+
+	public List<SrcDir> getSrcDirList() {
+		ArrayList<SrcDir> list = new ArrayList<SrcDir>();
+		for (SrcDir srcDir : srcMap.values()) {
+			if (srcDir.isWorthToPrint()) {
+				list.add(srcDir);
+			}
+		}
+		Collections.sort(list, new Comparator<SrcDir>() {
+			public int compare(SrcDir o1, SrcDir o2) {
+				// System.out.println(o2.name + o2.risk + o1.name + o1.risk +
+				// (o1.risk -o2.risk ));
+				return o1.path.compareTo(o2.path);
+			}
+		});
+
+		return list;
 	}
 
 	/**
@@ -231,7 +278,8 @@ public class BullsHtml {
 	 */
 	public void generateDirListHtml(File path) {
 		StringTemplate template = BullsUtil.getTemplate("frame_dirs");
-		template.setAttribute("srcDirList", srcMap.values());
+
+		template.setAttribute("srcDirList", getSrcDirList());
 		File nPath = new File(path, "frame_dirs.html");
 		BullsUtil.writeToFile(nPath, template.toString());
 	}
@@ -268,17 +316,36 @@ public class BullsHtml {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String outputPath = ".";
-		if (args.length == 1 && args[0].equals("-h")) {
+
+		final CommandLineParser clp = new PosixParser();
+		CommandLine line = null;
+
+		// 선언한 옵션의 포맷에 맞게 인자가 넘어왔는지 확인한다.
+		try {
+			line = clp.parse(OPTS, args);
+		} catch (ParseException e) {
+			usage();
+			return;
+		}
+		String sourceEncoding = enc;
+		// p 옵션이 사용되었으면 값을 가져와 출력한다.
+		if (line.hasOption("e")) {
+			sourceEncoding = line.getOptionValue("e");
+		}
+		// h 옵션이 사용되었으면 usage를 출력한다.
+		if (line.hasOption("h")) {
 			usage();
 		}
-		if (args.length != 1) {
+
+		String outputPath = ".";
+
+		if (line.getArgs().length != 1) {
 			printErrorAndExit("please provide the html output directory");
 		}
-		outputPath = args[0];
+		outputPath = line.getArgs()[0];
 		File o = new File(outputPath);
 		if (!o.exists()) {
-			if (!o.mkdir()) {
+			if (!o.mkdirs()) {
 				printErrorAndExit(outputPath + " directory can be not created.");
 			}
 		} else if (!o.isDirectory()) {
@@ -290,11 +357,12 @@ public class BullsHtml {
 		bullshtml.process();
 		try {
 			bullshtml.copyResources(outputPath);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			printErrorAndExit("The output " + outputPath + " is not writable." + e.toString());
 		}
+		BullsHtml.sourceEncoding = Encoding.getEncoding(sourceEncoding);
 		bullshtml.generateHtml(o);
-		bullshtml.generateCloverXmlFully(o);
+		// bullshtml.generateCloverXmlFully(o);
 	}
 
 }

@@ -16,19 +16,19 @@
 
 package com.junoyoon;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Iterator;
 import java.util.List;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Utility class
@@ -61,45 +61,28 @@ public class BullsUtil {
 	 *            content
 	 */
 	public static void writeToFile(File path, String content) {
-		FileWriter fileWriter;
 		try {
-			fileWriter = new FileWriter(path);
-			fileWriter.write(content);
-			fileWriter.close();
+			FileUtils.writeStringToFile(path, content, "UTF-8");
 		} catch (IOException e) {
-			BullsHtml.printErrorAndExit(e.getMessage());
+			BullsHtml.printErrorAndExit(e);
 		}
 	}
 
-	/**
-	 * Copy resource from jar to destination
-	 * 
-	 * @param toDir
-	 * @param fileName
-	 * @throws IOException
-	 */
 	public static void copyResource(String toDir, String fileName) throws IOException {
-		File file = new File(toDir).getCanonicalFile();
+		File file = new File(toDir);
 		if (!file.getParentFile().exists()) {
-			file.getParentFile().mkdir();
+			file.getParentFile().mkdirs();
 		}
+		System.out.println(fileName);
 		try {
 			InputStream is = BullsUtil.class.getClassLoader().getResourceAsStream(fileName);
-			BufferedInputStream inputStream = new BufferedInputStream(is);
 			FileOutputStream fs = new FileOutputStream(toDir);
-			BufferedOutputStream outputStream = new BufferedOutputStream(fs);
-
-			int bytesRead = 0;
-			byte[] buffer = new byte[1024];
-			while ((bytesRead = inputStream.read(buffer, 0, 1024)) != -1) {
-				outputStream.write(buffer, 0, bytesRead);
-			}
-			outputStream.close();
-			inputStream.close();
+			IOUtils.copy(is, fs);
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(fs);
 		} catch (Exception e) {
-			BullsHtml.printErrorAndExit(e.getMessage());
+			BullsHtml.printErrorAndExit(e);
 		}
-
 	}
 
 	/**
@@ -153,8 +136,17 @@ public class BullsUtil {
 			}
 			br.close();
 		} catch (Exception e) {
-			BullsHtml.printErrorAndExit(e.getMessage());
+			BullsHtml.printErrorAndExit(e);
 		}
 		return result.toString();
+	}
+
+	public static <T> PeekingIterator<T> peekingIterator(Iterator<? extends T> iterator) {
+		if (iterator instanceof PeekingImpl<?>) {
+			@SuppressWarnings("unchecked")
+			PeekingImpl<T> peeking = (PeekingImpl<T>) iterator;
+			return peeking;
+		}
+		return new PeekingImpl<T>(iterator);
 	}
 }
