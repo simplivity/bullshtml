@@ -57,7 +57,7 @@
 		</one-jar>
 	</target>
 						
-	<target name="makeexe" depends="make_onejar" >
+	<target name="makeexe" depends="make_onejar">
 		<taskdef name="generateexe" classname="net.charabia.jsmoothgen.ant.JSmoothGen" classpath="${antlib.dir}/jsmoothgen-ant.jar"/>
 		<property environment="env"/>
 		<tstamp/>
@@ -78,8 +78,8 @@
 		<chmod file="${package.dir}/*.jar" perm="755"/>
 		<tar destfile="${package.dir}/bullshtml.tar.gz" compression="gzip">
 			<tarfileset dir="${package.dir}" >
-				<include name="*.jar"/>
-				<include name="*.sh"/>
+				<include name="bullshtml.jar"/>
+				<include name="bullshtml.sh"/>
 			</tarfileset>
 		</tar> 
 	</target>
