@@ -2,43 +2,49 @@ package com.junoyoon;
 
 import java.util.Iterator;
 
-public interface PeekingIterator<E> extends Iterator<E> {
-	/**
-	 * Returns the next element in the iteration, without advancing the
-	 * iteration.
-	 * 
-	 * <p>
-	 * Calls to {@code peek()} should not change the state of the iteration,
-	 * except that it <i>may</i> prevent removal of the most recent element via
-	 * {@link #remove()}.
-	 * 
-	 * @throws NoSuchElementException
-	 *             if the iteration has no more elements according to
-	 *             {@link #hasNext()}
-	 */
-	E peek();
+/**
+ * Implementation of PeekingIterator that avoids peeking unless necessary.
+ */
+public class PeekingIterator<E> implements Iterator<E> {
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>
-	 * The objects returned by consecutive calls to {@link #peek()} then
-	 * {@link #next()} are guaranteed to be equal to each other.
-	 */
-	E next();
+	private final Iterator<? extends E> iterator;
+	private boolean hasPeeked;
+	private E peekedElement;
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>
-	 * Implementations may or may not support removal when a call to
-	 * {@link #peek()} has occurred since the most recent call to
-	 * {@link #next()}.
-	 * 
-	 * @throws IllegalStateException
-	 *             if there has been a call to {@link #peek()} since the most
-	 *             recent call to {@link #next()} and this implementation does
-	 *             not support this sequence of calls (optional)
-	 */
-	void remove();
+	public static <T> T checkNotNull(T reference) {
+		if (reference == null) {
+			throw new NullPointerException();
+		}
+		return reference;
+	}
+
+	public PeekingIterator(Iterator<? extends E> iterator) {
+		this.iterator = checkNotNull(iterator);
+	}
+
+	public boolean hasNext() {
+		return hasPeeked || iterator.hasNext();
+	}
+
+	public E next() {
+		if (!hasPeeked) {
+			return iterator.next();
+		}
+		E result = peekedElement;
+		hasPeeked = false;
+		peekedElement = null;
+		return result;
+	}
+
+	public void remove() {
+		iterator.remove();
+	}
+
+	public E peek() {
+		if (!hasPeeked) {
+			peekedElement = iterator.next();
+			hasPeeked = true;
+		}
+		return peekedElement;
+	}
 }

@@ -142,11 +142,11 @@ public class BullsUtil {
 	}
 
 	public static <T> PeekingIterator<T> peekingIterator(Iterator<? extends T> iterator) {
-		if (iterator instanceof PeekingImpl<?>) {
+		if (iterator instanceof PeekingIterator<?>) {
 			@SuppressWarnings("unchecked")
-			PeekingImpl<T> peeking = (PeekingImpl<T>) iterator;
+			PeekingIterator<T> peeking = (PeekingIterator<T>) iterator;
 			return peeking;
 		}
-		return new PeekingImpl<T>(iterator);
+		return new PeekingIterator<T>(iterator);
 	}
 }
