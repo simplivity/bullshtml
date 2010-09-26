@@ -6,9 +6,11 @@
     <property name="version" value="0.5"/>
 	<property name="package.dir" value="target"/>
 	<property name="antlib.dir" value="antlib"/>
+	<property name="lib.dir" value="lib"/>
 	<path id="bullshtml.classpath">
         <pathelement location="bin"/>
-     </path>
+	    <pathelement location="lib"/> 
+	</path>
     <target name="init">
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
@@ -31,7 +33,7 @@
         </javac>
     </target>
 	<target depends="build" name="makejar">
-		<jar destfile="${package.dir}/bullshtml.jar" manifest="src/manifest.txt" basedir="bin"/>
+		<jar destfile="${package.dir}/bullshtml_main.jar" manifest="src/manifest.txt" basedir="bin"/>
 	</target>
 	
     <target name="testrun">
@@ -41,7 +43,21 @@
         </java>
     </target>	
 	
-	<target name="makeexe" depends="makejar" >
+	<target name="make_onejar" depends="makejar">
+		<property name="one-jar.dist.dir" value="${antlib.dir}" />
+		<property name="one-jar.version" value="0.96" />
+		<taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" classpath="${one-jar.dist.dir}/one-jar-ant-task-${one-jar.version}.jar" onerror="report" />
+		<one-jar destfile="${package.dir}/bullshtml.jar" manifest="MANIFEST.MF">
+			<main jar="${package.dir}/bullshtml_main.jar" />
+			<lib>
+				<fileset dir="${lib.dir}">
+					<include name="*.jar" />
+				</fileset>
+			</lib>
+		</one-jar>
+	</target>
+						
+	<target name="makeexe" depends="make_onejar" >
 		<taskdef name="generateexe" classname="net.charabia.jsmoothgen.ant.JSmoothGen" classpath="${antlib.dir}/jsmoothgen-ant.jar"/>
 		<property environment="env"/>
 		<tstamp/>
@@ -52,7 +68,7 @@
 	<target name="packagewindow" depends="makeexe" >
 		
 	</target>
-	<target name="packagelinux" depends="makejar" >
+	<target name="packagelinux" depends="make_onejar" >
 		<delete>
 			<fileset dir="${package.dir}" >
 				<include name="*.tar.gz"/>		

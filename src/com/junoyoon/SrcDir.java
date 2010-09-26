@@ -46,6 +46,7 @@ public class SrcDir extends Src implements Comparable<SrcDir>{
 				while (!eachDir.isWorthToPrint()) {
 					eachDir = ((SrcDir) eachDir).child.get(0);
 				}
+				eachDir.parentDir = this;
 				srcDirList.add(eachDir);
 			}
 		}
@@ -80,7 +81,7 @@ public class SrcDir extends Src implements Comparable<SrcDir>{
 
 
 	@Override
-	protected boolean isWorthToPrint() {
+	public boolean isWorthToPrint() {
 		return !BullsHtml.isSingleElement(this);
 	}
 

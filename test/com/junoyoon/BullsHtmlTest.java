@@ -3,11 +3,16 @@ package com.junoyoon;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.jdom.JDOMException;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+
+import static org.junit.Assert.assertThat;
 
 public class BullsHtmlTest {
 	@Test
@@ -36,7 +41,7 @@ public class BullsHtmlTest {
 			}
 			new File("output").mkdir();
 			bullsHtml.generateHtml(new File("output"));
-			
+			bullsHtml.copyResources("output");
 			
 			
 		} catch (Exception e) {
@@ -63,5 +68,12 @@ public class BullsHtmlTest {
 	@Test
 	public void testWow() {
 		StringTemplate a = new StringTemplate("$b.size()");
+	}
+
+	@Test
+	public void testColumnString() throws URISyntaxException {
+		SourcePainter painter = new SourcePainter();
+		assertThat(painter.getColumnString("  hello world", 0, 5), is("  hello "));
+		assertThat(painter.getColumnString(" test world", 4, 0), is("      world"));
 	}
 }

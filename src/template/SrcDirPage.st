@@ -1,17 +1,22 @@
 $template/header()$
-<h5>Coverage Report - $srcDir.path$</h5> 
+<h5>Coverage Report - $srcDir.path$ 
+$if(srcDir.parentDir)$
+<a href="$srcDir.parentDir.normalizedPath$.html"><img src='images/upper.png' border="0"/></a>
+$endif$
+</h5> 
+
 <div class="separator">&nbsp;</div> 
 <table class="report" id="currentDir"> 
 	<thead>
 		<tr>
-			<td class="heading" width="30%">Directory</td>  
-			<td class="heading"  width="20%"># Files</td>
-			<td class="heading"  width="25%">
+			<td class="heading" width="50%">Current Directory</td>  
+			<td class="heading"  width="10%"># Files</td>
+			<td class="heading"  width="20%">
 				<a class="dfn" href="help.html" onclick="popupwindow('help.html'); return false;">
 					Function Coverage
 				</a>
 			</td>
-			<td class="heading"  width="25%">
+			<td class="heading"  width="20%">
 				<a class="dfn" href="help.html" onclick="popupwindow('help.html'); return false;">
 					Branch Coverage
 				</a>
@@ -35,14 +40,14 @@ $if(first(srcDir.childSrcDir))$
 <table class="report" id="subDirResult"> 
 	<thead>
 		<tr>
-			<td class="heading" width="30%">Directory</td>  
-			<td class="heading"  width="20%"># Files</td>
-			<td class="heading"  width="25%">
+			<td class="heading" width="50%">Sub Directory</td>  
+			<td class="heading"  width="10%"># Files</td>
+			<td class="heading"  width="20%">
 				<a class="dfn" href="help.html" onclick="popupwindow('help.html'); return false;">
 					Function Coverage
 				</a>
 			</td>
-			<td class="heading"  width="25%">
+			<td class="heading"  width="20%">
 				<a class="dfn" href="help.html" onclick="popupwindow('help.html'); return false;">
 					Branch Coverage
 				</a>
@@ -70,13 +75,15 @@ $if(first(srcDir.childSrcFile))$
 <table class="report" id="fileList"> 
 	<thead>
 		<tr>
-			<td class="heading" width="30%">File</td>  
-			<td class="heading"  width="25%">
+			<td class="heading" width="50%">File</td>  
+			<td class="heading" width="10%">#Function</td>  
+
+			<td class="heading"  width="20%">
 				<a class="dfn" href="help.html" onclick="popupwindow('help.html'); return false;">
 					Function Coverage
 				</a>
 			</td>
-			<td class="heading"  width="25%">
+			<td class="heading"  width="20%">
 				<a class="dfn" href="help.html" onclick="popupwindow('help.html'); return false;">
 					Branch Coverage
 				</a>

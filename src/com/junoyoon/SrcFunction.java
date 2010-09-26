@@ -1,5 +1,8 @@
 package com.junoyoon;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jdom.Element;
 
 public class SrcFunction {
@@ -11,6 +14,19 @@ public class SrcFunction {
 		this.branchCount = Integer.parseInt(element.getAttributeValue("d_total"));
 		this.coveredBranchCount = Integer.parseInt(element.getAttributeValue("d_cov"));
 		this.covered = "1".equals(element.getAttributeValue("fn_cov"));
+		boolean isFirst = true;
+		for (Object elementObject : element.getChildren("probe")) {
+			Element eachProbe = (Element) elementObject;
+			if (isFirst) {
+				isFirst = false;
+				line = Integer.parseInt(eachProbe.getAttributeValue("line"));
+				continue;
+			}
+			SrcDecisionPoint decisionPoint = SrcDecisionPoint.createDecisionPoint(eachProbe);
+			if (decisionPoint != null) {
+				decisionPoints.add(decisionPoint);
+			}
+		}
 		return this;
 	}
 
@@ -18,7 +34,9 @@ public class SrcFunction {
 	public boolean covered;
 	public int branchCount;
 	public int coveredBranchCount;
+	public int line;
 	public static String format = new String("%.1f");
+	public List<SrcDecisionPoint> decisionPoints = new ArrayList<SrcDecisionPoint>();
 
 	public String getBranchCoverage() {
 		if (branchCount == 0) {
