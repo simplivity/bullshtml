@@ -22,6 +22,7 @@ public class BullsHtmlTest {
 		new File("output").mkdir();
 		bullsHtml.generateHtml(new File("output"));
 		bullsHtml.copyResources("output");
+		bullsHtml.generateCloverXml(new File("output"));
 	}
 
 	@Test

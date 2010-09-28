@@ -1,5 +1,5 @@
 	<tr>
-		<td><a href='$it.normalizedPath$.html'>$it.name$</a></td>
+		<td><a href='$it.normalizedPath$.html'>$it.path$</a></td>
 		<td class='value'>$it.functionCount$</td>
 		<td><table cellpadding='0px' cellspacing='0px' class='percentgraph'>
 				<tr class='percentgraph'>

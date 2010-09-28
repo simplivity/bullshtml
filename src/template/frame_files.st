@@ -4,7 +4,9 @@ $template/header()$
 <tbody>
 $srcFileList: {
 	<tr>
-		<td nowrap='nowrap'><a target='summary' href='$it.normalizedPath$.html'>$it.path.name$</a> <i>$it.branchCoverageString$%</i></td>
+		<td nowrap='nowrap'><a target='summary' href='$it.normalizedPath$.html'>$it.path.name$</a> 
+			<span class="smallcovf">$it.functionCoverageString$%</span> <span class="smallcovb">$it.branchCoverageString$%</span>
+		</td>
 	</tr>
 }$
 </tbody>
