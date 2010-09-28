@@ -28,7 +28,6 @@ import org.antlr.stringtemplate.StringTemplate;
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class SrcDir extends Src implements Comparable<SrcDir> {
-	private static String cloverXmlTemplate;
 
 	public SrcDir(File path) {
 		this.path = path;
