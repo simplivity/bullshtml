@@ -29,18 +29,26 @@ import org.jdom.Element;
  * 
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
-public class SrcFile extends Src {
+public class SrcFile extends Src implements Comparable<SrcFile> {
 	public int risk;
 	public List<SrcFunction> functions = new ArrayList<SrcFunction>();
 	public List<SrcDecisionPoint> decisionPoints = new ArrayList<SrcDecisionPoint>();
-
+	public long timestamp;
 	public SrcFile() {
 	}
 
 	public int getFunctionCount() {
 		return functions.size();
 	}
-
+	
+	public boolean isModified() {
+		return this.timestamp < this.path.lastModified();
+	}
+	
+	public String getUnixStylePath() throws IOException {
+		return path.getCanonicalPath().replace("\\", "/");
+	}
+	
 	public SrcFile init(File dir, Element element) {
 		String name = element.getAttributeValue("name");
 		try {
@@ -48,19 +56,20 @@ public class SrcFile extends Src {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.normalizedPath = BullsUtil.normalizePath(this.path);
+		this.setNormalizedPath(BullsUtil.normalizePath(this.path));
 		super.coveredFunctionCount = Integer.parseInt(element.getAttributeValue("fn_cov"));
 		super.functionCount = Integer.parseInt(element.getAttributeValue("fn_total"));
 		super.coveredBranchCount = Integer.parseInt(element.getAttributeValue("d_cov"));
 		super.branchCount = Integer.parseInt(element.getAttributeValue("d_total"));
+		this.timestamp = Long.parseLong(element.getAttributeValue("mtime"));
 		risk = branchCount - coveredBranchCount;
 		registerParent(dir, this);
 		for (Object elementObject : element.getChildren("fn")) {
 			Element fnElement = (Element) elementObject;
 			SrcFunction srcFunction = new SrcFunction();
 			functions.add(srcFunction.init(fnElement));
-			decisionPoints.add(new SrcDecisionPoint(srcFunction.line, srcFunction.covered ? DecisionCoverType.FUNCTION_CALLED
-					: DecisionCoverType.FUNCTION_UNCALLED, DecisionType.FUNCTION));
+			decisionPoints.add(new SrcFunctionDecisionPoint(srcFunction.line, srcFunction.covered ? DecisionCoverType.FUNCTION_CALLED
+					: DecisionCoverType.FUNCTION_UNCALLED, DecisionType.FUNCTION, srcFunction.name));
 			decisionPoints.addAll(srcFunction.decisionPoints);
 		}
 		return this;
@@ -98,23 +107,11 @@ public class SrcFile extends Src {
 		incrementParent();
 	}
 
-	public void incrementParent() {
-		SrcDir currentParent = parentDir;
-		while (currentParent != null) {
-			currentParent.coveredBranchCount += coveredBranchCount;
-			currentParent.branchCount += branchCount;
-			currentParent.functionCount += functionCount;
-			currentParent.coveredFunctionCount += coveredFunctionCount;
-			currentParent.fileCount++;
-			currentParent = currentParent.parentDir;
-		}
-	}
-
 	public String getContent() {
 		try {
 			return new SourcePainter().paint(path, decisionPoints, BullsHtml.sourceEncoding);
 		} catch (IOException e) {
-			return String.format("%s is not available", this.getName());
+			return String.format("%s is not available", this.path);
 		}
 	}
 
@@ -129,4 +126,13 @@ public class SrcFile extends Src {
 	public boolean isWorthToPrint() {
 		return true;
 	}
+
+	public int compareTo(SrcFile o) {
+		return this.path.getName().compareTo(o.path.getName());
+	}
+
+	public boolean isSrcFile() {
+		return true;
+	}
+
 }

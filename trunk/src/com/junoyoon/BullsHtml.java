@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.antlr.stringtemplate.StringTemplate;
@@ -87,6 +89,23 @@ public class BullsHtml {
 		Element root = build.getRootElement();
 		File rootDir = new File(root.getAttributeValue("dir"));
 		buildSrcFileList(srcFileList, root, rootDir);
+		if (baseList.size() > 1) {
+			SrcDir dir = new SrcDir(new File("/")) {
+				@Override
+				public String getNormalizedPath() {
+					return "_";
+				}
+				
+				public File generateHtml(File targetPath) {
+					File nPath = new File(targetPath, "_.html");
+					BullsUtil.writeToFile(nPath, getHtml());
+					return nPath;
+				}
+			};
+			dir.addChildren(baseList);
+			baseList.clear();
+			baseList.add(dir);
+		}
 	}
 
 	Pattern rootPathPattern = Pattern.compile("^[a-zA-Z]:");
@@ -110,6 +129,19 @@ public class BullsHtml {
 		}
 	}
 
+	public void generateCloverXml(File o) {
+		Set<SrcDir> parentDirList = new HashSet<SrcDir>();
+		for (SrcFile srcFile : srcFileList) {
+			parentDirList.add(srcFile.parentDir);
+		}
+		StringTemplate template = BullsUtil.getTemplate("clover");
+		template.setAttribute("mtime", System.currentTimeMillis());
+		template.setAttribute("summary", baseList.get(0));
+		template.setAttribute("parentDirList", parentDirList);
+		BullsUtil.writeToFile(new File(o, "clover.xml"), template.toString());
+	}
+
+	
 	/**
 	 * Copy static resources
 	 * 
@@ -125,7 +157,6 @@ public class BullsHtml {
 		BullsUtil.copyResource(outputFolder + "/css/help.css", "css/help.css");
 		BullsUtil.copyResource(outputFolder + "/css/main.css", "css/main.css");
 		BullsUtil.copyResource(outputFolder + "/css/highlight.css", "css/highlight.css");
-		BullsUtil.copyResource(outputFolder + "/css/style.css", "css/style.css");
 
 		BullsUtil.copyResource(outputFolder + "/css/sortabletable.css", "css/sortabletable.css");
 		BullsUtil.copyResource(outputFolder + "/css/source-viewer.css", "css/source-viewer.css");
@@ -194,6 +225,7 @@ public class BullsHtml {
 	 *            output dir
 	 */
 	public void generateHtml(File targetPath) {
+
 		for (SrcDir srcDir : baseList) {
 			srcDir.generateHtml(targetPath);
 			generateChildHtml(targetPath, srcDir);
@@ -233,6 +265,7 @@ public class BullsHtml {
 		StringTemplate template = BullsUtil.getTemplate("frame_summary");
 		File nPath = new File(path, "frame_summary.html");
 
+		template.setAttribute("baseDir", baseList);
 		List<SrcFile> localSrcFileList = new ArrayList<SrcFile>(srcFileList);
 
 		// Sort By Risk
@@ -292,6 +325,7 @@ public class BullsHtml {
 	 */
 	public void generateFileListHtml(File path) {
 		StringTemplate template = BullsUtil.getTemplate("frame_files");
+		Collections.sort(srcFileList);
 		template.setAttribute("srcFileList", srcFileList);
 		BullsUtil.writeToFile(new File(path, "frame_files.html"), template.toString());
 	}
@@ -362,7 +396,8 @@ public class BullsHtml {
 		}
 		BullsHtml.sourceEncoding = Encoding.getEncoding(sourceEncoding);
 		bullshtml.generateHtml(o);
-		// bullshtml.generateCloverXmlFully(o);
+		bullshtml.generateCloverXml(o);
 	}
+
 
 }

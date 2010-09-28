@@ -1,7 +1,7 @@
 $template/header()$
 <h5>Coverage Report - $srcDir.path$ 
-$if(srcDir.parentDir)$
-<a href="$srcDir.parentDir.normalizedPath$.html"><img src='images/upper.png' border="0"/></a>
+$if(srcDir.worthyParent)$
+<a href="$srcDir.worthyParent.normalizedPath$.html"><img src='images/upper.png' border="0"/></a>
 $endif$
 </h5> 
 

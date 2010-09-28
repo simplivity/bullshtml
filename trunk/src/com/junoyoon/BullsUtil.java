@@ -73,7 +73,6 @@ public class BullsUtil {
 		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
 		}
-		System.out.println(fileName);
 		try {
 			InputStream is = BullsUtil.class.getClassLoader().getResourceAsStream(fileName);
 			FileOutputStream fs = new FileOutputStream(toDir);

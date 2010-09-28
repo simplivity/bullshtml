@@ -10,7 +10,8 @@ public class SrcFunction {
 	}
 
 	public SrcFunction init(Element element) {
-		this.name = element.getAttributeValue("name");
+		String name = element.getAttributeValue("name");
+		this.name = name.contains(")") ? name : name + "()";
 		this.branchCount = Integer.parseInt(element.getAttributeValue("d_total"));
 		this.coveredBranchCount = Integer.parseInt(element.getAttributeValue("d_cov"));
 		this.covered = "1".equals(element.getAttributeValue("fn_cov"));
@@ -38,6 +39,18 @@ public class SrcFunction {
 	public static String format = new String("%.1f");
 	public List<SrcDecisionPoint> decisionPoints = new ArrayList<SrcDecisionPoint>();
 
+	public int getCoveredCount() {
+		return covered ? 1 : 0;
+	}
+	
+	public int getComplexity() {
+		int count = 1;
+		for (SrcDecisionPoint decisionPoint : decisionPoints) {
+			count += decisionPoint.decisionType.complexity;
+		}
+		return count;
+	}
+	
 	public String getBranchCoverage() {
 		if (branchCount == 0) {
 			return "N/A";

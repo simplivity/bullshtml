@@ -27,12 +27,12 @@ import org.antlr.stringtemplate.StringTemplate;
  * 
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
-public class SrcDir extends Src implements Comparable<SrcDir>{
+public class SrcDir extends Src implements Comparable<SrcDir> {
 	private static String cloverXmlTemplate;
 
 	public SrcDir(File path) {
 		this.path = path;
-		this.normalizedPath = BullsUtil.normalizePath(path);
+		this.setNormalizedPath(BullsUtil.normalizePath(path));
 	}
 
 	public int fileCount;
@@ -52,7 +52,7 @@ public class SrcDir extends Src implements Comparable<SrcDir>{
 		}
 		return srcDirList;
 	}
-	
+
 	public List<Src> getChildSrcFile() {
 		List<Src> srcList = new ArrayList<Src>();
 		for (Src sub : child) {
@@ -79,7 +79,6 @@ public class SrcDir extends Src implements Comparable<SrcDir>{
 		}
 	}
 
-
 	@Override
 	public boolean isWorthToPrint() {
 		return !BullsHtml.isSingleElement(this);
@@ -94,16 +93,20 @@ public class SrcDir extends Src implements Comparable<SrcDir>{
 		return false;
 	}
 
-	public StringBuffer appendCloverXml(StringBuffer buffer) {
-		for (Src eachDir : child) {
-			if (eachDir instanceof SrcFile) {
-				buffer.append(String.format(cloverXmlTemplate));
-			}
-		}
-		return buffer;
-	}
 
 	public int compareTo(SrcDir o) {
-			return this.path.compareTo(o.path);
+		return this.path.compareTo(o.path);
+	}
+
+	public void addChildren(ArrayList<SrcDir> baseList) {
+		child.addAll(baseList);
+		int fileCount = 0;
+		for (SrcDir eachChild : baseList) {
+			eachChild.parentDir = this;
+			eachChild.incrementParent();
+			fileCount += eachChild.fileCount;
+		}
+		this.fileCount = fileCount;
+
 	}
 }

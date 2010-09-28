@@ -186,15 +186,6 @@ table.source tr.uncovered {
 	background-color: #eeeeee;
 }
 
-
-table.source tr.kwignore {
-	background-color: #ccc;
-}
-
-table.source tr.kwfixed {
-	background-color: #ddf;
-}
-
 table.source tr.kwnone {
 	background-color: #fff;
 }
@@ -207,11 +198,6 @@ table.source tr.kwnone {
 	padding: 10px;
 }
 
-.kwitem {
-	display: inline-block;
-	width: 80px;
-	font-weight: bold;
-}
 
 .uncoveredmark {
 	color:#aaaaaa;
@@ -220,4 +206,24 @@ table.source tr.kwnone {
 .coveredmark {
 	color:#0000ff;
 	font-weight: bold;
+}
+
+.box { 
+	width: 100%; 
+	text-align:center;
+	border-width:thin;
+	font-size: 11px;
+	padding:3px;
+	border-color:#eeeeee;
+	background-color:#eeeeee;
+}
+.smallcovf {
+	font-size: 7px;	
+	color:#ff5555;
+	font-style: italic;
+}
+.smallcovb {
+	font-size: 7px;	
+	color:#5555ff;
+	font-style: italic;
 }

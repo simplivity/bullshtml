@@ -53,5 +53,10 @@ $template/header()$
 </script> 
 
 <div class="separator">&nbsp;</div> 
+$if(srcFile.modified)$
+<div class="box">
+	This file is modified after last coverage measure.
+</div>
+$endif$
 $srcFile.content$
 $template/footer()$
