@@ -18,7 +18,8 @@ package com.junoyoon;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,7 +36,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.apache.commons.io.IOUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -52,10 +52,11 @@ public class BullsHtml {
 	static {
 		OPTS.addOption("e", "encoding", true, "source code encoding.");
 		OPTS.addOption("h", "help", false, "print help");
+		OPTS.addOption("v", "verbose", false, "vebose output mode");
 	}
 
 	/** System default encoding */
-	public static String enc = new java.io.OutputStreamWriter(System.out).getEncoding();
+	public static String enc = Constant.DEFAULT_ENCODING;
 	/** Map b/w path and src */
 	public static Map<File, SrcDir> srcMap = new HashMap<File, SrcDir>();
 	/** top most dir list */
@@ -63,6 +64,7 @@ public class BullsHtml {
 	/** src file list */
 	public static ArrayList<SrcFile> srcFileList = new ArrayList<SrcFile>();
 	public static Encoding sourceEncoding = Encoding.UTF_8;
+	private static boolean verbose;
 
 	/**
 	 * Contrcut Src and Dir List. After calling the method, the static variable
@@ -70,20 +72,26 @@ public class BullsHtml {
 	 * {@link BullsHtml.srcFileList} are constructed.
 	 */
 
+	@SuppressWarnings("serial")
 	public void process() {
-		InputStreamReader reader = null;
 		try {
-			Process process = Runtime.getRuntime().exec("covxml --no-banner");
-			reader = new InputStreamReader(process.getInputStream());
+			String output = BullsUtil.getCmdOutput(new ArrayList<String>() {
+				{
+					add("covxml");
+					add("--no-banner");
+				}
+			});
+			if (output == null) {
+				
+			}
+			StringReader reader = new StringReader(output);
 			processInternal(reader);
 		} catch (Exception e) {
-			BullsHtml.printErrorAndExit(e);
-		} finally {
-			IOUtils.closeQuietly(reader);
+			BullsHtml.printErrorAndExit("While running covxml, A error occurs.\nPlease check bullseyecoverage path is and COVFILE environment variable", e);
 		}
 	}
 
-	public void processInternal(InputStreamReader reader) throws JDOMException, IOException {
+	public void processInternal(Reader reader) throws JDOMException, IOException {
 		SAXBuilder builder = new SAXBuilder(false);
 		Document build = builder.build(reader);
 		Element root = build.getRootElement();
@@ -95,7 +103,7 @@ public class BullsHtml {
 				public String getNormalizedPath() {
 					return "_";
 				}
-				
+
 				public File generateHtml(File targetPath) {
 					File nPath = new File(targetPath, "_.html");
 					BullsUtil.writeToFile(nPath, getHtml());
@@ -135,13 +143,12 @@ public class BullsHtml {
 			parentDirList.add(srcFile.parentDir);
 		}
 		StringTemplate template = BullsUtil.getTemplate("clover");
-		template.setAttribute("mtime", System.currentTimeMillis());
+		template.setAttribute("mtime", System.currentTimeMillis()/1000);
 		template.setAttribute("summary", baseList.get(0));
 		template.setAttribute("parentDirList", parentDirList);
 		BullsUtil.writeToFile(new File(o, "clover.xml"), template.toString());
 	}
 
-	
 	/**
 	 * Copy static resources
 	 * 
@@ -185,6 +192,17 @@ public class BullsHtml {
 		printMessage(output);
 		System.exit(0);
 	}
+	
+	/**
+	 * Print  Message
+	 * 
+	 * @param message
+	 *            message to print
+	 */
+	public static void printMessage(String message) {
+		System.out.println(message);
+	}
+
 
 	/**
 	 * Print Error Message and Exit
@@ -192,8 +210,11 @@ public class BullsHtml {
 	 * @param message
 	 *            message to print
 	 */
-	public static void printMessage(String message) {
-		System.out.println(message);
+	public static void printErrorAndExit(String message, Exception e) {
+		System.err.println(message);
+		if (verbose)
+			e.printStackTrace(System.err);
+		System.exit(-1);
 	}
 
 	/**
@@ -203,7 +224,7 @@ public class BullsHtml {
 	 *            message to print
 	 */
 	public static void printErrorAndExit(String message) {
-		System.err.println(message);
+		System.err.println("ERROR :" + message);
 		System.exit(-1);
 	}
 
@@ -214,6 +235,7 @@ public class BullsHtml {
 	 *            message to print
 	 */
 	public static void printErrorAndExit(Exception e) {
+		System.err.println("ERROR :" + e.getMessage());
 		e.printStackTrace(System.err);
 		System.exit(-1);
 	}
@@ -234,22 +256,6 @@ public class BullsHtml {
 		generateFileListHtml(targetPath);
 		generateMainHtml(targetPath);
 	}
-
-	// private void generateCloverXmlFully(File outputPath) {
-	// CloverXml cloverXml = new CloverXml();
-	// StringBuffer buffer = new StringBuffer();
-	// List<SrcDir> folderList = new ArrayList<SrcDir>(srcMap.values());
-	// Collections.sort(folderList, new Comparator<SrcDir>() {
-	// public int compare(SrcDir arg0, SrcDir arg1) {
-	// return
-	// arg0.path.getAbsolutePath().compareTo(arg1.path.getAbsolutePath());
-	// }
-	// });
-	// for (SrcDir src : folderList) {
-	// src.appendCloverXml(buffer);
-	// }
-	// cloverXml.generateXml(outputPath, buffer);
-	// }
 
 	public static boolean isSingleElement(SrcDir dir) {
 		return (dir.child.size() == 1 && dir.child.get(0) instanceof SrcDir);
@@ -350,25 +356,29 @@ public class BullsHtml {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
 		final CommandLineParser clp = new PosixParser();
 		CommandLine line = null;
 
-		// 선언한 옵션의 포맷에 맞게 인자가 넘어왔는지 확인한다.
+		// parse CLI options
 		try {
 			line = clp.parse(OPTS, args);
 		} catch (ParseException e) {
+			printMessage("Invalid options");
 			usage();
 			return;
 		}
 		String sourceEncoding = enc;
-		// p 옵션이 사용되었으면 값을 가져와 출력한다.
+		// get encoding option
 		if (line.hasOption("e")) {
 			sourceEncoding = line.getOptionValue("e");
 		}
-		// h 옵션이 사용되었으면 usage를 출력한다.
+		// print usage if -h
 		if (line.hasOption("h")) {
 			usage();
+		}
+
+		if (line.hasOption("v")) {
+			verbose = true;
 		}
 
 		String outputPath = ".";
@@ -392,12 +402,11 @@ public class BullsHtml {
 		try {
 			bullshtml.copyResources(outputPath);
 		} catch (Exception e) {
-			printErrorAndExit("The output " + outputPath + " is not writable." + e.toString());
+			printErrorAndExit("The output " + outputPath + " is not writable.", e);
 		}
 		BullsHtml.sourceEncoding = Encoding.getEncoding(sourceEncoding);
 		bullshtml.generateHtml(o);
 		bullshtml.generateCloverXml(o);
 	}
-
 
 }
