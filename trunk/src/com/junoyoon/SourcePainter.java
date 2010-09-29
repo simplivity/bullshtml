@@ -161,7 +161,7 @@ public class SourcePainter {
 		}
 	}
 
-	CustomCppXhtmlRenderer renderer = new CustomCppXhtmlRenderer();
+	private CustomCppXhtmlRenderer renderer = new CustomCppXhtmlRenderer();
 
 	/**
 	 * paint source code which decision point 

@@ -1,5 +1,5 @@
-$template/header()$
-<h5>Coverage Report - $srcFile.path$ <a href="$srcFile.parentDir.normalizedPath$.html"><img src='images/upper.png' border="0"/></a></h5> 
+$template/headerforfile()$
+<h5>Coverage Report - $srcFile.path$ <a href="../$srcFile.parentDir.normalizedPath$.html"><img src='../images/upper.png' border="0"/></a></h5> 
 <br>
 <div class="separator">&nbsp;</div> 
 <table class="report" id="fileList"> 
@@ -46,11 +46,7 @@ $template/header()$
 	</tbody> 
 </table> 
 
-<script type="text/javascript"> 
-	var currentDirTable = new SortableTable(document.getElementById("currentDir"),
-    	["String", "Number", "Percentage", "Percentage", "FormattedNumber"]);
-	currentDirTable.sort(0);
-</script> 
+
 
 <div class="separator">&nbsp;</div> 
 $if(srcFile.modified)$

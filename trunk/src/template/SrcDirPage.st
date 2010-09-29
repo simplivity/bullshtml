@@ -28,11 +28,6 @@ $endif$
 	</tbody> 
 </table> 
 
-<script type="text/javascript"> 
-	var currentDirTable = new SortableTable(document.getElementById("currentDir"),
-    	["String", "Number", "Percentage", "Percentage", "FormattedNumber"]);
-	currentDirTable.sort(0);
-</script> 
 
 <!--- subDir --!>
 $if(first(srcDir.childSrcDir))$
@@ -64,7 +59,7 @@ $if(first(srcDir.childSrcDir))$
 </table> 
 <script type="text/javascript"> 
 	var subDirTable = new SortableTable(document.getElementById("subDirResult"),
-    	["String", "Number", "Percentage", "Percentage", "FormattedNumber"]);
+    	["String", "Number", "Percentage", "Percentage"]);
 	subDirTable.sort(0);
 </script> 
 $endif$
@@ -94,13 +89,13 @@ $if(first(srcDir.childSrcFile))$
 	
 	<tbody> 
 	$srcDir.childSrcFile:{
-		$it:template/SrcFile()$
+		$it:template/SrcFileForDir()$
 	}$
 	</tbody> 
 </table> 
 <script type="text/javascript"> 
 	var fileListTable = new SortableTable(document.getElementById("fileList"),
-    	["String", "Percentage", "Percentage", "FormattedNumber"]);
+    	["String", "Number", "Percentage", "Percentage"]);
 	fileListTable.sort(0);
 </script> 
 $endif$
