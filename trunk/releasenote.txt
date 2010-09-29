@@ -1,0 +1,8 @@
+= BullsHTML Release Note =
+
+* 1.0
+  - Change internal bullseye coverage command call from covbr and covdir to covxml to minimize the process invocations.
+  - Internal structure changes to enhance maintainability.
+  - Beautify Coverage results.
+  - Add full Clover compatible coverage results to be used in CI server.(coverage.xml)
+  - Add options to specify the test.cov(-f test.cov_file_path) and source code encoding(-e encoding name) 
