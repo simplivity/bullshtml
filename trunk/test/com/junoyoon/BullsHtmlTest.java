@@ -31,4 +31,9 @@ public class BullsHtmlTest {
 		assertThat(painter.getColumnString("  hello world", 0, 5), is("  hello "));
 		assertThat(painter.getColumnString(" test world", 4, 0), is("      world"));
 	}
+
+	@Test
+	public void testSystemDefaultEncoding() {
+		System.out.println(java.nio.charset.Charset.defaultCharset().name());
+	}
 }

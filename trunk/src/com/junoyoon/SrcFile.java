@@ -42,7 +42,7 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 	}
 	
 	public boolean isModified() {
-		return this.timestamp < this.path.lastModified();
+		return this.timestamp < (this.path.lastModified()/1000);
 	}
 	
 	public String getUnixStylePath() throws IOException {
@@ -111,7 +111,7 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 		try {
 			return new SourcePainter().paint(path, decisionPoints, BullsHtml.sourceEncoding);
 		} catch (IOException e) {
-			return String.format("%s is not available", this.path);
+			return String.format("<div class='box'>%s is not available.</div>", this.path);
 		}
 	}
 

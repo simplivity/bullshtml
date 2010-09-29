@@ -89,31 +89,25 @@ public class BullsUtil {
 	 * 
 	 * @param cmd
 	 * @return
+	 * @throws IOException
 	 */
-	public static String getCmdOutput(List<String> cmd) {
+	public static String getCmdOutput(List<String> cmd) throws IOException {
 		ProcessBuilder builder = new ProcessBuilder();
 		builder.command().addAll(cmd);
 		builder.redirectErrorStream(true);
 		StringBuilder result = new StringBuilder(1024);
-		try {
-			Process proc = builder.start();
-			InputStreamReader inputStream = new InputStreamReader(proc.getInputStream());
-			BufferedReader br = new BufferedReader(inputStream);
-			String buffer;
-			int i = 0;
-			while ((buffer = br.readLine()) != null) {
-				if (++i < 6)
-					buffer = buffer.replace("charset=us-ascii", "charset=euc-kr");
-				result.append(buffer).append("\n");
-			}
-			br.close();
-			if (i < 11) {
-				return null;
-			}
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+		Process proc = builder.start();
+		int i = 0;
+		for (Object eachLineObject : IOUtils.readLines(proc.getInputStream())) {
+			String eachLine = (String) eachLineObject;
+			if (++i < 6)
+				eachLine = eachLine.replace("charset=us-ascii", "charset=" + Constant.DEFAULT_ENCODING);
+			result.append(eachLine).append("\n");
+		}
+		if (i < 11) {
 			return null;
 		}
+
 		return result.toString();
 	}
 

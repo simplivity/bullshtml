@@ -12,7 +12,6 @@ import org.apache.commons.io.IOUtils;
 
 import com.uwyn.jhighlight.highlighter.ExplicitStateHighlighter;
 import com.uwyn.jhighlight.renderer.CppXhtmlRenderer;
-import com.uwyn.jhighlight.renderer.Renderer;
 import com.uwyn.jhighlight.tools.StringUtils;
 
 /**
@@ -22,12 +21,7 @@ import com.uwyn.jhighlight.tools.StringUtils;
 public class SourcePainter {
 
 	/**
-	 * 생성자
-	 * 
-	 * @param build
-	 *            {@link Build} 인스턴스
-	 * @param problems
-	 *            Klocwork 결과
+	 * Constructor
 	 */
 	public SourcePainter() {
 
@@ -55,11 +49,7 @@ public class SourcePainter {
 	}
 
 	/**
-	 * 파일 이름을 이용하여 Renderer를 리턴한다.
-	 * 
-	 * @param filename
-	 *            파일 이름
-	 * @return {@link Renderer}
+	 * Custom Renderer which enables line speration.
 	 */
 	class CustomCppXhtmlRenderer extends CppXhtmlRenderer {
 		String token;
@@ -174,22 +164,8 @@ public class SourcePainter {
 	CustomCppXhtmlRenderer renderer = new CustomCppXhtmlRenderer();
 
 	/**
-	 * 소스 파일을 읽어 Klocwork 결과를 포함한 HTML로 변환하여 리턴한다.
-	 * 
-	 * @param decisionPoints
-	 * 
-	 * @param encoding
-	 * 
-	 * @param filename
-	 *            소스 파일 이름
-	 * @param problemLines
-	 *            라인 정보
-	 * @param encoding
-	 *            파일 인코딩
-	 * @return HTML
-	 * @throws IOException
-	 *             파일에 저장할 수 없는 경우 발생하는 예외
-	 */
+	 * paint source code which decision point 
+	 **/
 	public String paint(File file, List<SrcDecisionPoint> decisionPoints, Encoding encoding) throws IOException {
 		InputStream inputStream = new FileInputStream(file);
 		PeekingIterator<SrcDecisionPoint> peekingIterator = BullsUtil.peekingIterator(decisionPoints.iterator());
