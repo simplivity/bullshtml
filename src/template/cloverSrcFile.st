@@ -1,4 +1,4 @@
-<file path="$it.unixStylePath$" name="$it.name$">
+<file path="$it.unixStylePath$" name="$it.normalizedName$">
     <metrics coveredelements="$it.coveredElementCount$" elements="$it.elementCount$" coveredconditionals="$it.coveredBranchCount$" conditionals="$it.branchCount$" coveredmethods="$it.coveredFunctionCount$" methods="$it.functionCount$" coveredstatements="0" statements="0" />
 $it.functions:{ function |
     <line num="$function.line$" signature="$function.name$" type="method" complexity="$function.complexity$" count="$function.coveredCount$"/>

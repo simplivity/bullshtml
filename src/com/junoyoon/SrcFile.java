@@ -34,21 +34,22 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 	public List<SrcFunction> functions = new ArrayList<SrcFunction>();
 	public List<SrcDecisionPoint> decisionPoints = new ArrayList<SrcDecisionPoint>();
 	public long timestamp;
+
 	public SrcFile() {
 	}
 
 	public int getFunctionCount() {
 		return functions.size();
 	}
-	
+
 	public boolean isModified() {
-		return this.timestamp < (this.path.lastModified()/1000);
+		return this.timestamp < (this.path.lastModified() / 1000);
 	}
-	
+
 	public String getUnixStylePath() throws IOException {
 		return path.getCanonicalPath().replace("\\", "/");
 	}
-	
+
 	public SrcFile init(File dir, Element element) {
 		String name = element.getAttributeValue("name");
 		try {
@@ -56,14 +57,14 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.setNormalizedPath(BullsUtil.normalizePath(this.path));
-		super.coveredFunctionCount = Integer.parseInt(element.getAttributeValue("fn_cov"));
-		super.functionCount = Integer.parseInt(element.getAttributeValue("fn_total"));
-		super.coveredBranchCount = Integer.parseInt(element.getAttributeValue("d_cov"));
-		super.branchCount = Integer.parseInt(element.getAttributeValue("d_total"));
+		this.setNormalizedPath(BullsUtil.normalizePath(this.path.getParentFile()) + File.separator + BullsUtil.normalizePath(this.path.getName()));
+		this.coveredFunctionCount = Integer.parseInt(element.getAttributeValue("fn_cov"));
+		this.functionCount = Integer.parseInt(element.getAttributeValue("fn_total"));
+		this.coveredBranchCount = Integer.parseInt(element.getAttributeValue("d_cov"));
+		this.branchCount = Integer.parseInt(element.getAttributeValue("d_total"));
 		this.timestamp = Long.parseLong(element.getAttributeValue("mtime"));
-		risk = branchCount - coveredBranchCount;
-		registerParent(dir, this);
+		this.risk = branchCount - coveredBranchCount;
+		registerParent(dir);
 		for (Object elementObject : element.getChildren("fn")) {
 			Element fnElement = (Element) elementObject;
 			SrcFunction srcFunction = new SrcFunction();
@@ -81,14 +82,14 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 	 * @param paths
 	 * @param srcFile
 	 */
-	public void registerParent(File path, Src srcFile) {
-		Src src = srcFile;
+	private void registerParent(File path) {
+		Src src = this;
 		while (path != null) {
 			SrcDir srcDir = (SrcDir) BullsHtml.srcMap.get(path);
 			// If not, create one.
 			if (srcDir == null) {
-
-				srcDir = new SrcDir(path);
+				srcDir = new SrcDir();
+				srcDir.init(path);
 				BullsHtml.srcMap.put(path, srcDir);
 				srcDir.child.add(src);
 				src.parentDir = srcDir;

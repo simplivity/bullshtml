@@ -52,6 +52,7 @@ public class BullsHtml {
 	static {
 		OPTS.addOption("e", "encoding", true, "source code encoding.");
 		OPTS.addOption("h", "help", false, "print help");
+		OPTS.addOption("f", "help", true, "assign test.cov file");
 		OPTS.addOption("v", "verbose", false, "vebose output mode");
 	}
 
@@ -70,19 +71,24 @@ public class BullsHtml {
 	 * Contrcut Src and Dir List. After calling the method, the static variable
 	 * {@link BullsHtml.srcMap}, {@link BullsHtml.baseList},
 	 * {@link BullsHtml.srcFileList} are constructed.
+	 * @param covfile 
 	 */
 
 	@SuppressWarnings("serial")
-	public void process() {
+	public void process(final String covfile) {
 		try {
 			String output = BullsUtil.getCmdOutput(new ArrayList<String>() {
 				{
 					add("covxml");
 					add("--no-banner");
+					if (covfile != null) {
+						add("-f");
+						add(covfile);
+					}
 				}
 			});
 			if (output == null) {
-				
+				BullsHtml.printErrorAndExit("While running covxml, A error occurs.\nPlease check bullseyecoverage path is and COVFILE environment variable");				
 			}
 			StringReader reader = new StringReader(output);
 			processInternal(reader);
@@ -98,7 +104,7 @@ public class BullsHtml {
 		File rootDir = new File(root.getAttributeValue("dir"));
 		buildSrcFileList(srcFileList, root, rootDir);
 		if (baseList.size() > 1) {
-			SrcDir dir = new SrcDir(new File("/")) {
+			SrcDir dir = new SrcDir() {
 				@Override
 				public String getNormalizedPath() {
 					return "_";
@@ -110,6 +116,7 @@ public class BullsHtml {
 					return nPath;
 				}
 			};
+			dir.init(new File("/"));
 			dir.addChildren(baseList);
 			baseList.clear();
 			baseList.add(dir);
@@ -184,10 +191,7 @@ public class BullsHtml {
 	 * Show usage
 	 */
 	private static void usage() {
-		String file = "com/junoyoon/usage_win32.txt";
-		if (!System.getProperty("os.name").contains("Windows")) {
-			file = "com/junoyoon/usage_linux.txt";
-		}
+		String file = "com/junoyoon/usage.txt";
 		String output = BullsUtil.loadResourceContent(file);
 		printMessage(output);
 		System.exit(0);
@@ -380,6 +384,13 @@ public class BullsHtml {
 		if (line.hasOption("v")) {
 			verbose = true;
 		}
+		String covfile = null;
+		if (line.hasOption("f")) {
+			covfile = line.getOptionValue("f");
+			if (!new File(covfile).exists()) {
+				printErrorAndExit(covfile + " does not exists");
+			}
+		}
 
 		String outputPath = ".";
 
@@ -398,7 +409,7 @@ public class BullsHtml {
 			printErrorAndExit(outputPath + " is not writable.");
 		}
 		BullsHtml bullshtml = new BullsHtml();
-		bullshtml.process();
+		bullshtml.process(covfile);
 		try {
 			bullshtml.copyResources(outputPath);
 		} catch (Exception e) {

@@ -48,6 +48,9 @@ public abstract class Src {
 		return path.getName();
 	}
 	
+	public String getNormalizedName() {
+		return BullsUtil.normalizePath(path.getName());
+	}
 
 
 	public String getBranchCoverageString() {

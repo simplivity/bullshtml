@@ -7,8 +7,8 @@ public enum DecisionCoverType {
 	ONLY_FALSE("none", "<span class='uncoveredmark'>T</span>", "uncovered", 0, 0),
 	FALSE("false", "<span class='uncoveredmark'>T</span><span class='coveredmark'>F</span>", "halfcovered", 0, 1), 
 	FULL("full", "<span class='coveredmark'>TF</span>", "covered", 1, 1), 
-	FUNCTION_CALLED("true", "<img src='images/check_icon.png'>", "covered", 1, 0), 
-	FUNCTION_UNCALLED("true", "<img src='images/uncheck_icon.png'>", "uncovered", 0, 1);
+	FUNCTION_CALLED("true", "<img src='../images/check_icon.png'>", "covered", 1, 0), 
+	FUNCTION_UNCALLED("true", "<img src='../images/uncheck_icon.png'>", "uncovered", 0, 1);
 
 	public final String name;
 	private final String html;

@@ -29,9 +29,13 @@ import org.antlr.stringtemplate.StringTemplate;
  */
 public class SrcDir extends Src implements Comparable<SrcDir> {
 
-	public SrcDir(File path) {
+	public SrcDir() {
+	}
+	
+	public SrcDir init(File path) {
 		this.path = path;
 		this.setNormalizedPath(BullsUtil.normalizePath(path));
+		return this;
 	}
 
 	public int fileCount;
@@ -106,6 +110,5 @@ public class SrcDir extends Src implements Comparable<SrcDir> {
 			fileCount += eachChild.fileCount;
 		}
 		this.fileCount = fileCount;
-
 	}
 }

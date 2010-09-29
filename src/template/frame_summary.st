@@ -33,16 +33,16 @@ $template/header()$
 </thead> 
 <tbody> 
 	$srcFileList:{
-		$it:template/SrcFile()$
+		$it:template/SrcFileForDir()$
 	}$
 </tbody>
 </table>
 <script type="text/javascript"> 
 var packageTable = new SortableTable(document.getElementById("riskyFiles"),
-    ["String", "Percentage", "Percentage"]);
+    ["String", "Number", "Percentage", "Percentage"]);
 </script> 
 <div class="separator">&nbsp;</div> 
-<table class="report" id="packageResults"> 
+<table class="report" id="directories"> 
 <thead>
 	<tr>
 		<td class="heading" width="50%">Directories</td>
@@ -58,8 +58,8 @@ $dirList:{
 </tbody>
 </table>
 <script type="text/javascript"> 
-var packageTable = new SortableTable(document.getElementById("packageResults"),
-    ["String", "Percentage", "Percentage"]);
+var packageTable = new SortableTable(document.getElementById("directories"),
+    ["String", "Number", "Percentage", "Percentage"]);
 
 </script> 
 $template/footer()$

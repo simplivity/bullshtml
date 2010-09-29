@@ -49,7 +49,21 @@ public class BullsUtil {
 	 * @return normalized path
 	 */
 	public static String normalizePath(File path) {
-		return path.getAbsolutePath().replace(" ", "_").replace(":", "_").replace("\\", "_").replace("/", "_");
+		try {
+			return normalizePath(path.getCanonicalPath());
+		} catch (IOException e) {
+			return normalizePath(path.getAbsolutePath());
+		}
+	}
+
+	/**
+	 * Make path to file form.
+	 * 
+	 * @param path
+	 * @return normalized path
+	 */
+	public static String normalizePath(String path) {
+		return path.replace(" ", "_").replace(":", "_").replace("\\", "_").replace("/", "_").replace(".", "_");
 	}
 
 	/**
@@ -97,17 +111,15 @@ public class BullsUtil {
 		builder.redirectErrorStream(true);
 		StringBuilder result = new StringBuilder(1024);
 		Process proc = builder.start();
-		int i = 0;
+		boolean firstLine = true;
 		for (Object eachLineObject : IOUtils.readLines(proc.getInputStream())) {
 			String eachLine = (String) eachLineObject;
-			if (++i < 6)
+			if (firstLine) {
 				eachLine = eachLine.replace("charset=us-ascii", "charset=" + Constant.DEFAULT_ENCODING);
+				firstLine = false;
+			}
 			result.append(eachLine).append("\n");
 		}
-		if (i < 11) {
-			return null;
-		}
-
 		return result.toString();
 	}
 
