@@ -18,6 +18,8 @@ package com.junoyoon;
 
 import java.io.File;
 
+import com.uwyn.jhighlight.tools.StringUtils;
+
 /**
  * Base class for src file and directory
  * 
@@ -62,6 +64,14 @@ public abstract class Src {
 
 	private float getBranchCoverage() {
 		return ((float) coveredBranchCount / branchCount) * 100;
+	}
+	
+	public String getXmlEncodedNormalizedName() {
+		return StringUtils.encodeHtml(getNormalizedName());
+	}
+	
+	public String getXmlEncodedName() {
+		return StringUtils.encodeHtml(getName());
 	}
 
 	public String getBranchCoverageStyle() {

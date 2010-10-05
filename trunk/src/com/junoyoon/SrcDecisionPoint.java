@@ -18,7 +18,8 @@ public class SrcDecisionPoint {
 		this(line, decisionCoverType, decisionType);
 		this.name = name;
 	}
-
+	
+	
 	public SrcDecisionPoint(int line, DecisionCoverType decisionCoverType, DecisionType decisionType) {
 		super();
 		this.line = line;

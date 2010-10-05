@@ -8,6 +8,8 @@ import java.net.URISyntaxException;
 import org.jdom.JDOMException;
 import org.junit.Test;
 
+import com.uwyn.jhighlight.tools.StringUtils;
+
 import static org.hamcrest.CoreMatchers.is;
 
 import static org.junit.Assert.assertThat;
@@ -35,5 +37,12 @@ public class BullsHtmlTest {
 	@Test
 	public void testSystemDefaultEncoding() {
 		System.out.println(java.nio.charset.Charset.defaultCharset().name());
+	}
+	
+	@Test
+	public void testEncodedName( ) {
+		SrcFunction function = new SrcFunction();
+		function.name = "&hello<world>";
+		assertThat(function.getXmlEncodedName(), is("&amp;hello&lt;world&gt;"));
 	}
 }
