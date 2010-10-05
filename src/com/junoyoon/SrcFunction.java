@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.jdom.Element;
 
+import com.uwyn.jhighlight.tools.StringUtils;
+
 public class SrcFunction {
 	public SrcFunction() {
 	}
@@ -42,7 +44,11 @@ public class SrcFunction {
 	public int getCoveredCount() {
 		return covered ? 1 : 0;
 	}
-	
+
+	public String getXmlEncodedName() {
+		return StringUtils.encodeHtml(this.name);
+	}
+
 	public int getComplexity() {
 		int count = 1;
 		for (SrcDecisionPoint decisionPoint : decisionPoints) {
@@ -50,7 +56,7 @@ public class SrcFunction {
 		}
 		return count;
 	}
-	
+
 	public String getBranchCoverage() {
 		if (branchCount == 0) {
 			return "N/A";
