@@ -24,6 +24,8 @@ import java.util.List;
 import org.antlr.stringtemplate.StringTemplate;
 import org.jdom.Element;
 
+import com.uwyn.jhighlight.tools.StringUtils;
+
 /**
  * File coverage information
  * 
@@ -50,6 +52,10 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 		return path.getCanonicalPath().replace("\\", "/");
 	}
 
+	public String getXmlEncodedUnixStylePath() throws IOException {
+		return StringUtils.encodeHtml(getUnixStylePath());
+	}
+	
 	public SrcFile init(File dir, Element element) {
 		String name = element.getAttributeValue("name");
 		try {

@@ -103,6 +103,7 @@ public class BullsHtml {
 		Element root = build.getRootElement();
 		File rootDir = new File(root.getAttributeValue("dir"));
 		buildSrcFileList(srcFileList, root, rootDir);
+		
 		if (baseList.size() > 1) {
 			SrcDir dir = new SrcDir() {
 				@Override
@@ -120,6 +121,12 @@ public class BullsHtml {
 			dir.addChildren(baseList);
 			baseList.clear();
 			baseList.add(dir);
+		} else if (baseList.size() == 1) {
+			SrcDir dir = baseList.get(0);
+			while (!dir.isWorthToPrint()) {
+				dir = (SrcDir) dir.child.get(0);
+			}
+			baseList.set(0, dir);
 		}
 	}
 

@@ -66,6 +66,10 @@ public abstract class Src {
 		return ((float) coveredBranchCount / branchCount) * 100;
 	}
 	
+	public String getXmlEncodedNormalizedPath() {
+		return StringUtils.encodeHtml(getNormalizedPath());
+	}
+	
 	public String getXmlEncodedNormalizedName() {
 		return StringUtils.encodeHtml(getNormalizedName());
 	}
