@@ -171,26 +171,26 @@ public class BullsHtml {
 	 * @throws IOException
 	 */
 	public void copyResources(String outputFolder) throws IOException {
-		BullsUtil.copyResource(outputFolder + "/js/popup.js", "js/popup.js");
-		BullsUtil.copyResource(outputFolder + "/js/sortabletable.js", "js/sortabletable.js");
-		BullsUtil.copyResource(outputFolder + "/js/customsorttypes.js", "js/customsorttypes.js");
-		BullsUtil.copyResource(outputFolder + "/js/stringbuilder.js", "js/stringbuilder.js");
-		BullsUtil.copyResource(outputFolder + "/css/help.css", "css/help.css");
-		BullsUtil.copyResource(outputFolder + "/css/main.css", "css/main.css");
-		BullsUtil.copyResource(outputFolder + "/css/highlight.css", "css/highlight.css");
+		BullsUtil.copyResource(outputFolder + "/js/popup.js", "js_resources/popup.js");
+		BullsUtil.copyResource(outputFolder + "/js/sortabletable.js", "js_resources/sortabletable.js");
+		BullsUtil.copyResource(outputFolder + "/js/customsorttypes.js", "js_resources/customsorttypes.js");
+		BullsUtil.copyResource(outputFolder + "/js/stringbuilder.js", "js_resources/stringbuilder.js");
+		BullsUtil.copyResource(outputFolder + "/css/help.css", "css_resources/help.css");
+		BullsUtil.copyResource(outputFolder + "/css/main.css", "css_resources/main.css");
+		BullsUtil.copyResource(outputFolder + "/css/highlight.css", "css_resources/highlight.css");
 
-		BullsUtil.copyResource(outputFolder + "/css/sortabletable.css", "css/sortabletable.css");
-		BullsUtil.copyResource(outputFolder + "/css/source-viewer.css", "css/source-viewer.css");
-		BullsUtil.copyResource(outputFolder + "/css/tooltip.css", "css/tooltip.css");
-		BullsUtil.copyResource(outputFolder + "/images/upper.png", "images/upper.png");
-		BullsUtil.copyResource(outputFolder + "/images/check_icon.png", "images/check_icon.png");
-		BullsUtil.copyResource(outputFolder + "/images/uncheck_icon.png", "images/uncheck_icon.png");
+		BullsUtil.copyResource(outputFolder + "/css/sortabletable.css", "css_resources/sortabletable.css");
+		BullsUtil.copyResource(outputFolder + "/css/source-viewer.css", "css_resources/source-viewer.css");
+		BullsUtil.copyResource(outputFolder + "/css/tooltip.css", "css_resources/tooltip.css");
+		BullsUtil.copyResource(outputFolder + "/images/upper.png", "images_resources/upper.png");
+		BullsUtil.copyResource(outputFolder + "/images/check_icon.png", "images_resources/check_icon.png");
+		BullsUtil.copyResource(outputFolder + "/images/uncheck_icon.png", "images_resources/uncheck_icon.png");
 
-		BullsUtil.copyResource(outputFolder + "/images/blank.png", "images/blank.png");
-		BullsUtil.copyResource(outputFolder + "/images/downsimple.png", "images/downsimple.png");
-		BullsUtil.copyResource(outputFolder + "/images/upsimple.png", "images/upsimple.png");
-		BullsUtil.copyResource(outputFolder + "/index.html", "html/index.html");
-		BullsUtil.copyResource(outputFolder + "/help.html", "html/help.html");
+		BullsUtil.copyResource(outputFolder + "/images/blank.png", "images_resources/blank.png");
+		BullsUtil.copyResource(outputFolder + "/images/downsimple.png", "images_resources/downsimple.png");
+		BullsUtil.copyResource(outputFolder + "/images/upsimple.png", "images_resources/upsimple.png");
+		BullsUtil.copyResource(outputFolder + "/index.html", "html_resources/index.html");
+		BullsUtil.copyResource(outputFolder + "/help.html", "html_resources/help.html");
 
 	}
 
