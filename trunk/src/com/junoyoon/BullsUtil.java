@@ -88,7 +88,7 @@ public class BullsUtil {
 			file.getParentFile().mkdirs();
 		}
 		try {
-			InputStream is = BullsUtil.class.getClassLoader().getResourceAsStream(fileName);
+			InputStream is = BullsUtil.class.getClassLoader().getResourceAsStream(fileName);			
 			FileOutputStream fs = new FileOutputStream(toDir);
 			IOUtils.copy(is, fs);
 			IOUtils.closeQuietly(is);
