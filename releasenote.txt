@@ -1,4 +1,8 @@
 = BullsHTML Release Note =
+
+* 1.0.2(2010.10.28)
+  - Fix bugs which doesn't generate css/javascript resources.
+
 * 1.0.1(2010.10.08)
   - Increase compatibility for clover.
 
