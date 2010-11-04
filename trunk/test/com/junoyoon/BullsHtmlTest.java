@@ -26,6 +26,18 @@ public class BullsHtmlTest {
 		bullsHtml.copyResources("output");
 		bullsHtml.generateCloverXml(new File("output"));
 	}
+	
+	@Test
+	public void testProcessInternal2() throws JDOMException, IOException {
+		File file = new File("test/output.xml");
+		FileReader reader = new FileReader(file);
+		BullsHtml bullsHtml = new BullsHtml();
+		bullsHtml.processInternal(reader);
+		new File("output").mkdir();
+		for (SrcDir srcDir : BullsHtml.baseList) {
+			System.out.println(srcDir.path);
+		}
+	}
 
 	@Test
 	public void testColumnString() throws URISyntaxException {
