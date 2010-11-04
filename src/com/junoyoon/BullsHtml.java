@@ -130,7 +130,7 @@ public class BullsHtml {
 		}
 	}
 
-	Pattern rootPathPattern = Pattern.compile("^[a-zA-Z]:");
+	Pattern rootPathPattern = Pattern.compile("^([a-zA-Z]:|/)");
 
 	private void buildSrcFileList(ArrayList<SrcFile> srcFileList, Element eachFolder, File baseDir) {
 		try {
