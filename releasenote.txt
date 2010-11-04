@@ -1,18 +1,18 @@
 = BullsHTML Release Note =
 
-* 1.0.3(2010.11.04)
-  - Fix a bug which dosn't recognize linux absolute path.
-  
-* 1.0.2(2010.10.28)
-  - Fix a bug which doesn't generate css/javascript resources.
-
-* 1.0.1(2010.10.08)
-  - Increase compatibility for clover.
-
-* 1.0
-  - Change internal bullseye coverage command call from covbr and covdir to covxml to minimize the process invocations.
-    * More than 10 times faster.
-  - Internal structure changes to enhance maintainability.
-  - Beautify Coverage results.
-  - Add full Clover compatible coverage results to be used in CI server.(coverage.xml)
-  - Add options to specify the test.cov(-f test.cov_file_path) and source code encoding(-e encoding name) 
+	* 1.0.3(2010.11.04)
+	  - Fix a bug which doesn't recognize linux absolute path.
+	  
+	* 1.0.2(2010.10.28)
+	  - Fix a bug which doesn't generate css/javascript resources.
+	
+	* 1.0.1(2010.10.08)
+	  - Increase compatibility for clover.
+	
+	* 1.0
+	  - Change internal bullseye coverage command call from covbr and covdir to covxml to minimize the process invocations.
+	    * More than 10 times faster.
+	  - Internal structure changes to enhance maintainability.
+	  - Beautify Coverage results.
+	  - Add full Clover compatible coverage results to be used in CI server.(coverage.xml)
+	  - Add options to specify the test.cov(-f test.cov_file_path) and source code encoding(-e encoding name) 
