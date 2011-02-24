@@ -8,9 +8,9 @@ import java.net.URISyntaxException;
 import org.jdom.JDOMException;
 import org.junit.Test;
 
-import com.uwyn.jhighlight.tools.StringUtils;
-
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 
 import static org.junit.Assert.assertThat;
 
@@ -21,12 +21,20 @@ public class BullsHtmlTest {
 		FileReader reader = new FileReader(file);
 		BullsHtml bullsHtml = new BullsHtml();
 		bullsHtml.processInternal(reader);
-		new File("output").mkdir();
-		bullsHtml.generateHtml(new File("output"));
+		File o = new File("output");
+		o.mkdir();
+		bullsHtml.generateHtml(o);
+		assertThat(o.exists(), is(true));
+		assertThat(new File(o, "index.html").exists(), is(true));
 		bullsHtml.copyResources("output");
-		bullsHtml.generateCloverXml(new File("output"));
+		assertThat(new File(o, "js").exists(), is(true));
+		assertThat(new File(o, "js/popup.js").exists(), is(true));
+		bullsHtml.generateCloverXml(o);
+		assertThat(new File(o, "clover.xml").exists(), is(true));
+		assertThat(new File(o, "clover.xml").length(), not(0L));
+
 	}
-	
+
 	@Test
 	public void testProcessInternal2() throws JDOMException, IOException {
 		File file = new File("test/output.xml");
@@ -35,7 +43,7 @@ public class BullsHtmlTest {
 		bullsHtml.processInternal(reader);
 		new File("output").mkdir();
 		for (SrcDir srcDir : BullsHtml.baseList) {
-			System.out.println(srcDir.path);
+			assertThat(srcDir.path, notNullValue());
 		}
 	}
 
@@ -50,9 +58,9 @@ public class BullsHtmlTest {
 	public void testSystemDefaultEncoding() {
 		System.out.println(java.nio.charset.Charset.defaultCharset().name());
 	}
-	
+
 	@Test
-	public void testEncodedName( ) {
+	public void testEncodedName() {
 		SrcFunction function = new SrcFunction();
 		function.name = "&hello<world>";
 		assertThat(function.getXmlEncodedName(), is("&amp;hello&lt;world&gt;"));
