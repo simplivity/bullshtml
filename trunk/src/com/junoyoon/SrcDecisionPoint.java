@@ -18,8 +18,7 @@ public class SrcDecisionPoint {
 		this(line, decisionCoverType, decisionType);
 		this.name = name;
 	}
-	
-	
+
 	public SrcDecisionPoint(int line, DecisionCoverType decisionCoverType, DecisionType decisionType) {
 		super();
 		this.line = line;
@@ -45,5 +44,10 @@ public class SrcDecisionPoint {
 			point.sequence = element.getAttributeValue("seq") != null;
 		}
 		return point;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%d %s %s %d %s", line, decisionCoverType.name, decisionType.name, column, name);
 	}
 }

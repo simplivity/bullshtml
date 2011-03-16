@@ -63,7 +63,7 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.setNormalizedPath(BullsUtil.normalizePath(this.path.getParentFile()) + File.separator + BullsUtil.normalizePath(this.path.getName()));
+		this.setNormalizedPath(BullsUtil.normalizePath(this.path.getParentFile()) + "/" + BullsUtil.normalizePath(this.path.getName()));
 		this.coveredFunctionCount = Integer.parseInt(element.getAttributeValue("fn_cov"));
 		this.functionCount = Integer.parseInt(element.getAttributeValue("fn_total"));
 		this.coveredBranchCount = Integer.parseInt(element.getAttributeValue("d_cov"));
@@ -71,10 +71,15 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 		this.timestamp = Long.parseLong(element.getAttributeValue("mtime"));
 		this.risk = branchCount - coveredBranchCount;
 		registerParent(dir);
-		for (Object elementObject : element.getChildren("fn")) {
+		
+		for (Object elementObject : element.getChildren()) {
+			
 			Element fnElement = (Element) elementObject;
+			if (!fnElement.getName().equals("fn"))
+				continue;
 			SrcFunction srcFunction = new SrcFunction();
 			functions.add(srcFunction.init(fnElement));
+			
 			decisionPoints.add(new SrcFunctionDecisionPoint(srcFunction.line, srcFunction.covered ? DecisionCoverType.FUNCTION_CALLED
 					: DecisionCoverType.FUNCTION_UNCALLED, DecisionType.FUNCTION, srcFunction.name));
 			decisionPoints.addAll(srcFunction.decisionPoints);
@@ -115,6 +120,7 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 	}
 
 	public String getContent() {
+
 		try {
 			return new SourcePainter().paint(path, decisionPoints, BullsHtml.sourceEncoding);
 		} catch (IOException e) {
