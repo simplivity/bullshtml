@@ -18,8 +18,10 @@ public class SrcFunction {
 		this.coveredBranchCount = Integer.parseInt(element.getAttributeValue("d_cov"));
 		this.covered = "1".equals(element.getAttributeValue("fn_cov"));
 		boolean isFirst = true;
-		for (Object elementObject : element.getChildren("probe")) {
+		for (Object elementObject : element.getChildren()) {
 			Element eachProbe = (Element) elementObject;
+			if (!eachProbe.getName().equals("probe"))
+				continue;
 			if (isFirst) {
 				isFirst = false;
 				line = Integer.parseInt(eachProbe.getAttributeValue("line"));
