@@ -1,17 +1,16 @@
 /**
- Copyright 2008 JunHo Yoon
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright (C) 2009 JunHo Yoon
+ *
+ * bullshtml is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2 of the License,
+ * or (at your option) any later version.
+ *
+ * bullshtml is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
  */
 
 package com.junoyoon;
@@ -50,10 +49,10 @@ public class BullsHtml {
 
 	private static final Options OPTS = new Options();
 	static {
-		OPTS.addOption("e", "encoding", true, "source code encoding.");
-		OPTS.addOption("h", "help", false, "print help");
-		OPTS.addOption("f", "help", true, "assign test.cov file");
-		OPTS.addOption("v", "verbose", false, "vebose output mode");
+		BullsHtml.OPTS.addOption("e", "encoding", true, "source code encoding.");
+		BullsHtml.OPTS.addOption("h", "help", false, "print help");
+		BullsHtml.OPTS.addOption("f", "help", true, "assign test.cov file");
+		BullsHtml.OPTS.addOption("v", "verbose", false, "vebose output mode");
 	}
 
 	/** System default encoding */
@@ -71,7 +70,8 @@ public class BullsHtml {
 	 * Contrcut Src and Dir List. After calling the method, the static variable
 	 * {@link BullsHtml.srcMap}, {@link BullsHtml.baseList},
 	 * {@link BullsHtml.srcFileList} are constructed.
-	 * @param covfile 
+	 * 
+	 * @param covfile
 	 */
 
 	@SuppressWarnings("serial")
@@ -88,12 +88,14 @@ public class BullsHtml {
 				}
 			});
 			if (output == null) {
-				BullsHtml.printErrorAndExit("While running covxml, A error occurs.\nPlease check bullseyecoverage path is and COVFILE environment variable");				
+				BullsHtml
+					.printErrorAndExit("While running covxml, A error occurs.\nPlease check bullseyecoverage path is and COVFILE environment variable");
 			}
 			StringReader reader = new StringReader(output);
 			processInternal(reader);
 		} catch (Exception e) {
-			BullsHtml.printErrorAndExit("While running covxml, A error occurs.\nPlease check bullseyecoverage path is and COVFILE environment variable", e);
+			BullsHtml.printErrorAndExit(
+				"While running covxml, A error occurs.\nPlease check bullseyecoverage path is and COVFILE environment variable", e);
 		}
 	}
 
@@ -102,15 +104,16 @@ public class BullsHtml {
 		Document build = builder.build(reader);
 		Element root = build.getRootElement();
 		File rootDir = new File(root.getAttributeValue("dir"));
-		buildSrcFileList(srcFileList, root, rootDir);
-		
-		if (baseList.size() > 1) {
+		buildSrcFileList(BullsHtml.srcFileList, root, rootDir);
+
+		if (BullsHtml.baseList.size() > 1) {
 			SrcDir dir = new SrcDir() {
 				@Override
 				public String getNormalizedPath() {
 					return "_";
 				}
 
+				@Override
 				public File generateHtml(File targetPath) {
 					File nPath = new File(targetPath, "_.html");
 					BullsUtil.writeToFile(nPath, getHtml());
@@ -118,15 +121,15 @@ public class BullsHtml {
 				}
 			};
 			dir.init(new File("/"));
-			dir.addChildren(baseList);
-			baseList.clear();
-			baseList.add(dir);
-		} else if (baseList.size() == 1) {
-			SrcDir dir = baseList.get(0);
+			dir.addChildren(BullsHtml.baseList);
+			BullsHtml.baseList.clear();
+			BullsHtml.baseList.add(dir);
+		} else if (BullsHtml.baseList.size() == 1) {
+			SrcDir dir = BullsHtml.baseList.get(0);
 			while (!dir.isWorthToPrint()) {
 				dir = (SrcDir) dir.child.get(0);
 			}
-			baseList.set(0, dir);
+			BullsHtml.baseList.set(0, dir);
 		}
 	}
 
@@ -143,7 +146,7 @@ public class BullsHtml {
 			String name = element.getName();
 			if ("folder".equals(name)) {
 				String newFolderName = element.getAttributeValue("name");
-				File newFile = rootPathPattern.matcher(newFolderName).find() ? new File(newFolderName) : new File(baseDir, newFolderName);
+				File newFile = this.rootPathPattern.matcher(newFolderName).find() ? new File(newFolderName) : new File(baseDir, newFolderName);
 				buildSrcFileList(srcFileList, element, newFile);
 			} else if ("src".equals(name)) {
 				srcFileList.add(new SrcFile().init(baseDir, element));
@@ -153,12 +156,16 @@ public class BullsHtml {
 
 	public void generateCloverXml(File o) {
 		Set<SrcDir> parentDirList = new HashSet<SrcDir>();
-		for (SrcFile srcFile : srcFileList) {
+		for (SrcFile srcFile : BullsHtml.srcFileList) {
 			parentDirList.add(srcFile.parentDir);
 		}
 		StringTemplate template = BullsUtil.getTemplate("clover");
-		template.setAttribute("mtime", System.currentTimeMillis()/1000);
-		template.setAttribute("summary", baseList.get(0));
+		template.setAttribute("mtime", System.currentTimeMillis() / 1000);
+		if (BullsHtml.baseList.isEmpty()) {
+			template.setAttribute("summary", new SrcDir());
+		} else {
+			template.setAttribute("summary", BullsHtml.baseList.get(0));
+		}
 		template.setAttribute("parentDirList", parentDirList);
 		BullsUtil.writeToFile(new File(o, "clover.xml"), template.toString());
 	}
@@ -203,9 +210,9 @@ public class BullsHtml {
 		printMessage(output);
 		System.exit(0);
 	}
-	
+
 	/**
-	 * Print  Message
+	 * Print Message
 	 * 
 	 * @param message
 	 *            message to print
@@ -213,7 +220,6 @@ public class BullsHtml {
 	public static void printMessage(String message) {
 		System.out.println(message);
 	}
-
 
 	/**
 	 * Print Error Message and Exit
@@ -223,8 +229,9 @@ public class BullsHtml {
 	 */
 	public static void printErrorAndExit(String message, Exception e) {
 		System.err.println(message);
-		if (verbose)
+		if (BullsHtml.verbose) {
 			e.printStackTrace(System.err);
+		}
 		System.exit(-1);
 	}
 
@@ -259,7 +266,7 @@ public class BullsHtml {
 	 */
 	public void generateHtml(File targetPath) {
 
-		for (SrcDir srcDir : baseList) {
+		for (SrcDir srcDir : BullsHtml.baseList) {
 			srcDir.generateHtml(targetPath);
 			generateChildHtml(targetPath, srcDir);
 		}
@@ -269,7 +276,7 @@ public class BullsHtml {
 	}
 
 	public static boolean isSingleElement(SrcDir dir) {
-		return (dir.child.size() == 1 && dir.child.get(0) instanceof SrcDir);
+		return dir.child.size() == 1 && dir.child.get(0) instanceof SrcDir;
 	}
 
 	/**
@@ -282,19 +289,19 @@ public class BullsHtml {
 		StringTemplate template = BullsUtil.getTemplate("frame_summary");
 		File nPath = new File(path, "frame_summary.html");
 
-		template.setAttribute("baseDir", baseList);
-		List<SrcFile> localSrcFileList = new ArrayList<SrcFile>(srcFileList);
+		template.setAttribute("baseDir", BullsHtml.baseList);
+		List<SrcFile> localSrcFileList = new ArrayList<SrcFile>(BullsHtml.srcFileList);
 
 		// Sort By Risk
 		Collections.sort(localSrcFileList, new Comparator<SrcFile>() {
 			public int compare(SrcFile o1, SrcFile o2) {
 				// System.out.println(o2.name + o2.risk + o1.name + o1.risk +
 				// (o1.risk -o2.risk ));
-				return (o2.risk - o1.risk);
+				return o2.risk - o1.risk;
 			}
 		});
 
-		template.setAttribute("srcFileList", localSrcFileList.subList(0, Math.min(10, srcFileList.size())));
+		template.setAttribute("srcFileList", localSrcFileList.subList(0, Math.min(10, BullsHtml.srcFileList.size())));
 
 		List<SrcDir> dirFileList = getSrcDirList();
 
@@ -304,7 +311,7 @@ public class BullsHtml {
 
 	public List<SrcDir> getSrcDirList() {
 		ArrayList<SrcDir> list = new ArrayList<SrcDir>();
-		for (SrcDir srcDir : srcMap.values()) {
+		for (SrcDir srcDir : BullsHtml.srcMap.values()) {
 			if (srcDir.isWorthToPrint()) {
 				list.add(srcDir);
 			}
@@ -342,8 +349,8 @@ public class BullsHtml {
 	 */
 	public void generateFileListHtml(File path) {
 		StringTemplate template = BullsUtil.getTemplate("frame_files");
-		Collections.sort(srcFileList);
-		template.setAttribute("srcFileList", srcFileList);
+		Collections.sort(BullsHtml.srcFileList);
+		template.setAttribute("srcFileList", BullsHtml.srcFileList);
 		BullsUtil.writeToFile(new File(path, "frame_files.html"), template.toString());
 	}
 
@@ -372,13 +379,13 @@ public class BullsHtml {
 
 		// parse CLI options
 		try {
-			line = clp.parse(OPTS, args);
+			line = clp.parse(BullsHtml.OPTS, args);
 		} catch (ParseException e) {
 			printMessage("Invalid options");
 			usage();
 			return;
 		}
-		String sourceEncoding = enc;
+		String sourceEncoding = BullsHtml.enc;
 		// get encoding option
 		if (line.hasOption("e")) {
 			sourceEncoding = line.getOptionValue("e");
@@ -389,7 +396,7 @@ public class BullsHtml {
 		}
 
 		if (line.hasOption("v")) {
-			verbose = true;
+			BullsHtml.verbose = true;
 		}
 		String covfile = null;
 		if (line.hasOption("f")) {
@@ -417,6 +424,9 @@ public class BullsHtml {
 		}
 		BullsHtml bullshtml = new BullsHtml();
 		bullshtml.process(covfile);
+		if (BullsHtml.baseList.isEmpty()) {
+			printErrorAndExit("No coverage was recorded in cov file. please check if src is compiled with coverage on.");
+		}
 		try {
 			bullshtml.copyResources(outputPath);
 		} catch (Exception e) {

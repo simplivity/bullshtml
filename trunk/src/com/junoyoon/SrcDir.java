@@ -1,19 +1,17 @@
 /**
- Copyright 2008 JunHo Yoon
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright (C) 2009 JunHo Yoon
+ *
+ * bullshtml is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2 of the License,
+ * or (at your option) any later version.
+ *
+ * bullshtml is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
  */
-
 package com.junoyoon;
 
 import java.io.File;
@@ -31,7 +29,7 @@ public class SrcDir extends Src implements Comparable<SrcDir> {
 
 	public SrcDir() {
 	}
-	
+
 	public SrcDir init(File path) {
 		this.path = path;
 		this.setNormalizedPath(BullsUtil.normalizePath(path));
@@ -43,7 +41,7 @@ public class SrcDir extends Src implements Comparable<SrcDir> {
 
 	public List<Src> getChildSrcDir() {
 		List<Src> srcDirList = new ArrayList<Src>();
-		for (Src subDir : child) {
+		for (Src subDir : this.child) {
 			if (subDir instanceof SrcDir) {
 				Src eachDir = subDir;
 				while (!eachDir.isWorthToPrint()) {
@@ -58,7 +56,7 @@ public class SrcDir extends Src implements Comparable<SrcDir> {
 
 	public List<Src> getChildSrcFile() {
 		List<Src> srcList = new ArrayList<Src>();
-		for (Src sub : child) {
+		for (Src sub : this.child) {
 			if (sub instanceof SrcFile) {
 				srcList.add(sub);
 			}
@@ -74,7 +72,7 @@ public class SrcDir extends Src implements Comparable<SrcDir> {
 	}
 
 	public void generateChildHtml(File outputPath) {
-		for (Src src : child) {
+		for (Src src : this.child) {
 			src.generateHtml(outputPath);
 			if (src instanceof SrcDir) {
 				((SrcDir) src).generateChildHtml(outputPath);
@@ -88,7 +86,7 @@ public class SrcDir extends Src implements Comparable<SrcDir> {
 	}
 
 	public boolean containFiles() {
-		for (Src each : child) {
+		for (Src each : this.child) {
 			if (each instanceof SrcFile) {
 				return true;
 			}
@@ -96,13 +94,12 @@ public class SrcDir extends Src implements Comparable<SrcDir> {
 		return false;
 	}
 
-
 	public int compareTo(SrcDir o) {
 		return this.path.compareTo(o.path);
 	}
 
 	public void addChildren(ArrayList<SrcDir> baseList) {
-		child.addAll(baseList);
+		this.child.addAll(baseList);
 		int fileCount = 0;
 		for (SrcDir eachChild : baseList) {
 			eachChild.parentDir = this;

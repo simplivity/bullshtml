@@ -1,3 +1,17 @@
+/**
+ * Copyright (C) 2009 JunHo Yoon
+ *
+ * bullshtml is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2 of the License,
+ * or (at your option) any later version.
+ *
+ * bullshtml is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ */
 package com.junoyoon;
 
 import java.util.Iterator;
@@ -23,28 +37,28 @@ public class PeekingIterator<E> implements Iterator<E> {
 	}
 
 	public boolean hasNext() {
-		return hasPeeked || iterator.hasNext();
+		return this.hasPeeked || this.iterator.hasNext();
 	}
 
 	public E next() {
-		if (!hasPeeked) {
-			return iterator.next();
+		if (!this.hasPeeked) {
+			return this.iterator.next();
 		}
-		E result = peekedElement;
-		hasPeeked = false;
-		peekedElement = null;
+		E result = this.peekedElement;
+		this.hasPeeked = false;
+		this.peekedElement = null;
 		return result;
 	}
 
 	public void remove() {
-		iterator.remove();
+		this.iterator.remove();
 	}
 
 	public E peek() {
-		if (!hasPeeked) {
-			peekedElement = iterator.next();
-			hasPeeked = true;
+		if (!this.hasPeeked) {
+			this.peekedElement = this.iterator.next();
+			this.hasPeeked = true;
 		}
-		return peekedElement;
+		return this.peekedElement;
 	}
 }
