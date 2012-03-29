@@ -1,19 +1,17 @@
 /**
- Copyright 2008 JunHo Yoon
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright (C) 2009 JunHo Yoon
+ *
+ * bullshtml is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2 of the License,
+ * or (at your option) any later version.
+ *
+ * bullshtml is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
  */
-
 package com.junoyoon;
 
 import java.io.File;
@@ -41,21 +39,21 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 	}
 
 	public int getFunctionCount() {
-		return functions.size();
+		return this.functions.size();
 	}
 
 	public boolean isModified() {
-		return this.timestamp < (this.path.lastModified() / 1000);
+		return this.timestamp < this.path.lastModified() / 1000;
 	}
 
 	public String getUnixStylePath() throws IOException {
-		return path.getCanonicalPath().replace("\\", "/");
+		return this.path.getCanonicalPath().replace("\\", "/");
 	}
 
 	public String getXmlEncodedUnixStylePath() throws IOException {
 		return StringUtils.encodeHtml(getUnixStylePath());
 	}
-	
+
 	public SrcFile init(File dir, Element element) {
 		String name = element.getAttributeValue("name");
 		try {
@@ -69,20 +67,21 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 		this.coveredBranchCount = Integer.parseInt(element.getAttributeValue("d_cov"));
 		this.branchCount = Integer.parseInt(element.getAttributeValue("d_total"));
 		this.timestamp = Long.parseLong(element.getAttributeValue("mtime"));
-		this.risk = branchCount - coveredBranchCount;
+		this.risk = this.branchCount - this.coveredBranchCount;
 		registerParent(dir);
-		
+
 		for (Object elementObject : element.getChildren()) {
-			
+
 			Element fnElement = (Element) elementObject;
-			if (!fnElement.getName().equals("fn"))
+			if (!fnElement.getName().equals("fn")) {
 				continue;
+			}
 			SrcFunction srcFunction = new SrcFunction();
-			functions.add(srcFunction.init(fnElement));
-			
-			decisionPoints.add(new SrcFunctionDecisionPoint(srcFunction.line, srcFunction.covered ? DecisionCoverType.FUNCTION_CALLED
-					: DecisionCoverType.FUNCTION_UNCALLED, DecisionType.FUNCTION, srcFunction.name));
-			decisionPoints.addAll(srcFunction.decisionPoints);
+			this.functions.add(srcFunction.init(fnElement));
+
+			this.decisionPoints.add(new SrcFunctionDecisionPoint(srcFunction.line, srcFunction.covered ? DecisionCoverType.FUNCTION_CALLED
+				: DecisionCoverType.FUNCTION_UNCALLED, DecisionType.FUNCTION, srcFunction.name));
+			this.decisionPoints.addAll(srcFunction.decisionPoints);
 		}
 		return this;
 	}
@@ -96,7 +95,7 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 	private void registerParent(File path) {
 		Src src = this;
 		while (path != null) {
-			SrcDir srcDir = (SrcDir) BullsHtml.srcMap.get(path);
+			SrcDir srcDir = BullsHtml.srcMap.get(path);
 			// If not, create one.
 			if (srcDir == null) {
 				srcDir = new SrcDir();
@@ -122,7 +121,7 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 	public String getContent() {
 
 		try {
-			return new SourcePainter().paint(path, decisionPoints, BullsHtml.sourceEncoding);
+			return new SourcePainter().paint(this.path, this.decisionPoints, BullsHtml.sourceEncoding);
 		} catch (IOException e) {
 			return String.format("<div class='box'>%s is not available.</div>", this.path);
 		}
@@ -144,6 +143,7 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 		return this.path.getName().compareTo(o.path.getName());
 	}
 
+	@Override
 	public boolean isSrcFile() {
 		return true;
 	}

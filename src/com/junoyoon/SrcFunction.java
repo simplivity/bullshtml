@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2009 JunHo Yoon
+ *
+ * bullshtml is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2 of the License,
+ * or (at your option) any later version.
+ *
+ * bullshtml is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ */
+
 package com.junoyoon;
 
 import java.util.ArrayList;
@@ -20,16 +35,17 @@ public class SrcFunction {
 		boolean isFirst = true;
 		for (Object elementObject : element.getChildren()) {
 			Element eachProbe = (Element) elementObject;
-			if (!eachProbe.getName().equals("probe"))
+			if (!eachProbe.getName().equals("probe")) {
 				continue;
+			}
 			if (isFirst) {
 				isFirst = false;
-				line = Integer.parseInt(eachProbe.getAttributeValue("line"));
+				this.line = Integer.parseInt(eachProbe.getAttributeValue("line"));
 				continue;
 			}
 			SrcDecisionPoint decisionPoint = SrcDecisionPoint.createDecisionPoint(eachProbe);
 			if (decisionPoint != null) {
-				decisionPoints.add(decisionPoint);
+				this.decisionPoints.add(decisionPoint);
 			}
 		}
 		return this;
@@ -44,7 +60,7 @@ public class SrcFunction {
 	public List<SrcDecisionPoint> decisionPoints = new ArrayList<SrcDecisionPoint>();
 
 	public int getCoveredCount() {
-		return covered ? 1 : 0;
+		return this.covered ? 1 : 0;
 	}
 
 	public String getXmlEncodedName() {
@@ -53,17 +69,17 @@ public class SrcFunction {
 
 	public int getComplexity() {
 		int count = 1;
-		for (SrcDecisionPoint decisionPoint : decisionPoints) {
+		for (SrcDecisionPoint decisionPoint : this.decisionPoints) {
 			count += decisionPoint.decisionType.complexity;
 		}
 		return count;
 	}
 
 	public String getBranchCoverage() {
-		if (branchCount == 0) {
+		if (this.branchCount == 0) {
 			return "N/A";
 		}
-		return String.format(format, (((float) coveredBranchCount / branchCount) * 100));
+		return String.format(SrcFunction.format, ((float) this.coveredBranchCount / this.branchCount * 100));
 	}
 
 	public String getBranchCoverageStyle() {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BullseyeCoverage 8.4.19 Windows License 2947 -->
+<BullseyeCoverage name="test.cov" dir="c:/Users/junoyoon/Documents/" buildId="5e1e32c4, 2012-03-29 11:06:21" version="4" xmlns="http://www.bullseye.com/covxml">
+<folder name=".." fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<folder name=".." fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<folder name=".." fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<folder name="Project" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<folder name="google" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<folder name="test" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<folder name="test" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<src name="test.cpp" mtime="1332986674" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<fn name="wmain(int,_TCHAR*[])" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<probe line="7" column="3" kind="function" event="none"/>
+</fn>
+</src>
+</folder>
+</folder>
+</folder>
+</folder>
+</folder>
+</folder>
+</folder>
+</BullseyeCoverage>

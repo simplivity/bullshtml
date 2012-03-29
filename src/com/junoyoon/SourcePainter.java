@@ -1,3 +1,17 @@
+/**
+ * Copyright (C) 2009 JunHo Yoon
+ *
+ * bullshtml is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2 of the License,
+ * or (at your option) any later version.
+ *
+ * bullshtml is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ */
 package com.junoyoon;
 
 import java.io.File;
@@ -63,11 +77,11 @@ public class SourcePainter {
 			ExplicitStateHighlighter highlighter = getHighlighter();
 			StringBuffer w = new StringBuffer();
 			String line;
-			length = 0;
-			style = 0;
-			css_class = null;
-			previous_style = 0;
-			newline = false;
+			this.length = 0;
+			this.style = 0;
+			this.css_class = null;
+			this.previous_style = 0;
+			this.newline = false;
 			SrcDecisionPoint decisionPoint = peekingIterator.next();
 			w.append("<div style=\"overflow-x:scroll;\">").append("\n");
 			w.append("<table class=\"source\">").append("\n");
@@ -95,7 +109,7 @@ public class SourcePainter {
 						if (decisionPoint.sequence) {
 							w.append("-").append(count++);
 						}
-						if (decisionPoint.decisionType == DecisionType.FUNCTION ) {
+						if (decisionPoint.decisionType == DecisionType.FUNCTION) {
 							w.append("<a name='").append(lineCount).append("'/>");
 						}
 						w.append("</td>").append("\n");
@@ -123,7 +137,7 @@ public class SourcePainter {
 				}
 
 				w.append("</tr>").append("\n");
-				newline = true;
+				this.newline = true;
 			}
 			w.append("</table>").append("\n");
 			w.append("</div>");
@@ -135,41 +149,41 @@ public class SourcePainter {
 			highlighter.setReader(lineReader);
 			int index = 0;
 			while (index < line.length()) {
-				// 
-				style = highlighter.getNextToken();
-				length = highlighter.getTokenLength();
-				token = line.substring(index, index + length);
+				//
+				this.style = highlighter.getNextToken();
+				this.length = highlighter.getTokenLength();
+				this.token = line.substring(index, index + this.length);
 
-				if (style != previous_style || newline) {
-					css_class = getCssClass(style);
+				if (this.style != this.previous_style || this.newline) {
+					this.css_class = getCssClass(this.style);
 
-					if (css_class != null) {
-						if (previous_style != 0 && !newline) {
+					if (this.css_class != null) {
+						if (this.previous_style != 0 && !this.newline) {
 							output.append("</span>");
 						}
-						output.append("<span class=\"" + css_class + "\">");
+						output.append("<span class=\"" + this.css_class + "\">");
 
-						previous_style = style;
+						this.previous_style = this.style;
 					}
 				}
-				newline = false;
-				output.append(StringUtils.replace(StringUtils.encodeHtml(StringUtils.replace(token, "\n", "")), " ", "&nbsp;"));
-				index += length;
+				this.newline = false;
+				output.append(StringUtils.replace(StringUtils.encodeHtml(StringUtils.replace(this.token, "\n", "")), " ", "&nbsp;"));
+				index += this.length;
 			}
 			output.append("</span>\n");
 
 		}
 	}
 
-	private CustomCppXhtmlRenderer renderer = new CustomCppXhtmlRenderer();
+	private final CustomCppXhtmlRenderer renderer = new CustomCppXhtmlRenderer();
 
 	/**
-	 * paint source code which decision point 
+	 * paint source code which decision point
 	 **/
 	public String paint(File file, List<SrcDecisionPoint> decisionPoints, Encoding encoding) throws IOException {
 		InputStream inputStream = new FileInputStream(file);
 		PeekingIterator<SrcDecisionPoint> peekingIterator = BullsUtil.peekingIterator(decisionPoints.iterator());
-		StringBuffer sb = renderer.highlight(IOUtils.readLines(inputStream, encoding.getEncodingKey()), peekingIterator);
+		StringBuffer sb = this.renderer.highlight(IOUtils.readLines(inputStream, encoding.getEncodingKey()), peekingIterator);
 		IOUtils.closeQuietly(inputStream);
 		return sb.toString();
 	}
