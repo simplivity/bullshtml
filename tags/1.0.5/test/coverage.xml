@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!-- BullseyeCoverage 7.11.31 Windows License 3253 -->
+<BullseyeCoverage name="test.cov" dir="d:/project/" buildId="1a02a729, 2010-09-07 오전 11:23:33" version="3">
+
+<folder name="c:\\" fn_cov="1" fn_total="3" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<src name="a.cpp" mtime="1281277084" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<fn name="hello()" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<probe line="5" kind="function" event="none"/>
+</fn>
+</src>
+</folder>
+
+<folder name=".." fn_cov="6" fn_total="10" cd_cov="73" cd_total="206" d_cov="31" d_total="114">
+<folder name="bullseyetest" fn_cov="6" fn_total="10" cd_cov="73" cd_total="206" d_cov="31" d_total="114">
+<folder name="aa" fn_cov="1" fn_total="3" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<src name="a.cpp" mtime="1281277084" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<fn name="hello()" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<probe line="5" kind="function" event="none"/>
+</fn>
+</src>
+<folder name="bb" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<folder name="ttt" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<src name="ttt.cpp" mtime="1281276240" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<fn name="wmain(int,_TCHAR*[])" fn_cov="0" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<probe line="7" kind="function" event="none"/>
+</fn>
+</src>
+</folder>
+</folder>
+<folder name="bbbb" fn_cov="1" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<src name="bbbb.cpp" mtime="1281277002" fn_cov="1" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<fn name="wmain(int,_TCHAR*[])" fn_cov="1" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<probe line="7" kind="function" event="full"/>
+</fn>
+</src>
+</folder>
+</folder>
+<src name="test.c" mtime="1209052800" fn_cov="5" fn_total="7" cd_cov="73" cd_total="206" d_cov="31" d_total="114">
+<fn name="lex" fn_cov="1" fn_total="1" cd_cov="4" cd_total="36" d_cov="4" d_total="36">
+<probe line="38" kind="function" event="full"/>
+<probe line="41" kind="decision" event="full"/>
+<probe line="50" seq="a" kind="switch-label" event="none"/>
+<probe line="50" column="8" seq="b" kind="switch-label" event="full"/>
+<probe line="50" column="16" seq="c" kind="switch-label" event="none"/>
+<probe line="50" column="24" seq="d" kind="switch-label" event="none"/>
+<probe line="50" column="32" seq="e" kind="switch-label" event="full"/>
+<probe line="51" seq="a" kind="switch-label" event="none"/>
+<probe line="51" column="8" seq="b" kind="switch-label" event="none"/>
+<probe line="51" column="16" seq="c" kind="switch-label" event="none"/>
+<probe line="51" column="24" seq="d" kind="switch-label" event="none"/>
+<probe line="51" column="32" seq="e" kind="switch-label" event="none"/>
+<probe line="56" kind="switch-label" event="none"/>
+<probe line="58" kind="decision" event="none"/>
+<probe line="59" kind="decision" event="none"/>
+<probe line="61" kind="switch-label" event="none"/>
+<probe line="63" kind="decision" event="none"/>
+<probe line="64" kind="decision" event="none"/>
+<probe line="67" seq="a" kind="switch-label" event="none"/>
+<probe line="67" column="15" seq="b" kind="decision" event="none"/>
+<probe line="68" seq="a" kind="switch-label" event="none"/>
+<probe line="68" column="15" seq="b" kind="decision" event="none"/>
+<probe line="69" seq="a" kind="switch-label" event="none"/>
+<probe line="69" column="15" seq="b" kind="decision" event="none"/>
+<probe line="70" seq="a" kind="switch-label" event="none"/>
+<probe line="70" column="15" seq="b" kind="decision" event="none"/>
+<probe line="72" kind="switch-label" event="none"/>
+<probe line="76" kind="switch-label" event="none"/>
+</fn>
+<fn name="name" fn_cov="1" fn_total="1" cd_cov="1" cd_total="11" d_cov="1" d_total="11">
+<probe line="83" kind="function" event="full"/>
+<probe line="89" kind="switch-label" event="full"/>
+<probe line="92" kind="switch-label" event="none"/>
+<probe line="93" kind="switch-label" event="none"/>
+<probe line="94" kind="switch-label" event="none"/>
+<probe line="95" kind="switch-label" event="none"/>
+<probe line="96" kind="switch-label" event="none"/>
+<probe line="97" kind="switch-label" event="none"/>
+<probe line="98" kind="switch-label" event="none"/>
+<probe line="99" kind="switch-label" event="none"/>
+<probe line="100" kind="switch-label" event="none"/>
+<probe line="103" kind="switch-label" event="none"/>
+</fn>
+<fn name="match" fn_cov="0" fn_total="1" cd_cov="0" cd_total="4" d_cov="0" d_total="4">
+<probe line="112" kind="function" event="none"/>
+<probe line="114" kind="decision" event="none"/>
+<probe line="115" kind="decision" event="none"/>
+</fn>
+<fn name="z" fn_cov="0" fn_total="1" cd_cov="0" cd_total="4" d_cov="0" d_total="4">
+<probe line="127" kind="function" event="none"/>
+<probe line="129" kind="decision" event="none"/>
+<probe line="130" kind="decision" event="none"/>
+</fn>
+<fn name="prs" fn_cov="1" fn_total="1" cd_cov="59" cd_total="135" d_cov="21" d_total="51">
+<probe line="142" kind="function" event="full"/>
+<probe line="150" kind="switch-label" event="full"/>
+<probe line="156" kind="switch-label" event="none"/>
+<probe line="163" kind="switch-label" event="none"/>
+<probe line="164" kind="switch-label" event="none"/>
+<probe line="165" kind="switch-label" event="none"/>
+<probe line="166" kind="switch-label" event="none"/>
+<probe line="169" kind="switch-label" event="none"/>
+<probe line="170" kind="decision" event="none"/>
+<probe line="178" kind="decision" event="true"/>
+<probe line="183" seq="a" kind="decision" event="false"/>
+<probe line="183" column="3" seq="b" kind="condition" event="true"/>
+<probe line="183" column="10" seq="c" kind="condition" event="false"/>
+<probe line="184" seq="a" kind="decision" event="false"/>
+<probe line="184" column="3" seq="b" kind="condition" event="true"/>
+<probe line="184" column="10" seq="c" kind="condition" event="false"/>
+<probe line="185" seq="a" kind="decision" event="false"/>
+<probe line="185" column="3" seq="b" kind="condition" event="true"/>
+<probe line="185" column="10" seq="c" kind="condition" event="false"/>
+<probe line="186" seq="a" kind="decision" event="false"/>
+<probe line="186" column="3" seq="b" kind="condition" event="true"/>
+<probe line="186" column="9" seq="c" kind="condition" event="false"/>
+<probe line="187" seq="a" kind="decision" event="false"/>
+<probe line="187" column="3" seq="b" kind="condition" event="true"/>
+<probe line="187" column="9" seq="c" kind="condition" event="false"/>
+<probe line="188" seq="a" kind="decision" event="false"/>
+<probe line="188" column="3" seq="b" kind="condition" event="true"/>
+<probe line="188" column="9" seq="c" kind="condition" event="false"/>
+<probe line="189" seq="a" kind="decision" event="false"/>
+<probe line="189" column="3" seq="b" kind="condition" event="true"/>
+<probe line="189" column="9" seq="c" kind="condition" event="false"/>
+<probe line="190" seq="a" kind="decision" event="false"/>
+<probe line="190" column="3" seq="b" kind="condition" event="true"/>
+<probe line="190" column="9" seq="c" kind="condition" event="false"/>
+<probe line="191" seq="a" kind="decision" event="false"/>
+<probe line="191" column="3" seq="b" kind="condition" event="true"/>
+<probe line="191" column="9" seq="c" kind="condition" event="false"/>
+<probe line="192" seq="a" kind="decision" event="false"/>
+<probe line="192" column="3" seq="b" kind="condition" event="true"/>
+<probe line="192" column="9" seq="c" kind="condition" event="false"/>
+<probe line="193" seq="a" kind="decision" event="false"/>
+<probe line="193" column="3" seq="b" kind="condition" event="true"/>
+<probe line="193" column="9" seq="c" kind="condition" event="false"/>
+<probe line="194" seq="a" kind="decision" event="false"/>
+<probe line="194" column="3" seq="b" kind="condition" event="true"/>
+<probe line="194" column="9" seq="c" kind="condition" event="false"/>
+<probe line="195" seq="a" kind="decision" event="false"/>
+<probe line="195" column="3" seq="b" kind="condition" event="true"/>
+<probe line="195" column="9" seq="c" kind="condition" event="false"/>
+<probe line="196" seq="a" kind="decision" event="false"/>
+<probe line="196" column="3" seq="b" kind="condition" event="true"/>
+<probe line="196" column="9" seq="c" kind="condition" event="false"/>
+<probe line="197" seq="a" kind="decision" event="false"/>
+<probe line="197" column="3" seq="b" kind="condition" event="true"/>
+<probe line="197" column="9" seq="c" kind="condition" event="false"/>
+<probe line="198" seq="a" kind="decision" event="false"/>
+<probe line="198" column="3" seq="b" kind="condition" event="true"/>
+<probe line="198" column="9" seq="c" kind="condition" event="false"/>
+<probe line="201" seq="a" kind="decision" event="false"/>
+<probe line="201" column="3" seq="b" kind="condition" event="true"/>
+<probe line="202" kind="condition" event="false"/>
+<probe line="206" seq="a" kind="condition" event="none"/>
+<probe line="206" column="5" seq="b" kind="condition" event="none"/>
+<probe line="208" seq="a" kind="decision" event="false"/>
+<probe line="208" column="3" seq="b" kind="condition" event="true"/>
+<probe line="209" kind="condition" event="false"/>
+<probe line="213" seq="a" kind="condition" event="none"/>
+<probe line="213" column="5" seq="b" kind="condition" event="none"/>
+<probe line="215" seq="a" kind="decision" event="false"/>
+<probe line="215" column="3" seq="b" kind="condition" event="true"/>
+<probe line="216" kind="condition" event="false"/>
+<probe line="222" kind="decision" event="none"/>
+</fn>
+<fn name="eval" fn_cov="1" fn_total="1" cd_cov="3" cd_total="6" d_cov="1" d_total="2">
+<probe line="236" kind="function" event="full"/>
+<probe line="245" seq="a" kind="decision" event="true"/>
+<probe line="245" column="3" seq="b" kind="condition" event="true"/>
+<probe line="246" kind="condition" event="true"/>
+</fn>
+<fn name="main" fn_cov="1" fn_total="1" cd_cov="6" cd_total="10" d_cov="4" d_total="6">
+<probe line="255" kind="function" event="full"/>
+<probe line="261" kind="decision" event="full"/>
+<probe line="263" kind="decision" event="false"/>
+<probe line="266" seq="a" kind="decision" event="false"/>
+<probe line="266" column="3" seq="b" kind="condition" event="true"/>
+<probe line="266" column="17" seq="c" kind="condition" event="false"/>
+</fn>
+</src>
+</folder>
+</folder>
+<folder name="ci" fn_cov="2" fn_total="5" cd_cov="6" cd_total="38" d_cov="3" d_total="34">
+<folder name="teacher" fn_cov="2" fn_total="5" cd_cov="6" cd_total="38" d_cov="3" d_total="34">
+<folder name="tutorial" fn_cov="2" fn_total="5" cd_cov="6" cd_total="38" d_cov="3" d_total="34">
+<src name="calc.cpp" mtime="1274805090" fn_cov="2" fn_total="5" cd_cov="6" cd_total="38" d_cov="3" d_total="34">
+<fn name="Stack::Stack()" fn_cov="1" fn_total="1" cd_cov="0" cd_total="0" d_cov="0" d_total="0">
+<probe line="9" kind="function" event="full"/>
+</fn>
+<fn name="Stack::push(int)" fn_cov="0" fn_total="1" cd_cov="0" cd_total="2" d_cov="0" d_total="2">
+<probe line="18" kind="function" event="none"/>
+<probe line="20" kind="decision" event="none"/>
+</fn>
+<fn name="Stack::pop()" fn_cov="0" fn_total="1" cd_cov="0" cd_total="2" d_cov="0" d_total="2">
+<probe line="28" kind="function" event="none"/>
+<probe line="31" kind="decision" event="none"/>
+</fn>
+<fn name="Stack::show() const" fn_cov="0" fn_total="1" cd_cov="0" cd_total="4" d_cov="0" d_total="4">
+<probe line="41" kind="function" event="none"/>
+<probe line="43" kind="decision" event="none"/>
+<probe line="48" kind="decision" event="none"/>
+</fn>
+<fn name="main()" fn_cov="1" fn_total="1" cd_cov="6" cd_total="30" d_cov="3" d_total="26">
+<probe line="53" kind="function" event="full"/>
+<probe line="60" seq="a" kind="decision" event="full"/>
+
+
+<probe line="60" column="6" seq="b" kind="condition" event="full"/>x	
+<probe line="61" kind="condition" event="true"/>
+
+
+<probe line="64" kind="switch-label" event="none"/>
+<probe line="65" kind="switch-label" event="none"/>
+<probe line="68" seq="a" kind="switch-label" event="none"/>
+<probe line="68" column="8" seq="b" kind="switch-label" event="none"/>
+<probe line="68" column="16" seq="c" kind="switch-label" event="none"/>
+<probe line="68" column="24" seq="d" kind="switch-label" event="none"/>
+<probe line="68" column="32" seq="e" kind="switch-label" event="none"/>
+<probe line="69" seq="a" kind="switch-label" event="none"/>
+<probe line="69" column="8" seq="b" kind="switch-label" event="none"/>
+<probe line="69" column="16" seq="c" kind="switch-label" event="none"/>
+<probe line="69" column="24" seq="d" kind="switch-label" event="none"/>
+<probe line="69" column="32" seq="e" kind="switch-label" event="none"/>
+
+
+<probe line="71" kind="decision" event="none"/>
+
+
+<probe line="78" kind="switch-label" event="none"/>
+<probe line="82" kind="switch-label" event="none"/>
+<probe line="86" kind="switch-label" event="none"/>
+<probe line="91" kind="switch-label" event="none"/>
+
+
+<probe line="93" kind="decision" event="none"/>
+
+
+<probe line="99" kind="switch-label" event="none"/>
+<probe line="105" kind="switch-label" event="none"/>
+<probe line="109" kind="switch-label" event="full"/>
+<probe line="113" kind="switch-label" event="none"/>
+
+
+</fn>
+</src>
+</folder>
+</folder>
+</folder>
+</BullseyeCoverage>
