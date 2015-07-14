@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.stringtemplate.StringTemplate;
+import org.stringtemplate.v4.ST;
 
 /**
  * Directory coverage information
@@ -66,9 +66,9 @@ public class SrcDir extends Src implements Comparable<SrcDir> {
 
 	@Override
 	protected String getHtml() {
-		StringTemplate template = BullsUtil.getTemplate("SrcDirPage");
-		template.setAttribute("srcDir", this);
-		return template.toString();
+		ST template = BullsUtil.getTemplate("SrcDirPage");
+		template.add("srcDir", this);
+		return template.render();
 	}
 
 	public void generateChildHtml(File outputPath) {

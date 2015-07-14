@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.jdom.JDOMException;
+import org.jdom2.JDOMException;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

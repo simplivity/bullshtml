@@ -1,4 +1,4 @@
-$template/header()$
+$/header()$
 <h5>Coverage Report - $srcDir.path$ 
 $if(srcDir.worthyParent)$
 <a href="$srcDir.worthyParent.normalizedPath$.html"><img src='images/upper.png' border="0"/></a>
@@ -24,7 +24,7 @@ $endif$
 		</tr>
 	</thead> 
 	<tbody> 
-	$srcDir:template/SrcDir()$
+	$srcDir:/SrcDir()$
 	</tbody> 
 </table> 
 
@@ -53,7 +53,7 @@ $if(first(srcDir.childSrcDir))$
 	
 	<tbody> 
 	$srcDir.childSrcDir:{ eachDir |
-		$eachDir:template/SrcDir()$
+		$eachDir:/SrcDir()$
 	}$
 	</tbody> 
 </table> 
@@ -88,8 +88,8 @@ $if(first(srcDir.childSrcFile))$
 	
 	
 	<tbody> 
-	$srcDir.childSrcFile:{
-		$it:template/SrcFileForDir()$
+	$srcDir.childSrcFile:{ eachFile |
+		$eachFile:/SrcFileForDir()$
 	}$
 	</tbody> 
 </table> 
@@ -99,4 +99,4 @@ $if(first(srcDir.childSrcFile))$
 	fileListTable.sort(0);
 </script> 
 $endif$
-$template/footer()$
+$/footer()$

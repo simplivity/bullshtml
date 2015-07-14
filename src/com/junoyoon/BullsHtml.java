@@ -29,16 +29,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.antlr.stringtemplate.StringTemplate;
+import org.stringtemplate.v4.ST;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 /**
  * Main class
@@ -67,7 +67,7 @@ public class BullsHtml {
 	private static boolean verbose;
 
 	/**
-	 * Contrcut Src and Dir List. After calling the method, the static variable
+	 * Construct Src and Dir List. After calling the method, the static variable
 	 * {@link BullsHtml.srcMap}, {@link BullsHtml.baseList},
 	 * {@link BullsHtml.srcFileList} are constructed.
 	 * 
@@ -159,15 +159,15 @@ public class BullsHtml {
 		for (SrcFile srcFile : BullsHtml.srcFileList) {
 			parentDirList.add(srcFile.parentDir);
 		}
-		StringTemplate template = BullsUtil.getTemplate("clover");
-		template.setAttribute("mtime", System.currentTimeMillis() / 1000);
+		ST template = BullsUtil.getTemplate("clover");
+		template.add("mtime", System.currentTimeMillis() / 1000);
 		if (BullsHtml.baseList.isEmpty()) {
-			template.setAttribute("summary", new SrcDir());
+			template.add("summary", new SrcDir());
 		} else {
-			template.setAttribute("summary", BullsHtml.baseList.get(0));
+			template.add("summary", BullsHtml.baseList.get(0));
 		}
-		template.setAttribute("parentDirList", parentDirList);
-		BullsUtil.writeToFile(new File(o, "clover.xml"), template.toString());
+		template.add("parentDirList", parentDirList);
+		BullsUtil.writeToFile(new File(o, "clover.xml"), template.render());
 	}
 
 	/**
@@ -286,10 +286,10 @@ public class BullsHtml {
 	 *            output dir
 	 */
 	public void generateMainHtml(File path) {
-		StringTemplate template = BullsUtil.getTemplate("frame_summary");
+		ST template = BullsUtil.getTemplate("frame_summary");
 		File nPath = new File(path, "frame_summary.html");
 
-		template.setAttribute("baseDir", BullsHtml.baseList);
+		template.add("baseDir", BullsHtml.baseList);
 		List<SrcFile> localSrcFileList = new ArrayList<SrcFile>(BullsHtml.srcFileList);
 
 		// Sort By Risk
@@ -301,12 +301,12 @@ public class BullsHtml {
 			}
 		});
 
-		template.setAttribute("srcFileList", localSrcFileList.subList(0, Math.min(10, BullsHtml.srcFileList.size())));
+		template.add("srcFileList", localSrcFileList.subList(0, Math.min(10, BullsHtml.srcFileList.size())));
 
 		List<SrcDir> dirFileList = getSrcDirList();
 
-		template.setAttribute("dirList", dirFileList.subList(0, Math.min(10, dirFileList.size())));
-		BullsUtil.writeToFile(nPath, template.toString());
+		template.add("dirList", dirFileList.subList(0, Math.min(10, dirFileList.size())));
+		BullsUtil.writeToFile(nPath, template.render());
 	}
 
 	public List<SrcDir> getSrcDirList() {
@@ -334,11 +334,11 @@ public class BullsHtml {
 	 *            output dir
 	 */
 	public void generateDirListHtml(File path) {
-		StringTemplate template = BullsUtil.getTemplate("frame_dirs");
+		ST template = BullsUtil.getTemplate("frame_dirs");
 
-		template.setAttribute("srcDirList", getSrcDirList());
+		template.add("srcDirList", getSrcDirList());
 		File nPath = new File(path, "frame_dirs.html");
-		BullsUtil.writeToFile(nPath, template.toString());
+		BullsUtil.writeToFile(nPath, template.render());
 	}
 
 	/**
@@ -348,10 +348,10 @@ public class BullsHtml {
 	 *            output dir
 	 */
 	public void generateFileListHtml(File path) {
-		StringTemplate template = BullsUtil.getTemplate("frame_files");
+		ST template = BullsUtil.getTemplate("frame_files");
 		Collections.sort(BullsHtml.srcFileList);
-		template.setAttribute("srcFileList", BullsHtml.srcFileList);
-		BullsUtil.writeToFile(new File(path, "frame_files.html"), template.toString());
+		template.add("srcFileList", BullsHtml.srcFileList);
+		BullsUtil.writeToFile(new File(path, "frame_files.html"), template.render());
 	}
 
 	/**

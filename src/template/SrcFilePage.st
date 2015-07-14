@@ -1,4 +1,4 @@
-$template/headerforfile()$
+$/headerforfile()$
 <h5>Coverage Report - $srcFile.path$ <a href="../$srcFile.parentDir.normalizedPath$.html"><img src='../images/upper.png' border="0"/></a></h5> 
 <br>
 <div class="separator">&nbsp;</div> 
@@ -22,7 +22,7 @@ $template/headerforfile()$
 	
 	
 	<tbody> 
-	$srcFile:template/SrcFile()$
+	$srcFile:/SrcFile()$
 	</tbody> 
 </table> 
 
@@ -41,7 +41,7 @@ $template/headerforfile()$
 	</thead> 
 	<tbody> 
 	$srcFile.functions:{ function |
-		$function:template/SrcFunction()$
+		$function:/SrcFunction()$
 	}$	
 	</tbody> 
 </table> 
@@ -55,4 +55,4 @@ $if(srcFile.modified)$
 </div>
 $endif$
 $srcFile.content$
-$template/footer()$
+$/footer()$

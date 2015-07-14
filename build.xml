@@ -3,7 +3,7 @@
 	<property environment="env" />
 	<property name="target" value="1.5" />
 	<property name="source" value="1.5" />
-	<property name="version" value="1.0.4" />
+	<property name="version" value="1.0.5+svt1.0" />
 	<property name="package.dir" value="target" />
 	<property name="antlib.dir" value="antlib" />
 	<property name="lib.dir" value="lib" />
@@ -32,7 +32,7 @@
 	<target depends="build-project" name="build" />
 	<target depends="init" name="build-project">
 		<echo message="${ant.project.name}: ${ant.file}" />
-		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+		<javac debug="true" destdir="bin" source="${source}" target="${target}">
 			<src path="src" />
 			<classpath refid="bullshtml.classpath" />
 		</javac>
@@ -50,7 +50,7 @@
 
 	<target name="make_onejar" depends="makejar">
 		<property name="one-jar.dist.dir" value="${antlib.dir}" />
-		<property name="one-jar.version" value="0.96" />
+		<property name="one-jar.version" value="0.97" />
 		<taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" classpath="${one-jar.dist.dir}/one-jar-ant-task-${one-jar.version}.jar" onerror="report" />
 		<one-jar destfile="${package.dir}/bullshtml.jar" manifest="MANIFEST.MF">
 			<main jar="${package.dir}/bullshtml_main.jar" />

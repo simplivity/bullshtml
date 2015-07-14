@@ -14,9 +14,10 @@
  */
 package com.junoyoon;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 
-public class SrcDecisionPoint {
+public class SrcDecisionPoint implements Comparable<SrcDecisionPoint>
+{
 	public int line;
 	public DecisionCoverType decisionCoverType;
 	public DecisionType decisionType;
@@ -30,16 +31,22 @@ public class SrcDecisionPoint {
 
 	public SrcDecisionPoint(int line, DecisionCoverType decisionCoverType, DecisionType decisionType, String name) {
 		this(line, decisionCoverType, decisionType);
+		this.column = 0;
 		this.name = name;
 	}
 
 	public SrcDecisionPoint(int line, DecisionCoverType decisionCoverType, DecisionType decisionType) {
 		super();
-		this.line = line;
+		this.column = 0;
 		this.decisionCoverType = decisionCoverType;
 		this.decisionType = decisionType;
+		this.line = line;
 	}
 
+	public int compareTo(SrcDecisionPoint other) {
+		return (line == other.line) ? (column - other.column) : (line - other.line);  
+	}
+	
 	public static SrcDecisionPoint createDecisionPoint(Element element) {
 		SrcDecisionPoint point = null;
 		DecisionType decisionType = DecisionType.getDecisionCoverType(element.getAttributeValue("kind"));

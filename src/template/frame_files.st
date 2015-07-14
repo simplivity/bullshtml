@@ -1,11 +1,11 @@
-$template/header()$
+$/header()$
 <h5>Files</h5>
 <table width="100%">
 <tbody>
-$srcFileList: {
+$srcFileList: { content |
 	<tr>
-		<td nowrap='nowrap'><a target='summary' href='$it.normalizedPath$.html'>$it.path.name$</a> 
-			<span class="smallcovf">$it.functionCoverageString$%</span> <span class="smallcovb">$it.branchCoverageString$%</span>
+		<td nowrap='nowrap'><a target='summary' href='$content.normalizedPath$.html'>$content.path.name$</a> 
+			<span class="smallcovf">$content.functionCoverageString$%</span> <span class="smallcovb">$content.branchCoverageString$%</span>
 		</td>
 	</tr>
 }$

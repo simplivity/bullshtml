@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.jdom.JDOMException;
+import org.jdom2.JDOMException;
 import org.junit.Test;
 
 public class BullsHtmlV4Test {

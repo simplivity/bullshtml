@@ -1,4 +1,4 @@
-$template/header()$
+$/header()$
 <h5>Directories</h5>
 <h6><a href="frame_summary.html" target="summary">Overall Summary</a></h6>
 

@@ -16,7 +16,7 @@
 package com.junoyoon;
 
 public enum DecisionType {
-	TRY("try", 0), CATCH("catch", 1), CASE("switch-label", 1), DECISION("decision", 1), FUNCTION("function", 0);
+	TRY("try", 0), CATCH("catch", 1), CASE("switch-label", 1), CONDITION("condition", 1), DECISION("decision", 1), FUNCTION("function", 0);
 
 	public final String name;
 	public final int complexity;

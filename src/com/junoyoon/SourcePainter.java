@@ -63,7 +63,7 @@ public class SourcePainter {
 	}
 
 	/**
-	 * Custom Renderer which enables line speration.
+	 * Custom Renderer which enables line separation.
 	 */
 	class CustomCppXhtmlRenderer extends CppXhtmlRenderer {
 		String token;
@@ -129,7 +129,11 @@ public class SourcePainter {
 					} while (peekingIterator.hasNext() && lineCount == (decisionPoint = peekingIterator.next()).line);
 				} else {
 					w.append("<tr class=\"kwnone\">").append("\n");
-					w.append("<td class=\"line\">").append(lineCount).append("</td>").append("\n");
+					w.append("<td class=\"line\">")
+					    .append(lineCount)
+ 						.append("<a name=\"").append(lineCount).append("\"/>")
+						.append("</td>")
+						.append("\n");
 					w.append("<td class=\"line\">").append("</td>").append("\n");
 					w.append("<td class=\"code\">");
 					renderALine(line, highlighter, w);
@@ -178,7 +182,7 @@ public class SourcePainter {
 	private final CustomCppXhtmlRenderer renderer = new CustomCppXhtmlRenderer();
 
 	/**
-	 * paint source code which decision point
+	 * paint source code with decision point
 	 **/
 	public String paint(File file, List<SrcDecisionPoint> decisionPoints, Encoding encoding) throws IOException {
 		InputStream inputStream = new FileInputStream(file);

@@ -17,10 +17,11 @@ package com.junoyoon;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.antlr.stringtemplate.StringTemplate;
-import org.jdom.Element;
+import org.stringtemplate.v4.ST;
+import org.jdom2.Element;
 
 import com.uwyn.jhighlight.tools.StringUtils;
 
@@ -83,6 +84,10 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 				: DecisionCoverType.FUNCTION_UNCALLED, DecisionType.FUNCTION, srcFunction.name));
 			this.decisionPoints.addAll(srcFunction.decisionPoints);
 		}
+		
+		// Sort the decisions in line order as the code output formatter needs it that way
+		Collections.sort(this.decisionPoints);
+		
 		return this;
 	}
 
@@ -129,9 +134,9 @@ public class SrcFile extends Src implements Comparable<SrcFile> {
 
 	@Override
 	protected String getHtml() {
-		StringTemplate template = BullsUtil.getTemplate("SrcFilePage");
-		template.setAttribute("srcFile", this);
-		return template.toString();
+		ST template = BullsUtil.getTemplate("SrcFilePage");
+		template.add("srcFile", this);
+		return template.render();
 	}
 
 	@Override

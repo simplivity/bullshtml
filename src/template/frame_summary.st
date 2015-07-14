@@ -1,4 +1,4 @@
-$template/header()$
+$/header()$
 <h5>Coverage Summary</h5>
 <div class="separator">&nbsp;</div> 
 <table class="report" id="total"> 
@@ -11,8 +11,8 @@ $template/header()$
 	</tr>
 </thead> 
 <tbody> 
-	$baseDir:{
-		$it:template/SrcDir()$
+	$baseDir:{ eachDir |
+		$eachDir:/SrcDir()$
 	}$
 </tbody>
 </table>
@@ -32,8 +32,8 @@ $template/header()$
 	</tr>
 </thead> 
 <tbody> 
-	$srcFileList:{
-		$it:template/SrcFileForDir()$
+	$srcFileList:{ eachFile |
+		$eachFile:/SrcFileForDir()$
 	}$
 </tbody>
 </table>
@@ -52,8 +52,8 @@ var packageTable = new SortableTable(document.getElementById("riskyFiles"),
 	</tr>
 </thead> 
 <tbody> 
-$dirList:{
-	$it:template/SrcDir()$						
+$dirList:{ eachDir |
+	$eachDir:/SrcDir()$						
 }$
 </tbody>
 </table>
@@ -62,4 +62,4 @@ var packageTable = new SortableTable(document.getElementById("directories"),
     ["String", "Number", "Percentage", "Percentage"]);
 
 </script> 
-$template/footer()$
+$/footer()$

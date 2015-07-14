@@ -24,8 +24,9 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
 
-import org.antlr.stringtemplate.StringTemplate;
-import org.antlr.stringtemplate.StringTemplateGroup;
+import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.STGroup;
+import org.stringtemplate.v4.STRawGroupDir;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -35,10 +36,10 @@ import org.apache.commons.io.IOUtils;
  * @author JunHo Yoon (junoyoon@gmail.com)
  */
 public class BullsUtil {
-	public static StringTemplateGroup group = new StringTemplateGroup("mygroup");
-
-	public static StringTemplate getTemplate(String templateName) {
-		return BullsUtil.group.getInstanceOf("template/" + templateName);
+	private static STGroup group = new STRawGroupDir("template", '$', '$');
+	
+	public static ST getTemplate(String templateName) {
+		return group.getInstanceOf(templateName);
 	}
 
 	/**

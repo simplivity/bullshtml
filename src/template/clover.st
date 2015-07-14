@@ -3,7 +3,7 @@
    <project timestamp="$mtime$" name="bullshtml result">
       	<metrics coveredelements="$summary.coveredElementCount$" elements="$summary.elementCount$" coveredconditionals="$summary.coveredBranchCount$" conditionals="$summary.branchCount$" coveredmethods="$summary.coveredFunctionCount$" methods="$summary.functionCount$" coveredstatements="0" statements="0" />
 $parentDirList:{ eachDir |	
-        $eachDir:template/cloverSrcDir()$
+        $eachDir:/cloverSrcDir()$
 }$
    </project>
 </coverage>

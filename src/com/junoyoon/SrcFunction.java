@@ -18,7 +18,7 @@ package com.junoyoon;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import com.uwyn.jhighlight.tools.StringUtils;
 
@@ -33,6 +33,7 @@ public class SrcFunction {
 		this.coveredBranchCount = Integer.parseInt(element.getAttributeValue("d_cov"));
 		this.covered = "1".equals(element.getAttributeValue("fn_cov"));
 		boolean isFirst = true;
+		SrcDecisionPoint lastDecisionPoint = null;
 		for (Object elementObject : element.getChildren()) {
 			Element eachProbe = (Element) elementObject;
 			if (!eachProbe.getName().equals("probe")) {
@@ -45,7 +46,13 @@ public class SrcFunction {
 			}
 			SrcDecisionPoint decisionPoint = SrcDecisionPoint.createDecisionPoint(eachProbe);
 			if (decisionPoint != null) {
+				if (lastDecisionPoint != null && lastDecisionPoint.line == decisionPoint.line)
+				{
+					lastDecisionPoint.sequence = true;
+					decisionPoint.sequence = true;
+				}
 				this.decisionPoints.add(decisionPoint);
+				lastDecisionPoint = decisionPoint;
 			}
 		}
 		return this;
