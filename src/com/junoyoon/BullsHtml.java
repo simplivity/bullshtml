@@ -34,7 +34,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
+import org.apache.commons.cli.DefaultParser;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -374,7 +374,7 @@ public class BullsHtml {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		final CommandLineParser clp = new PosixParser();
+		final CommandLineParser clp = new DefaultParser();
 		CommandLine line = null;
 
 		// parse CLI options
