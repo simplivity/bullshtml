@@ -3,6 +3,7 @@
 	<property environment="env" />
 	<property name="target" value="1.6" />
 	<property name="source" value="1.6" />
+    <property name="target-bootclasspath" value="/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/rt.jar" />
 	<property name="version" value="1.1" />
 	<property name="package.dir" value="target" />
 	<property name="antlib.dir" value="antlib" />
@@ -32,7 +33,7 @@
 	<target depends="build-project" name="build" />
 	<target depends="init" name="build-project">
 		<echo message="${ant.project.name}: ${ant.file}" />
-		<javac debug="true" destdir="bin" source="${source}" target="${target}" includeantruntime="false">
+		<javac debug="true" destdir="bin" source="${source}" target="${target}" includeantruntime="false" bootclasspath="${target-bootclasspath}">
 			<src path="src" />
 			<classpath refid="bullshtml.classpath" />
 		</javac>
