@@ -100,7 +100,7 @@ public class BullsHtml {
 	}
 
 	public void processInternal(Reader reader) throws JDOMException, IOException {
-		SAXBuilder builder = new SAXBuilder(false);
+		SAXBuilder builder = new SAXBuilder();
 		Document build = builder.build(reader);
 		Element root = build.getRootElement();
 		File rootDir = new File(root.getAttributeValue("dir"));
