@@ -1,106 +1,112 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build" name="bullshtml">
-	<property environment="env" />
-	<property name="target" value="1.6" />
-	<property name="source" value="1.6" />
+    <property environment="env" />
+    <property name="target" value="1.6" />
+    <property name="source" value="1.6" />
     <property name="target-bootclasspath" value="/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/rt.jar" />
-	<property name="version" value="1.1" />
-	<property name="package.dir" value="target" />
-	<property name="antlib.dir" value="antlib" />
-	<property name="lib.dir" value="lib" />
+    <property name="version" value="1.1" />
+    <property name="package.dir" value="target" />
+    <property name="antlib.dir" value="antlib" />
+    <property name="lib.dir" value="lib" />
+    
+    <path id="bullshtml.classpath">
+        <pathelement location="bin" />
+        <fileset dir="${lib.dir}">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+    
+    <target name="init">
+        <mkdir dir="bin" />
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch" />
+                <exclude name="**/*.java" />
+                <exclude name="**/coverage.xml"/>
+            </fileset>
+        </copy>
+        <replace file="bin/com/junoyoon/usage.txt" token="${VERSION}" value="${version}" />
+    </target>
 
-	<path id="bullshtml.classpath">
-		<pathelement location="bin" />
-		<fileset dir="${lib.dir}">
-			<include name="*.jar" />
-		</fileset>
-	</path>
-	<target name="init">
-		<mkdir dir="bin" />
-		<copy includeemptydirs="false" todir="bin">
-			<fileset dir="src">
-				<exclude name="**/*.launch" />
-				<exclude name="**/*.java" />
-				<exclude name="**/coverage.xml"/>
-			</fileset>
-		</copy>
-		<replace file="bin/com/junoyoon/usage.txt" token="${VERSION}" value="${version}" />
-	</target>
-	<target name="clean">
-		<delete dir="bin" />
-	</target>
+    <target name="clean">
+        <delete dir="bin" />
+    </target>
+    
+    <target depends="build-project" name="build" />
 
-	<target depends="build-project" name="build" />
-	<target depends="init" name="build-project">
-		<echo message="${ant.project.name}: ${ant.file}" />
-		<javac debug="true" destdir="bin" source="${source}" target="${target}" includeantruntime="false" bootclasspath="${target-bootclasspath}">
-			<src path="src" />
-			<classpath refid="bullshtml.classpath" />
-		</javac>
-	</target>
-	<target depends="build" name="makejar">
-		<jar destfile="${package.dir}/bullshtml_main.jar" manifest="src/manifest.txt" basedir="bin" />
-	</target>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}" />
+        <javac debug="true" destdir="bin" source="${source}" target="${target}" includeantruntime="false" bootclasspath="${target-bootclasspath}">
+            <src path="src" />
+            <classpath refid="bullshtml.classpath" />
+        </javac>
+    </target>
+    
+    <target depends="build" name="makejar">
+        <jar destfile="${package.dir}/bullshtml_main.jar" manifest="src/manifest.txt" basedir="bin" />
+    </target>
 
-	<target name="testrun">
-		<java classname="com.junoyoon.BullsHtml" failonerror="true" fork="yes">
-			<arg line="test2" />
-			<classpath refid="bullshtml.classpath" />
-		</java>
-	</target>
+    <target name="testrun">
+        <java classname="com.junoyoon.BullsHtml" failonerror="true" fork="yes">
+            <arg line="test2" />
+            <classpath refid="bullshtml.classpath" />
+        </java>
+    </target>
 
-	<target name="make_onejar" depends="makejar">
-		<property name="one-jar.dist.dir" value="${antlib.dir}" />
-		<property name="one-jar.version" value="0.97" />
-		<taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" classpath="${one-jar.dist.dir}/one-jar-ant-task-${one-jar.version}.jar" onerror="report" />
-		<one-jar destfile="${package.dir}/bullshtml.jar" manifest="MANIFEST.MF">
-			<main jar="${package.dir}/bullshtml_main.jar" />
-			<lib>
-				<fileset dir="${lib.dir}">
-					<include name="*.jar" />
-				</fileset>
-			</lib>
-		</one-jar>
-	</target>
-
-	<target name="makeexe" depends="make_onejar">
-		<taskdef name="generateexe" classname="net.charabia.jsmoothgen.ant.JSmoothGen" classpath="${antlib.dir}/jsmoothgen-ant.jar" />
-		<property environment="env" />
-		<tstamp />
-		<property name="jsmooth.dir" value="${antlib.dir}" />
-		<generateexe project="${package.dir}/bullshtml.jsmooth" skeletonroot="${jsmooth.dir}/skeletons" />
-	</target>
-
-	<target name="packagewindow" depends="makeexe">
-		<delete>
-			<fileset dir="${package.dir}">
-				<include name="*.zip" />
-			</fileset>
-		</delete>
-		<delete dir="${package.dir}/bullshtml" />
-		<copy file="${package.dir}/bullshtml.exe" tofile="${package.dir}/bullshtml/bullshtml.exe" />
-		<copy file="releasenote.txt" tofile="${package.dir}/bullshtml/releasenote.txt" />
-		<zip destfile="${package.dir}/bullshtml_${version}.zip">
-			<zipfileset dir="${package.dir}">
-				<include name="bullshtml/*" />
-			</zipfileset>
-		</zip>
-	</target>
-	<target name="packagelinux" depends="make_onejar">
-		<delete>
-			<fileset dir="${package.dir}">
-				<include name="*.tar.gz" />
-			</fileset>
-		</delete>
-		<delete dir="${package.dir}/bullshtml" />
-		<copy file="${package.dir}/bullshtml.sh" tofile="${package.dir}/bullshtml/bullshtml" />
-		<copy file="${package.dir}/bullshtml.jar" tofile="${package.dir}/bullshtml/bullshtml.jar" />
-		<copy file="releasenote.txt" tofile="${package.dir}/bullshtml/releasenote.txt" />
-		<tar destfile="${package.dir}/bullshtml_${version}.tar.gz" compression="gzip">
-			<tarfileset dir="${package.dir}" filemode="755">
-				<include name="bullshtml/*" />
-			</tarfileset>
-		</tar>
-	</target>
+    <target name="make_onejar" depends="makejar">
+        <property name="one-jar.dist.dir" value="${antlib.dir}" />
+        <property name="one-jar.version" value="0.97" />
+        <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" classpath="${one-jar.dist.dir}/one-jar-ant-task-${one-jar.version}.jar" onerror="report" />
+        <one-jar destfile="${package.dir}/bullshtml.jar" manifest="MANIFEST.MF">
+            <main jar="${package.dir}/bullshtml_main.jar" />
+            <lib>
+                <fileset dir="${lib.dir}">
+                    <include name="*.jar" />
+                </fileset>
+            </lib>
+        </one-jar>
+    </target>
+    
+    <target name="makeexe" depends="make_onejar">
+        <taskdef name="generateexe" classname="net.charabia.jsmoothgen.ant.JSmoothGen" classpath="${antlib.dir}/jsmoothgen-ant.jar" />
+        <property environment="env" />
+        <tstamp />
+        <property name="jsmooth.dir" value="${antlib.dir}" />
+        <generateexe project="${package.dir}/bullshtml.jsmooth" skeletonroot="${jsmooth.dir}/skeletons" />
+    </target>
+    
+    <target name="packagewindow" depends="makeexe">
+        <delete>
+            <fileset dir="${package.dir}">
+                <include name="*.zip" />
+            </fileset>
+        </delete>
+        <delete dir="${package.dir}/bullshtml" />
+        <copy file="${package.dir}/bullshtml.exe" tofile="${package.dir}/bullshtml/bullshtml.exe" />
+        <copy file="releasenote.txt" tofile="${package.dir}/bullshtml/releasenote.txt" />
+        <zip destfile="${package.dir}/bullshtml_${version}.zip">
+            <zipfileset dir="${package.dir}">
+                <include name="bullshtml/*" />
+            </zipfileset>
+        </zip>
+    </target>
+    
+    <target name="packagelinux" depends="make_onejar">
+        <delete>
+            <fileset dir="${package.dir}">
+                <include name="*.tar.gz" />
+            </fileset>
+        </delete>
+        <delete dir="${package.dir}/bullshtml" />
+        <tar destfile="${package.dir}/bullshtml/resources.tar" basedir="${basedir}/bin" includes="css_resources/**, html_resources/**, images_resources/**, js_resources/**, template/**" />
+        <copy file="${package.dir}/bullshtml.sh" tofile="${package.dir}/bullshtml/bullshtml" />
+        <copy file="${package.dir}/bullshtml.jar" tofile="${package.dir}/bullshtml/bullshtml.jar" />
+        <copy file="releasenote.txt" tofile="${package.dir}/bullshtml/releasenote.txt" />
+        <tar destfile="${package.dir}/bullshtml_${version}.tar.gz" compression="gzip">
+            <tarfileset dir="${package.dir}" filemode="755">
+                <include name="bullshtml/*" />
+            </tarfileset>
+        </tar>
+    </target>
 
 </project>
