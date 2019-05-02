@@ -1,9 +1,8 @@
-To make the win32 exe, run pacakgewindow ant task using "ant packagewindow"
-To make the linux, just run following packagelinux ant task using "ant packagelinux". 
+This project now builds a shadow JAR which is a self contained JAR with all resources.
+
+./gradlew build
 
 To run the package on linux after building it:
-$ cd bin
 $ export COVFILE=<your coverage file>
 $ export PATH=<path-to-bullseye-bin>:$PATH
-$ ../target/bullshtml.sh <output-dir>
-
+$ java -jar build/libs/bullshtml-1.1-all.jar <output-dir>
