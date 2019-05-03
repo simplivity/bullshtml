@@ -1,4 +1,4 @@
-BullsHtml ${VERSION} : BulleyeCoverage Html Report Tool
+BullsHtml @VERSION@ : BulleyeCoverage Html Report Tool
 
 Usage: bullshtml [options] html_report_folder
   -h               this help

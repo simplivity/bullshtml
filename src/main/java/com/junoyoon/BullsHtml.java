@@ -89,13 +89,13 @@ public class BullsHtml {
 			});
 			if (output == null) {
 				BullsHtml
-					.printErrorAndExit("While running covxml, A error occurs.\nPlease check bullseyecoverage path is and COVFILE environment variable");
+					.printErrorAndExit("While running covxml, an error occured.\nPlease check bullseyecoverage path and COVFILE environment variable");
 			}
 			StringReader reader = new StringReader(output);
 			processInternal(reader);
 		} catch (Exception e) {
 			BullsHtml.printErrorAndExit(
-				"While running covxml, A error occurs.\nPlease check bullseyecoverage path is and COVFILE environment variable", e);
+				"While running covxml, an error occured.\nPlease check bullseyecoverage path and COVFILE environment variable", e);
 		}
 	}
 

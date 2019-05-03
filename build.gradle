@@ -1,0 +1,40 @@
+//
+// © Copyright 2019 Hewlett Packard Enterprise Development LP
+//
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+repositories {
+    jcenter()
+}
+
+group = 'com.junoyoon'
+version = '1.1'
+
+dependencies {
+    implementation fileTree('lib')
+    testImplementation 'junit:junit:4.12'
+}
+
+shadowJar {
+    assemble.dependsOn it
+
+    classifier = null
+    exclude 'META-INF/maven/**'
+    manifest {
+        attributes 'Main-Class': 'com.junoyoon.BullsHtml'
+    }
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+processResources {
+    with copySpec {
+        from 'src/main/filteredResources'
+        filter(ReplaceTokens, tokens: [VERSION: project.version.toString()])
+    }
+}
+
